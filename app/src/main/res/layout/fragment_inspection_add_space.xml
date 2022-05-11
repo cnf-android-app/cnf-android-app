@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.InspectionAddSpaceFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_inspection_inspected_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:weightSum="6">
+            <Button
+                android:id="@+id/btn_add_space_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="5dp"
+                android:layout_weight="3"
+                android:text="Cancle" />
+
+            <Button
+                android:id="@+id/btn_add_space"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="3"
+                android:text="Add Space" />
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

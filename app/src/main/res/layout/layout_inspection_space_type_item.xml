@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/borders"
+        android:orientation="horizontal"
+        android:weightSum="6">
+
+        <!--        Name-->
+        <LinearLayout
+            android:id="@+id/ly_inspection_space_type_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/shade"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_name_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Name:"
+                android:textColor="@color/text"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_name_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="true"
+                android:textColor="@color/text"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+
+        <!--        checklist space type id-->
+        <LinearLayout
+            android:id="@+id/ly_inspection_space_type_row_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ly_inspection_space_type_name"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_inspection_checklist_space_type_id_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/shade"
+                android:text="CST_ID:"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_checklist_space_type_id_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_id_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/shade"
+                android:text="Type ID:"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_id_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_inspection_space_type_row_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ly_inspection_space_type_row_1"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_checklist_id_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@color/shade"
+                android:text="Checklist ID:"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_checklist_id_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/text" />
+
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_required_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@color/shade"
+                android:text="Required:"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_space_type_required_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textColor="@color/text" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_inspection_space_type_row_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ly_inspection_space_type_row_2">
+
+            <Button
+                android:id="@+id/btn_inspection_space_type_details"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:text="Details " />
+
+            <Button
+                android:id="@+id/btn_inspection_space_type_select"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:text="Select " />
+
+        </LinearLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

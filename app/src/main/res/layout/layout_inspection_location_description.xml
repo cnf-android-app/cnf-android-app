@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/borders">
+
+        <TextView
+            android:id="@+id/tv_inspection_location_description"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:layout_weight="10"/>
+
+
+        <Button
+            android:id="@+id/btn_inspection_location_description_create"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:text="Create"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</RelativeLayout>

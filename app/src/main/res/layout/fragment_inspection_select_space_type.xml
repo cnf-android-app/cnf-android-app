@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.InspectionSelectSpaceTypeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/rv_space_type_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:weightSum="6">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:padding="5dp"
+                android:background="@color/brand_navigation_0"
+                android:textFontWeight="@integer/material_motion_duration_medium_2"
+                android:textColor="@color/white"
+                android:text="Space Type"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@+id/rv_space_type_title"
+            android:id="@+id/rv_space_type_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:weightSum="6">
+
+            <Button
+                android:id="@+id/btn_select_space_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="3"
+                android:text="Back" />
+
+            <Button
+                android:id="@+id/btn_select_space_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="3"
+                android:text="Cancel" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>
