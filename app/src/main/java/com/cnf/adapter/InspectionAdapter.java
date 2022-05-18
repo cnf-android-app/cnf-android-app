@@ -1,5 +1,7 @@
 package com.cnf.adapter;
 
+import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_ID_NAME;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -36,32 +38,22 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionAdapter.Li
     @Override
     public void onBindViewHolder(@NonNull LinearViewHolder holder, int position) {
         InspectionTaskDTO inspectionTaskDTO = occInspectionList.get(position);
+        String inspectionId = "Inspection ID: " + inspectionTaskDTO.getInspectionId();
         String address = inspectionTaskDTO.getAddress() + " " + inspectionTaskDTO.getUnitnumber();
         String name = inspectionTaskDTO.getFname() + " " + inspectionTaskDTO.getLname();
         String checklist = inspectionTaskDTO.getTitle();
         String description = inspectionTaskDTO.getDescription();
-        String cratedDate = null;
-        cratedDate = inspectionTaskDTO.getCreatedts();
-
-        View itemView = holder.itemView;
-        TextView addressTV = (TextView) itemView.findViewById(R.id.tv_inspection_address);
-        addressTV.setText(address);
-        TextView nameTV = (TextView) itemView.findViewById(R.id.tv_inspection_inspector_value);
-        nameTV.setText(name);
-        TextView checklistTV = (TextView) itemView.findViewById(R.id.tv_inspection_checklist_value);
-        checklistTV.setText(checklist);
-        TextView createdDateTV = (TextView) itemView.findViewById(R.id.tv_inspection_created_date_value);
-        createdDateTV.setText(cratedDate);
-        TextView descriptionTV = (TextView) itemView.findViewById(R.id.tv_inspection_description_value);
-        descriptionTV.setText(description);
-        Button editBtn = itemView.findViewById(R.id.btn_inspection_edit);
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, InspectionContainerActivity.class);
-                intent.putExtra("inspectionId", inspectionTaskDTO.getInspectionId());
-                context.startActivity(intent);
-            }
+        String cratedDate = inspectionTaskDTO.getCreatedts();
+        holder.inspectionIdTv.setText(inspectionId);
+        holder.addressTv.setText(address);
+        holder.nameTv.setText(name);
+        holder.checklistTv.setText(checklist);
+        holder.createdDateTv.setText(cratedDate);
+        holder.descriptionTv.setText(description);
+        holder.editBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(context, InspectionContainerActivity.class);
+            intent.putExtra(INTENT_EXTRA_INSPECTION_ID_NAME, inspectionTaskDTO.getInspectionId());
+            context.startActivity(intent);
         });
     }
 
@@ -71,11 +63,18 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionAdapter.Li
     }
 
     class LinearViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView textView;
+        TextView inspectionIdTv, addressTv, nameTv, checklistTv, createdDateTv, descriptionTv;
+        Button editBtn;
 
         public LinearViewHolder(@NonNull View itemView) {
             super(itemView);
+            inspectionIdTv = itemView.findViewById(R.id.tv_inspection_inspectionId);
+            addressTv = itemView.findViewById(R.id.tv_inspection_address_value);
+            nameTv = itemView.findViewById(R.id.tv_inspection_inspector_value);
+            checklistTv = itemView.findViewById(R.id.tv_inspection_checklist_value);
+            createdDateTv = itemView.findViewById(R.id.tv_inspection_created_date_value);
+            descriptionTv = itemView.findViewById(R.id.tv_inspection_description_value);
+            editBtn = itemView.findViewById(R.id.btn_inspection_edit);
         }
     }
 }

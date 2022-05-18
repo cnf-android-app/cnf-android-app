@@ -3,37 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.InspectionInspectedSpaceElementsFragment">
+    tools:context=".fragment.InspectionInspectedSpaceElementCategoryFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/ll_inspection_inspected_space_elements_title"
+            android:id="@+id/ll_inspection_inspected_space_element_category_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:weightSum="6">
+            android:layout_alignParentTop="true">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:layout_height="50dp"
+                android:background="@color/borders"
                 android:padding="5dp"
-                android:background="@color/brand_navigation_0"
-                android:textFontWeight="@integer/material_motion_duration_medium_2"
-                android:textColor="@color/white"
-                android:text="Review Violations"/>
+                android:text="Category"
+                android:gravity="center"
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                android:textSize="20dp" />
+
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_inspection_inspected_space_elements"
+            android:id="@+id/rv_inspection_inspected_space_element_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_inspection_inspected_space_elements_title"
-            android:paddingBottom="50dp"/>
+            android:layout_below="@+id/ll_inspection_inspected_space_element_category_title"
+            android:paddingBottom="50dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,25 +44,26 @@
             android:background="@color/white">
 
             <Button
-                android:id="@+id/btn_inspection_inspected_space_elements_back"
+                android:id="@+id/btn_inspection_inspected_space_element_category_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:layout_weight="3"
+                android:backgroundTint="@color/brand_navigation"
                 android:text="Back" />
 
             <Button
-                android:id="@+id/btn_inspection_inspected_space_elements_cancel"
+                android:id="@+id/btn_inspection_inspected_space_element_category_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:layout_weight="3"
+                android:backgroundTint="@color/brand_navigation"
                 android:text="Cancel" />
+
+
         </LinearLayout>
-
-
-
-
     </RelativeLayout>
-
 </FrameLayout>

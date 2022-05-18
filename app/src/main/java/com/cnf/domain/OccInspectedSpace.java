@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import lombok.Data;
 
 @Entity
-@Dao
+@Data
 public class OccInspectedSpace {
 
     @PrimaryKey(autoGenerate = true)
@@ -85,4 +85,4 @@ public class OccInspectedSpace {
                 ", occchecklistspacetype_chklstspctypid=" + occchecklistspacetype_chklstspctypid +
                 '}';
     }
-};
+}

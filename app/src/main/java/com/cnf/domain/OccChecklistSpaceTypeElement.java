@@ -2,6 +2,7 @@ package com.cnf.domain;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class OccChecklistSpaceTypeElement {
     private Integer codeelement_id;
     private Boolean required;
     private Integer checklistspacetype_typeid;
+
 
     public Integer getSpaceelementid() {
         return spaceelementid;
@@ -46,4 +48,6 @@ public class OccChecklistSpaceTypeElement {
     public void setChecklistspacetype_typeid(Integer checklistspacetype_typeid) {
         this.checklistspacetype_typeid = checklistspacetype_typeid;
     }
+
+
 }

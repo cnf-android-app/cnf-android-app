@@ -1,6 +1,7 @@
 package com.cnf.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.app.Fragment;
@@ -14,12 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cnf.InspectionActivity;
 import com.cnf.R;
 import com.cnf.adapter.InspectionLocationDescriptionAdapter;
-import com.cnf.adapter.InspectionSpaceTypeElementAdapter;
 import com.cnf.domain.OccLocationDescription;
-import com.cnf.service.InspectionActivityService;
+import com.cnf.service.api.InspectionActivityService;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,10 +40,13 @@ public class InspectionSelectLocationDescriptionFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     @SuppressLint("ValidFragment")
     public InspectionSelectLocationDescriptionFragment(int CSTId) {
         this.CSTId = CSTId;
     }
+
+
 
     public static InspectionSelectLocationDescriptionFragment newInstance() {
         InspectionSelectLocationDescriptionFragment fragment = new InspectionSelectLocationDescriptionFragment();
@@ -68,8 +73,12 @@ public class InspectionSelectLocationDescriptionFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                inspectionActivityService = new InspectionActivityService(getActivity());
-                locationDescriptionList = inspectionActivityService.getOccLocationDescriptionList();
+                inspectionActivityService = InspectionActivityService.getInstance(getActivity());
+                try {
+                    locationDescriptionList = inspectionActivityService.getOccLocationDescriptionList(null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         };
         t.start();
@@ -84,14 +93,24 @@ public class InspectionSelectLocationDescriptionFragment extends Fragment {
 
         InspectionLocationDescriptionAdapter inspectionLocationDescriptionAdapter = new InspectionLocationDescriptionAdapter(this, CSTId, getActivity(),locationDescriptionList );
         inspection_location_description_rv.setAdapter(inspectionLocationDescriptionAdapter);
-//        System.out.println("hello" + occChecklistSpaceTypeElementHeavyDetailsList);
-//        Button backBtn = getActivity().findViewById(R.id.btn);
-//        backBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, inspectionSelectSpaceTypeFragment).commit();
-//            }
-//        });
+
+        Button backBtn = getActivity().findViewById(R.id.btn_location_description_back);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, new InspectionSelectSpaceTypeFragment()).commit();
+            }
+        });
+
+        Button cancelBtn = getActivity().findViewById(R.id.btn_location_description_cancel);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), InspectionActivity.class);
+                getActivity().finish();
+                startActivity(intent);
+            }
+        });
 
     }
 

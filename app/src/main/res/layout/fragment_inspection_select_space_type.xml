@@ -18,22 +18,24 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:layout_height="50dp"
+                android:background="@color/borders"
+                android:gravity="center"
                 android:padding="5dp"
-                android:background="@color/brand_navigation_0"
-                android:textFontWeight="@integer/material_motion_duration_medium_2"
-                android:textColor="@color/white"
-                android:text="Space Type"/>
+                android:text="Space Type"
+                android:textColor="@color/text"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_below="@+id/rv_space_type_title"
             android:id="@+id/rv_space_type_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="50dp"/>
+            android:layout_below="@+id/rv_space_type_title"
+            android:paddingBottom="50dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,16 +49,20 @@
                 android:id="@+id/btn_select_space_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
                 android:layout_weight="3"
+                android:backgroundTint="@color/brand_navigation"
                 android:text="Back" />
 
             <Button
                 android:id="@+id/btn_select_space_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
                 android:layout_weight="3"
+                android:backgroundTint="@color/brand_navigation"
                 android:text="Cancel" />
         </LinearLayout>
 

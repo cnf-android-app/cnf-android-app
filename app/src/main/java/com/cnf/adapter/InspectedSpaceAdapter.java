@@ -1,39 +1,38 @@
 package com.cnf.adapter;
 
+import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTED_SPACE_ID_NAME;
+
 import android.app.Fragment;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cnf.R;
-import com.cnf.domain.OccChecklistSpaceTypeHeavy;
-import com.cnf.domain.OccInspectedSpace;
 import com.cnf.domain.OccInspectedSpaceElementHeavy;
 import com.cnf.domain.OccInspectedSpaceHeavy;
-import com.cnf.fragment.InspectionAddSpaceFragment;
-import com.cnf.fragment.InspectionInspectedSpaceElementsFragment;
-import com.cnf.service.InspectionActivityService;
+import com.cnf.fragment.InspectionInspectedSpaceElementCategoryFragment;
+import com.cnf.service.occ.OccInspectionSpaceElementService;
 
 import java.util.List;
 
 public class InspectedSpaceAdapter extends RecyclerView.Adapter<InspectedSpaceAdapter.LinearViewHolder> {
 
-    private List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList;
     private Context context;
-    private InspectionActivityService inspectionActivityService;
     private Fragment fragment;
+    private List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList;
+    private List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList;
 
     public InspectedSpaceAdapter(List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList, Context context, Fragment fragment) {
         this.occInspectedSpaceHeavyList = occInspectedSpaceHeavyList;
         this.context = context;
         this.fragment = fragment;
-        this.inspectionActivityService = new InspectionActivityService(context);
     }
 
     @NonNull
@@ -45,48 +44,41 @@ public class InspectedSpaceAdapter extends RecyclerView.Adapter<InspectedSpaceAd
     @Override
     public void onBindViewHolder(@NonNull LinearViewHolder holder, int position) {
         OccInspectedSpaceHeavy occInspectedSpaceHeavy = occInspectedSpaceHeavyList.get(position);
-        Integer inspectedspaceid = occInspectedSpaceHeavy.getInspectedspaceid();
-        String spaceType = occInspectedSpaceHeavy.getSpacetitle();
-        String description = occInspectedSpaceHeavy.getDescription();
+        Integer inspectedSpaceId = occInspectedSpaceHeavy.getOccInspectedSpace().getInspectedspaceid();
 
-
-        View itemView = holder.itemView;
-        TextView inspectedSpaceTitleTV = itemView.findViewById(R.id.tv_inspection_inspected_space_item_name);
-        TextView inspectedDesTV = itemView.findViewById(R.id.tv_inspection_inspected_space_item_description);
-        Button editBtn = itemView.findViewById(R.id.btn_inspection_inspected_space_item_edit);
-
-        inspectedSpaceTitleTV.setText(spaceType);
-        inspectedDesTV.setText(description);
-
-        editBtn.setOnClickListener(new View.OnClickListener() {
+        Thread t = new Thread() {
             @Override
-            public void onClick(View view) {
-                Thread t = new Thread() {
-                    @Override
-                    public void run() {
-                        System.out.println("inspectedspaceid : " + inspectedspaceid);
-                        inspectionActivityService.createDefaultAndAddOccInspectedSpaceElementList(inspectedspaceid);
-                        List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList = inspectionActivityService.getOccInspectedSpaceElementHeavyList(inspectedspaceid);
-                        System.out.println(occInspectedSpaceElementHeavyList);
-
-                    }
-                };
-                t.start();
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                //System.out.println("inspectedspaceid : " + inspectedspaceid);
-                InspectionInspectedSpaceElementsFragment inspectionInspectedSpaceElementsFragment = new InspectionInspectedSpaceElementsFragment(inspectedspaceid);
-                fragment.getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, inspectionInspectedSpaceElementsFragment).commit();
+            public void run() {
+                Log.d("TAG", "Inspected Space Id: " + inspectedSpaceId);
+                OccInspectionSpaceElementService.getInstance(context).createDefaultOccInspectedSpaceElementList(inspectedSpaceId);
+                occInspectedSpaceElementHeavyList = OccInspectionSpaceElementService.getInstance(context).getOccInspectedSpaceElementHeavyList(inspectedSpaceId);
             }
+        };
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String inspectedSpaceType = occInspectedSpaceHeavy.getOccSpaceType().getSpacetitle();
+        String inspectedLocationDescription = occInspectedSpaceHeavy.getOccLocationDescription().getDescription();
+        String completeStatus;
+        if (OccInspectionSpaceElementService.getInstance(context).isAllInspectedSpaceElementComplete(occInspectedSpaceElementHeavyList)) {
+            completeStatus = "Finished";
+            //TODO CHOOSE AN APPROPREATE COLOR
+            holder.inspectedSpaceLy.setBackgroundResource(R.drawable.layout_bg_yellow);
+        } else {
+            completeStatus = "UnFinish";
+        }
+        holder.inspectedSpaceItemTypeTv.setText(inspectedSpaceType);
+        holder.inspectedSpaceLocationDescriptionTv.setText(inspectedLocationDescription);
+        holder.inspectedSpaceCompleteStatusTv.setText(completeStatus);
 
+        holder.inspectedSpaceLy.setOnClickListener(view -> {
+            fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME, inspectedSpaceId);
+            InspectionInspectedSpaceElementCategoryFragment inspectionInspectedSpaceElementCategoryFragment = new InspectionInspectedSpaceElementCategoryFragment();
+            fragment.getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, inspectionInspectedSpaceElementCategoryFragment).commit();
         });
-
-
-
     }
 
     @Override
@@ -95,13 +87,15 @@ public class InspectedSpaceAdapter extends RecyclerView.Adapter<InspectedSpaceAd
     }
 
     class LinearViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView textView;
+        TextView inspectedSpaceItemTypeTv, inspectedSpaceLocationDescriptionTv, inspectedSpaceCompleteStatusTv;
+        RelativeLayout inspectedSpaceLy;
 
         public LinearViewHolder(@NonNull View itemView) {
             super(itemView);
+            inspectedSpaceItemTypeTv = itemView.findViewById(R.id.tv_inspection_inspected_space_item_type);
+            inspectedSpaceLocationDescriptionTv = itemView.findViewById(R.id.tv_inspection_inspected_space_item_location_description);
+            inspectedSpaceCompleteStatusTv = itemView.findViewById(R.id.tv_inspection_inspected_space_item_complete_status);
+            inspectedSpaceLy = itemView.findViewById(R.id.rl_inspection_inspected_space_item);
         }
     }
-
-
 }

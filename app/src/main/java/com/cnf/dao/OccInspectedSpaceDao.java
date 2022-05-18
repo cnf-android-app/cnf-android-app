@@ -33,9 +33,18 @@ public interface OccInspectedSpaceDao {
     @Query("SELECT * FROM OccInspectedSpace WHERE inspectedspaceid = :inspectedSpaceId")
     OccInspectedSpace selectOneOccInspectedSpaceById(int inspectedSpaceId);
 
-    @Query("select * from occinspectedspace join occchecklistspacetype o on occinspectedspace.occchecklistspacetype_chklstspctypid = o.checklistspacetypeid join occspacetype o2 on o.spacetype_typeid = o2.spacetypeid where occinspection_inspectionid = :inspectionId")
+    @Query("SELECT * FROM occinspectedspace " +
+            "JOIN occchecklistspacetype o " +
+            "ON occinspectedspace.occchecklistspacetype_chklstspctypid = o.checklistspacetypeid " +
+            "JOIN occspacetype o2 " +
+            "ON o.spacetype_typeid = o2.spacetypeid " +
+            "JOIN occlocationdescription o3 " +
+            "ON occinspectedspace.occlocationdescription_descid = o3.locationdescriptionid " +
+            "WHERE occinspection_inspectionid = :inspectionId")
     List<OccInspectedSpaceHeavy> selectAllOccInspectedSpaceHeavyListByInspectionId(int inspectionId);
 
 
+    @Query("select * from occinspectedspace WHERE occinspection_inspectionid = :inspectionId")
+    List<OccInspectedSpace> selectAllOccInspectedSpaceList(int inspectionId);
 
 }

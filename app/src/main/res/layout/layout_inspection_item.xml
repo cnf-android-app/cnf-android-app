@@ -3,49 +3,69 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/borders"
+        android:background="@drawable/layout_bg"
         android:orientation="horizontal"
         android:weightSum="6">
 
         <TextView
-            android:id="@+id/tv_inspection_address"
+            android:id="@+id/tv_inspection_inspectionId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:paddingLeft="30dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
+            android:paddingVertical="10dp"
+            android:paddingLeft="20dp"
             android:textColor="@color/text_dark"
-            android:background="@color/shade"
-            />
+            android:textStyle="bold"
+            android:textSize="20dp" />
+
+        <LinearLayout
+            android:id="@+id/ly_inspection_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_inspection_inspectionId"
+            android:paddingVertical="5dp"
+            android:weightSum="6">
+
+            <TextView
+                android:id="@+id/tv_inspection_address_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingLeft="20dp"
+                android:text="Address:"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:id="@+id/tv_inspection_address_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ly_inspection_inspector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_inspection_address"
-            android:weightSum="6"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            >
+            android:layout_below="@id/ly_inspection_address"
+            android:paddingVertical="5dp"
+            android:weightSum="6">
 
             <TextView
                 android:id="@+id/tv_inspection_inspector_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:paddingLeft="30dp"
-                android:textColor="@color/text"
-                android:text="Inspector:"/>
+                android:paddingLeft="20dp"
+                android:text="Inspector:"
+                android:textColor="@color/text" />
 
             <TextView
                 android:id="@+id/tv_inspection_inspector_value"
@@ -61,19 +81,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ly_inspection_inspector"
-            android:weightSum="6"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            >
+            android:paddingVertical="5dp"
+            android:weightSum="6">
 
             <TextView
                 android:id="@+id/tv_inspection_checklist_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:paddingLeft="30dp"
-                android:textColor="@color/text"
-                android:text="Checklist:"/>
+                android:paddingLeft="20dp"
+                android:text="Checklist:"
+                android:textColor="@color/text" />
 
             <TextView
                 android:id="@+id/tv_inspection_checklist_value"
@@ -89,19 +107,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ly_inspection_checklist"
-            android:weightSum="6"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            >
+            android:paddingVertical="5dp"
+            android:weightSum="6">
 
             <TextView
                 android:id="@+id/tv_inspection_created_date_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:paddingLeft="30dp"
-                android:textColor="@color/text"
-                android:text="Created Date:"/>
+                android:paddingLeft="20dp"
+                android:text="Created Date:"
+                android:textColor="@color/text" />
 
             <TextView
                 android:id="@+id/tv_inspection_created_date_value"
@@ -117,19 +133,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ly_inspection_created"
-            android:weightSum="6"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            >
+            android:paddingVertical="5dp"
+            android:weightSum="6">
 
             <TextView
                 android:id="@+id/tv_inspection_description_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="30dp"
                 android:layout_weight="4"
-                android:textColor="@color/text"
-                android:text="Description:"/>
+                android:paddingLeft="20dp"
+                android:text="Description:"
+                android:textColor="@color/text" />
 
             <TextView
                 android:id="@+id/tv_inspection_description_value"
@@ -140,20 +154,16 @@
 
         </LinearLayout>
 
-
         <Button
-
             android:id="@+id/btn_inspection_edit"
             android:layout_width="wrap_content"
-            android:layout_below="@+id/ly_inspection_description"
             android:layout_height="40dp"
-            android:layout_weight="5"
-            android:backgroundTint="@color/shade"
-            android:textColor="@color/text_dark"
-            android:layout_marginHorizontal="10dp"
+            android:layout_below="@+id/ly_inspection_description"
             android:layout_alignParentRight="true"
-            android:text="Edit " />
-
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/shade"
+            android:text="Inspect"
+            android:textColor="@color/text_dark" />
 
     </RelativeLayout>
 

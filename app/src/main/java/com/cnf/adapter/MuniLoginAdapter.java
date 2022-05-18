@@ -1,8 +1,13 @@
 package com.cnf.adapter;
 
+import static com.cnf.utils.AppConstants.MUNICIPALITY_CODE;
+import static com.cnf.utils.AppConstants.USER_ID_KEY;
+import static com.cnf.utils.AppConstants.USER_SESSION_SHARE_PREFERENCE_NAME;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +21,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cnf.InspectionActivity;
 import com.cnf.R;
 import com.cnf.dto.LoginMuniDTO;
-import com.cnf.service.MuniLoginActivityService;
+import com.cnf.service.api.MuniLoginActivityService;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
 public class MuniLoginAdapter extends RecyclerView.Adapter<MuniLoginAdapter.LinearViewHolder> {
 
     private Context context;
-    private List<LoginMuniDTO> muniLoginList;
+    private List<LoginMuniDTO> loginMuniDTOList;
     private MuniLoginActivityService muniLoginActivityService;
-    boolean success = false;
+    boolean success;
 
-    public MuniLoginAdapter(Context context, List<LoginMuniDTO> muniLoginList, MuniLoginActivityService muniLoginActivityService) {
+    public MuniLoginAdapter(Context context, List<LoginMuniDTO> loginMuniDTOList) {
+        this.success = false;
         this.context = context;
-        this.muniLoginList = muniLoginList;
-        this.muniLoginActivityService = muniLoginActivityService;
+        this.loginMuniDTOList = loginMuniDTOList;
+        this.muniLoginActivityService = MuniLoginActivityService.getInstance(this.context);
     }
 
     @NonNull
@@ -42,59 +50,62 @@ public class MuniLoginAdapter extends RecyclerView.Adapter<MuniLoginAdapter.Line
 
     @Override
     public void onBindViewHolder(@NonNull LinearViewHolder holder, int position) {
-        Integer user_id = muniLoginList.get(position).getUserid();
-        Integer muni_municode = muniLoginList.get(position).getMuni_municode();
-        String muniName = muniLoginList.get(position).getMuniname().toUpperCase(Locale.ROOT);
-        String userrole = muniLoginList.get(position).getUserrole().toUpperCase(Locale.ROOT);
-        View itemView = holder.itemView;
-        TextView muniNameTV = (TextView) itemView.findViewById(R.id.tv_muni_name);
-        muniNameTV.setText(muniName);
-        TextView userRoleTV = (TextView) itemView.findViewById(R.id.tv_muni_role);
-        userRoleTV.setText(userrole);
-        Button button = itemView.findViewById(R.id.btn_muni_login);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                success = false;
-                Thread t = new Thread() {
-                    @Override
-                    public void run() {
-                        SharedPreferences sp = context.getSharedPreferences("user_session", context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putInt("user_id", user_id);
-                        editor.putInt("muni_id", muni_municode);
-                        editor.commit();
-                        success = muniLoginActivityService.muniLogin(muni_municode);
-                        Intent intent = new Intent(context, InspectionActivity.class);
-                        context.startActivity(intent);
+        Integer userId = loginMuniDTOList.get(position).getUserid();
+        Integer muniCode = loginMuniDTOList.get(position).getMuni_municode();
+        String muniName = loginMuniDTOList.get(position).getMuniname().toUpperCase(Locale.ROOT);
+        String userRole = loginMuniDTOList.get(position).getUserrole().toUpperCase(Locale.ROOT);
+        holder.municipalityNameTv.setText(muniName);
+        holder.userRoleTv.setText(userRole);
+        holder.municipalityLoginBtn.setOnClickListener(view -> {
+            success = false;
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        success = muniLoginActivityService.municipalityLogin(muniCode);
+                    } catch (IOException e) {
+                        Log.e("TAG", String.format("Date: %s, " + e, LocalDateTime.now()));
                     }
-                };
-                t.start();
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-                if (!success) {
-                    Toast.makeText(context, "Municipality Session is Expired", Toast.LENGTH_SHORT).show();
-                }
-
+            };
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            if (!success) {
+                Toast.makeText(context, "Municipality Session is Expired", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            SharedPreferences sp = context.getSharedPreferences(USER_SESSION_SHARE_PREFERENCE_NAME, context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putInt(USER_ID_KEY, userId);
+            editor.putInt(MUNICIPALITY_CODE, muniCode);
+            editor.commit();
+
+            Intent intent = new Intent(context, InspectionActivity.class);
+            context.startActivity(intent);
+
         });
     }
 
     @Override
     public int getItemCount() {
-        return muniLoginList.size();
+        return loginMuniDTOList.size();
     }
 
     class LinearViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textView;
+        TextView municipalityNameTv, userRoleTv;
+        Button municipalityLoginBtn;
 
         public LinearViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.tv_muni_name);
+            municipalityNameTv = itemView.findViewById(R.id.tv_muni_name);
+            userRoleTv = itemView.findViewById(R.id.tv_muni_role);
+            municipalityLoginBtn = itemView.findViewById(R.id.btn_muni_login);
         }
     }
 }

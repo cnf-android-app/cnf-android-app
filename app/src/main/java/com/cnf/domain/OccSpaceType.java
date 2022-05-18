@@ -1,5 +1,6 @@
 package com.cnf.domain;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -12,7 +13,9 @@ public class OccSpaceType {
     @PrimaryKey(autoGenerate = false)
     private Integer spacetypeid;
     private String spacetitle;
+    @ColumnInfo(name = "occ_space_type_description")
     private String description;
+    @ColumnInfo(name = "occ_space_type_required")
     private Boolean required;
 
     public Integer getSpacetypeid() {

@@ -1,6 +1,7 @@
 package com.cnf.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 
@@ -14,10 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cnf.InspectionActivity;
 import com.cnf.adapter.InspectionSpaceTypeElementAdapter;
 import com.cnf.R;
 import com.cnf.domain.OccChecklistSpaceTypeElementHeavyDetails;
-import com.cnf.service.InspectionActivityService;
+import com.cnf.service.api.InspectionActivityService;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class InspectionSpaceTypeDetailsFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                inspectionActivityService = new InspectionActivityService(getActivity());
+                inspectionActivityService =  InspectionActivityService.getInstance(getActivity());
                 occChecklistSpaceTypeElementHeavyDetailsList = inspectionActivityService.getOccChecklistSpaceTypeElementHeavyDetailsList(CSTId);
             }
         };
@@ -76,6 +78,16 @@ public class InspectionSpaceTypeDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, new InspectionSelectSpaceTypeFragment()).commit();
+            }
+        });
+
+        Button cancelBtn = getActivity().findViewById(R.id.btn_select_space_details_cancel);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), InspectionActivity.class);
+                getActivity().finish();
+                startActivity(intent);
             }
         });
     }

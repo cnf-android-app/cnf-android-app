@@ -1,5 +1,6 @@
 package com.cnf.domain;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -24,6 +25,7 @@ public class CodeElement {
     private String ordhumanfriendlytext;
     private String resourceurl;
     private Integer guideentryid;
+    @ColumnInfo(name = "code_element_notes")
     private String notes;
     private Integer legacyid;
     private String ordsubsubsecnum;

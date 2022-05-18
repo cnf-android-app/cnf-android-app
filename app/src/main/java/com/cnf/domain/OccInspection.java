@@ -1,5 +1,7 @@
 package com.cnf.domain;
 
+import androidx.room.PrimaryKey;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Data;
@@ -7,6 +9,7 @@ import lombok.Data;
 @Data
 public class OccInspection {
 
+  @PrimaryKey(autoGenerate = false)
   private Integer inspectionId;
   private Integer occperiod_periodid;
   private Integer inspector_userid;

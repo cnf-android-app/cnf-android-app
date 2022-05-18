@@ -2,10 +2,14 @@ package com.cnf.domain;
 
 import androidx.room.Dao;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 
+import lombok.Data;
+
+@Data
 @Entity
-@Dao
 public class OccInspectedSpaceElement {
 
     @PrimaryKey(autoGenerate = true)
@@ -21,6 +25,9 @@ public class OccInspectedSpaceElement {
     private Integer occchecklistspacetypeelement_elementid;
     private Integer failureseverity_intensityclassid;
     private Boolean migratetocecaseonfail;
+
+    @Ignore
+    private OccInspectableStatus status;
 
     public OccInspectedSpaceElement(String notes, Integer locationdescription_id, Integer lastinspectedby_userid, String lastinspectedts, Integer compliancegrantedby_userid, String compliancegrantedts, Integer inspectedspace_inspectedspaceid, Integer overriderequiredflagnotinspected_userid, Integer occchecklistspacetypeelement_elementid, Integer failureseverity_intensityclassid, Boolean migratetocecaseonfail) {
         this.notes = notes;
@@ -131,4 +138,12 @@ public class OccInspectedSpaceElement {
     public void setMigratetocecaseonfail(Boolean migratetocecaseonfail) {
         this.migratetocecaseonfail = migratetocecaseonfail;
     }
-};
+
+    public OccInspectableStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OccInspectableStatus status) {
+        this.status = status;
+    }
+}

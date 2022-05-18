@@ -18,7 +18,7 @@ import com.cnf.InspectionActivity;
 import com.cnf.adapter.InspectionSpaceTypeAdapter;
 import com.cnf.R;
 import com.cnf.domain.OccChecklistSpaceTypeHeavy;
-import com.cnf.service.InspectionActivityService;
+import com.cnf.service.api.InspectionActivityService;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class InspectionSelectSpaceTypeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        inspectionActivityService = new InspectionActivityService(getActivity());
+        inspectionActivityService = InspectionActivityService.getInstance(getActivity());
         Thread t = new Thread() {
             @Override
             public void run() {

@@ -1,5 +1,6 @@
 package com.cnf.domain;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -16,6 +17,7 @@ public class CodeSource {
     private String description;
     private Boolean isactive;
     private String url;
+    @ColumnInfo(name = "code_source_notes")
     private String notes;
 
     public Integer getSourceid() {

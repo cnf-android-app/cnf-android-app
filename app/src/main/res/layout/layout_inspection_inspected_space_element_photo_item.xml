@@ -2,43 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="5dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/layout_bg"
         android:orientation="horizontal"
-        android:background="@color/borders">
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp">
 
         <ImageView
             android:id="@+id/img_inspection_inspected_space_elements_photo"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="2" />
+
+        <TextView
+            android:id="@+id/tv_inspection_inspected_space_elements_photo_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="115"/>
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:paddingLeft="5dp" />
 
         <Button
-
             android:id="@+id/btn_inspection_inspected_space_elements_photo_delete"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:textColor="@color/text_dark"
-            android:layout_marginHorizontal="10dp"
             android:layout_alignParentRight="true"
-            android:text="delete" />
-
-
-
+            android:layout_weight="1.5"
+            android:text="delete"
+            android:textColor="@color/text_dark" />
     </LinearLayout>
-
-
-
-
-
-
 
 </RelativeLayout>

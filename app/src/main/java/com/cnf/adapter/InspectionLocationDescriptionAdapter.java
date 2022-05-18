@@ -18,7 +18,7 @@ import com.cnf.R;
 import com.cnf.domain.OccInspectedSpace;
 import com.cnf.domain.OccLocationDescription;
 import com.cnf.fragment.InspectionAddSpaceFragment;
-import com.cnf.service.InspectionActivityService;
+import com.cnf.service.api.InspectionActivityService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -37,7 +37,7 @@ public class InspectionLocationDescriptionAdapter extends RecyclerView.Adapter<I
         this.context = context;
         this.fragment = fragment;
         this.occLocationDescriptionList = occLocationDescriptionList;
-        this.inspectionActivityService = new InspectionActivityService(context);
+        this.inspectionActivityService =  InspectionActivityService.getInstance(context);
     }
 
     @NonNull

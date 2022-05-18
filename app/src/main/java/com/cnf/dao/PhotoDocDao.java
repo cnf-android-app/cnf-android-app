@@ -7,6 +7,7 @@ import androidx.room.Query;
 import com.cnf.domain.PhotoDoc;
 
 import java.util.List;
+
 @Dao
 public interface PhotoDocDao {
 
@@ -22,5 +23,8 @@ public interface PhotoDocDao {
 
     @Query("DELETE FROM PhotoDoc")
     void deleteAllPhotoDoc();
+
+    @Query("SELECT * FROM PhotoDoc WHERE blobbytes_bytesid = :blobByteId")
+    PhotoDoc selectOnePhotoDoc(int blobByteId);
 
 }

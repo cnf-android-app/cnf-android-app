@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 public class RequestUtils {
 
-    public static String sendGetRequest(String token, String path) {
+    public static String sendGetRequest(String token, String path) throws IOException {
         HttpURLConnection conn = null;
         URL url = null;
         String body = null;
@@ -33,8 +33,6 @@ public class RequestUtils {
                 sb.append(line);
             }
             body = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (inputStream != null) {
                 try {
@@ -47,7 +45,7 @@ public class RequestUtils {
         return body;
     }
 
-    public static String sendPostRequest(String token, String requestBody, String path) {
+    public static String sendPostRequest(String token, String requestBody, String path) throws IOException {
         OutputStream outputStream = null;
         InputStream inputStream = null;
         String response = null;
@@ -77,8 +75,6 @@ public class RequestUtils {
                 sb.append(line);
             }
             response = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (inputStream != null) {
                 try {
