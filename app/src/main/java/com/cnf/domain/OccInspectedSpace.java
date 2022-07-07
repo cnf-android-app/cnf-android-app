@@ -1,5 +1,6 @@
 package com.cnf.domain;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,82 +8,92 @@ import androidx.room.PrimaryKey;
 import lombok.Data;
 
 @Entity
-@Data
 public class OccInspectedSpace {
 
-    @PrimaryKey(autoGenerate = true)
-    private Integer inspectedspaceid;
-    private Integer occinspection_inspectionid;
-    private Integer occlocationdescription_descid;
-    private Integer addedtochecklistby_userid;
-    private String addedtochecklistts;
-    private Integer occchecklistspacetype_chklstspctypid;
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = "inspectedspaceid")
+  private Integer inspectedSpaceId;
+  @ColumnInfo(name = "occinspection_inspectionid")
+  private Integer occInspectionId;
+  @ColumnInfo(name = "occlocationdescription_descid")
+  private Integer occLocationDescriptionId;
+  @ColumnInfo(name = "addedtochecklistby_userid")
+  private Integer addedToChecklistByUserid;
+  @ColumnInfo(name = "addedtochecklistts")
+  private String addedToChecklistTS;
+  @ColumnInfo(name = "occchecklistspacetype_chklstspctypid")
+  private Integer occChecklistSpaceTypeId;
 
-    public OccInspectedSpace(Integer occinspection_inspectionid, Integer occlocationdescription_descid, Integer addedtochecklistby_userid, String addedtochecklistts, Integer occchecklistspacetype_chklstspctypid) {
-        this.occinspection_inspectionid = occinspection_inspectionid;
-        this.occlocationdescription_descid = occlocationdescription_descid;
-        this.addedtochecklistby_userid = addedtochecklistby_userid;
-        this.addedtochecklistts = addedtochecklistts;
-        this.occchecklistspacetype_chklstspctypid = occchecklistspacetype_chklstspctypid;
-    }
+  public OccInspectedSpace() {
+  }
 
-    public Integer getInspectedspaceid() {
-        return inspectedspaceid;
-    }
+  public OccInspectedSpace(Integer inspectedSpaceId, Integer occInspectionId, Integer occLocationDescriptionId, Integer addedToChecklistByUserid, String addedToChecklistTS,
+      Integer occChecklistSpaceTypeId) {
+    this.inspectedSpaceId = inspectedSpaceId;
+    this.occInspectionId = occInspectionId;
+    this.occLocationDescriptionId = occLocationDescriptionId;
+    this.addedToChecklistByUserid = addedToChecklistByUserid;
+    this.addedToChecklistTS = addedToChecklistTS;
+    this.occChecklistSpaceTypeId = occChecklistSpaceTypeId;
+  }
 
-    public void setInspectedspaceid(Integer inspectedspaceid) {
-        this.inspectedspaceid = inspectedspaceid;
-    }
+  public Integer getInspectedSpaceId() {
+    return inspectedSpaceId;
+  }
 
-    public Integer getOccinspection_inspectionid() {
-        return occinspection_inspectionid;
-    }
+  public void setInspectedSpaceId(Integer inspectedSpaceId) {
+    this.inspectedSpaceId = inspectedSpaceId;
+  }
 
-    public void setOccinspection_inspectionid(Integer occinspection_inspectionid) {
-        this.occinspection_inspectionid = occinspection_inspectionid;
-    }
+  public Integer getOccInspectionId() {
+    return occInspectionId;
+  }
 
-    public Integer getOcclocationdescription_descid() {
-        return occlocationdescription_descid;
-    }
+  public void setOccInspectionId(Integer occInspectionId) {
+    this.occInspectionId = occInspectionId;
+  }
 
-    public void setOcclocationdescription_descid(Integer occlocationdescription_descid) {
-        this.occlocationdescription_descid = occlocationdescription_descid;
-    }
+  public Integer getOccLocationDescriptionId() {
+    return occLocationDescriptionId;
+  }
 
-    public Integer getAddedtochecklistby_userid() {
-        return addedtochecklistby_userid;
-    }
+  public void setOccLocationDescriptionId(Integer occLocationDescriptionId) {
+    this.occLocationDescriptionId = occLocationDescriptionId;
+  }
 
-    public void setAddedtochecklistby_userid(Integer addedtochecklistby_userid) {
-        this.addedtochecklistby_userid = addedtochecklistby_userid;
-    }
+  public Integer getAddedToChecklistByUserid() {
+    return addedToChecklistByUserid;
+  }
 
-    public String getAddedtochecklistts() {
-        return addedtochecklistts;
-    }
+  public void setAddedToChecklistByUserid(Integer addedToChecklistByUserid) {
+    this.addedToChecklistByUserid = addedToChecklistByUserid;
+  }
 
-    public void setAddedtochecklistts(String addedtochecklistts) {
-        this.addedtochecklistts = addedtochecklistts;
-    }
+  public String getAddedToChecklistTS() {
+    return addedToChecklistTS;
+  }
 
-    public Integer getOccchecklistspacetype_chklstspctypid() {
-        return occchecklistspacetype_chklstspctypid;
-    }
+  public void setAddedToChecklistTS(String addedToChecklistTS) {
+    this.addedToChecklistTS = addedToChecklistTS;
+  }
 
-    public void setOccchecklistspacetype_chklstspctypid(Integer occchecklistspacetype_chklstspctypid) {
-        this.occchecklistspacetype_chklstspctypid = occchecklistspacetype_chklstspctypid;
-    }
+  public Integer getOccChecklistSpaceTypeId() {
+    return occChecklistSpaceTypeId;
+  }
 
-    @Override
-    public String toString() {
-        return "OccInspectedSpace{" +
-                "inspectedspaceid=" + inspectedspaceid +
-                ", occinspection_inspectionid=" + occinspection_inspectionid +
-                ", occlocationdescription_descid=" + occlocationdescription_descid +
-                ", addedtochecklistby_userid=" + addedtochecklistby_userid +
-                ", addedtochecklistts='" + addedtochecklistts + '\'' +
-                ", occchecklistspacetype_chklstspctypid=" + occchecklistspacetype_chklstspctypid +
-                '}';
-    }
+  public void setOccChecklistSpaceTypeId(Integer occChecklistSpaceTypeId) {
+    this.occChecklistSpaceTypeId = occChecklistSpaceTypeId;
+  }
+
+  @Override
+  public String toString() {
+    return "OccInspectedSpace{" +
+        "inspectedSpaceId=" + inspectedSpaceId +
+        ", occInspectionId=" + occInspectionId +
+        ", occLocationDescriptionId=" + occLocationDescriptionId +
+        ", addedToChecklistByUserid=" + addedToChecklistByUserid +
+        ", addedToChecklistTS='" + addedToChecklistTS + '\'' +
+        ", occChecklistSpaceTypeId=" + occChecklistSpaceTypeId +
+        '}';
+  }
 }

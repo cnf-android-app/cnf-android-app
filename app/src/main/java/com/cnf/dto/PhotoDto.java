@@ -4,6 +4,7 @@ import com.cnf.domain.BlobBytes;
 import com.cnf.domain.PhotoDoc;
 
 public class PhotoDto {
+
     private PhotoDoc photoDoc;
     private BlobBytes blobBytes;
 
@@ -26,5 +27,13 @@ public class PhotoDto {
 
     public void setBlobBytes(BlobBytes blobBytes) {
         this.blobBytes = blobBytes;
+    }
+
+    @Override
+    public String toString() {
+        return "PhotoDto{" +
+            "photoDoc=" + photoDoc +
+            ", blobBytes=" + blobBytes +
+            '}';
     }
 }

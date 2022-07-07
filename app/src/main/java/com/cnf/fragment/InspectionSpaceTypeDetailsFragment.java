@@ -1,94 +1,98 @@
 package com.cnf.fragment;
 
+import static com.cnf.utils.AppConstants.INSPECTION_DATABASE_NAME;
+
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 
 
 import android.app.Fragment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import android.widget.TextView;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
-import com.cnf.InspectionActivity;
 import com.cnf.adapter.InspectionSpaceTypeElementAdapter;
 import com.cnf.R;
-import com.cnf.domain.OccChecklistSpaceTypeElementHeavyDetails;
-import com.cnf.service.api.InspectionActivityService;
+import com.cnf.db.InspectionDatabase;
+import com.cnf.domain.infra_heavy.OccChecklistSpaceTypeElementHeavy;
+import com.cnf.service.local.OccInspectionInfraService;
 
 import java.util.List;
 
 
 public class InspectionSpaceTypeDetailsFragment extends Fragment {
 
-    private List<OccChecklistSpaceTypeElementHeavyDetails> occChecklistSpaceTypeElementHeavyDetailsList;
-    private InspectionActivityService inspectionActivityService;
-    private int CSTId;
-    private RecyclerView inspection_space_type_details_list_rv;
+  private final Handler handler = new Handler();
 
+  private List<OccChecklistSpaceTypeElementHeavy> occChecklistSpaceTypeElementHeavyList;
+  private OccInspectionInfraService occInspectionInfraService;
+  private InspectionDatabase inspectionDB;
 
-    public InspectionSpaceTypeDetailsFragment() {
-    }
+  private int checklistSpaceTypeId;
 
-    @SuppressLint("ValidFragment")
-    public InspectionSpaceTypeDetailsFragment(int CSTId) {
-        this.CSTId = CSTId;
-    }
+  private RecyclerView rvOccChecklistSpaceTypeElement;
+  private TextView tvNavTitle;
+  private Toolbar toolbar;
+
+  public InspectionSpaceTypeDetailsFragment() {
+  }
+
+  @SuppressLint("ValidFragment")
+  public InspectionSpaceTypeDetailsFragment(int checklistSpaceTypeId) {
+    this.checklistSpaceTypeId = checklistSpaceTypeId;
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this.inspectionDB = Room.databaseBuilder(getActivity(), InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
+    this.occInspectionInfraService = OccInspectionInfraService.getInstance();
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_inspection_select_occ_checklist_space_type_element_details, container, false);
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    this.toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
+    this.tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
+    this.tvNavTitle.setText("Checklist Space Element(s)");
+
+    this.toolbar.setNavigationOnClickListener(v -> {
+      InspectionSelectOccChecklistSpaceTypeFragment inspectionSelectOccChecklistSpaceTypeFragment = new InspectionSelectOccChecklistSpaceTypeFragment();
+      getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccChecklistSpaceTypeFragment).commit();
+    });
+
+    this.rvOccChecklistSpaceTypeElement = getActivity().findViewById(R.id.rv_occ_checklist_space_type_element_detail);
+    this.rvOccChecklistSpaceTypeElement.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+    new Thread(new LoadOccChecklistSpaceTypeElementHeavyList()).start();
+  }
+
+  class LoadOccChecklistSpaceTypeElementHeavyList implements Runnable {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_inspection_space_type_details, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                inspectionActivityService =  InspectionActivityService.getInstance(getActivity());
-                occChecklistSpaceTypeElementHeavyDetailsList = inspectionActivityService.getOccChecklistSpaceTypeElementHeavyDetailsList(CSTId);
-            }
-        };
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void run() {
+      occChecklistSpaceTypeElementHeavyList = occInspectionInfraService.getOccChecklistSpaceTypeElementHeavyDetailsList(checklistSpaceTypeId, inspectionDB);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          InspectionSpaceTypeElementAdapter inspectionSpaceTypeElementAdapter = new InspectionSpaceTypeElementAdapter(getActivity(), occChecklistSpaceTypeElementHeavyList);
+          rvOccChecklistSpaceTypeElement.setAdapter(inspectionSpaceTypeElementAdapter);
         }
-        inspection_space_type_details_list_rv = getActivity().findViewById(R.id.rv_space_type_elements_detail);
-        inspection_space_type_details_list_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        InspectionSpaceTypeElementAdapter inspectionSpaceTypeElementAdapter = new InspectionSpaceTypeElementAdapter(getActivity(), occChecklistSpaceTypeElementHeavyDetailsList);
-        inspection_space_type_details_list_rv.setAdapter(inspectionSpaceTypeElementAdapter);
-        Button backBtn = getActivity().findViewById(R.id.btn_select_space_details_back);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               getFragmentManager().beginTransaction().replace(R.id.fl_inspection_container, new InspectionSelectSpaceTypeFragment()).commit();
-            }
-        });
-
-        Button cancelBtn = getActivity().findViewById(R.id.btn_select_space_details_cancel);
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), InspectionActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-        });
+      });
     }
+  }
 }

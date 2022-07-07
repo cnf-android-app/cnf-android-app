@@ -31,4 +31,12 @@ public class OccInspectedSpaceDTO {
     public void setOccInspectedSpaceElementDTOList(List<OccInspectedSpaceElementDTO> occInspectedSpaceElementDTOList) {
         this.occInspectedSpaceElementDTOList = occInspectedSpaceElementDTOList;
     }
+
+    @Override
+    public String toString() {
+        return "OccInspectedSpaceDTO{" +
+            "occInspectedSpace=" + occInspectedSpace +
+            ", occInspectedSpaceElementDTOList=" + occInspectedSpaceElementDTOList +
+            '}';
+    }
 }

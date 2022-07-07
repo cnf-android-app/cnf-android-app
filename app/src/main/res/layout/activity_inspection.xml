@@ -1,42 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".InspectionActivity">
+
+  <RadioGroup
+    android:id="@+id/rg_inspection_is_finish_or_not"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".InspectionActivity">
+    android:layout_height="40dp"
+    android:checkedButton="@id/rb_inspection_un_finish"
+    android:orientation="horizontal"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/v_inspection_toolbar_border">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_inspection_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="60dp" />
+    <RadioButton
+      android:id="@+id/rb_inspection_un_finish"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="@drawable/toggle_widget_background"
+      android:button="@null"
+      android:gravity="center"
+      android:onClick="onIsFinishedRadioButtonClicked"
+      android:text="IN PROGRESS"
+      android:textColor="@color/on_switch_font" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:weightSum="6">
+    <RadioButton
+      android:id="@+id/rb_inspection_finished"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:button="@null"
+      android:gravity="center"
+      android:onClick="onIsFinishedRadioButtonClicked"
+      android:text="DONE"
+      android:textColor="@color/off_switch_font" />
+  </RadioGroup>
 
-        <Button
-            android:id="@+id/btn_synchronization"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="5dp"
-            android:layout_weight="3"
-            android:backgroundTint="@color/brand_navigation"
-            android:text="Synchronize" />
+  <View
+    android:id="@+id/v_inspection_toolbar_border"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/borders"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/inspection_toolbar" />
 
-        <Button
-            android:id="@+id/btn_loading_guide"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="5dp"
-            android:layout_weight="3"
-            android:backgroundTint="@color/brand_navigation"
-            android:text="Load Guide " />
-    </LinearLayout>
+  <androidx.appcompat.widget.Toolbar
+    android:id="@+id/inspection_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:navigationIcon="@drawable/icon_arrow_left">
 
-</RelativeLayout>
+    <TextView
+      android:id="@+id/tv_occ_inspection_container_nav_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/inspection_nav_title"
+      android:textColor="@color/text_dark"
+      android:textSize="15sp" />
+
+  </androidx.appcompat.widget.Toolbar>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_inspection_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/outer_margin"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/rg_inspection_is_finish_or_not" />
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/btn_inspection_fetch_dispatch"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="30dp"
+    android:backgroundTint="@color/blue_button"
+    android:src="@drawable/icon_cloud_download"
+    android:text="Fetch Inspection Dispatch"
+    android:textColor="@color/white"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

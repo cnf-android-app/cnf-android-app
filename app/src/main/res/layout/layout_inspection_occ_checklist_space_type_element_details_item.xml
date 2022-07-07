@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginVertical="@dimen/inner_margin_vertical"
+  android:background="@drawable/layout_card"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_0"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
+    android:layout_marginVertical="@dimen/inner_margin_vertical">
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_id_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Element ID"
+      android:textColor="@color/text"
+      android:textSize="18dp" />
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_id_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textAllCaps="true"
+      android:textColor="@color/text"
+      android:textSize="18dp" />
+
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_0"
+    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
+    android:layout_marginVertical="@dimen/inner_margin_vertical">
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_num_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Ordinance Number:"
+      android:textColor="@color/text" />
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_num_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textColor="@color/text" />
+
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_1"
+    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
+    android:layout_marginVertical="@dimen/inner_margin_vertical">
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_title_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Ordinance Title:"
+      android:textColor="@color/text" />
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_title_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textColor="@color/text" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_2"
+    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
+    android:layout_marginVertical="@dimen/inner_margin_vertical">
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_text_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Ordinance Text:"
+      android:textColor="@color/text" />
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_text_title_0"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textColor="@color/text" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_3"
+    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
+    android:layout_marginVertical="@dimen/inner_margin_vertical">
+
+    <TextView
+      android:id="@+id/tv_inspection_space_type_details_element_Ordinance_text_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textColor="@color/text" />
+
+  </LinearLayout>
+
+
+</RelativeLayout>
+
+

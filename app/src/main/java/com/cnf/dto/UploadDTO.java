@@ -30,4 +30,12 @@ public class UploadDTO {
     public void setOccInspectedSpaceDTOList(List<OccInspectedSpaceDTO> occInspectedSpaceDTOList) {
         this.occInspectedSpaceDTOList = occInspectedSpaceDTOList;
     }
+
+    @Override
+    public String toString() {
+        return "UploadDTO{" +
+            "inspectionId=" + inspectionId +
+            ", occInspectedSpaceDTOList=" + occInspectedSpaceDTOList +
+            '}';
+    }
 }

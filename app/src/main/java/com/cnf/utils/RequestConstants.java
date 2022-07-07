@@ -1,18 +1,21 @@
 package com.cnf.utils;
 
 public class RequestConstants {
-    public static final String USER_LOGIN_PATH = "http://10.0.0.146:8081/login/user";
-    public static final String MUNI_LOGIN_PATH = "http://10.0.0.146:8081/login/muni";
-    public static final String MUNI_LOGIN_INFO_PATH = "http://10.0.0.146:8081/login/muni/info";
-    public static final String INSPECTION_INFO_PATH = "http://10.0.0.146:8082/inspection";
-    public static final String INSPECTION_CODE_SOURCE_LIST_PATH = "http://10.0.0.146:8082/inspection/codesources";
-    public static final String INSPECTION_CODE_ELEMENT_LIST_PATH = "http://10.0.0.146:8082/inspection/codeelements";
-    public static final String INSPECTION_CODE_ELEMENT_GUIDE_LIST_PATH = "http://10.0.0.146:8082/inspection/codeelementguide";
-    public static final String INSPECTION_OCC_CHECKLIST_SPACE_TYPE_LIST_PATH = "http://10.0.0.146:8082/inspection/occchecklistspacetype";
-    public static final String INSPECTION_OCC_CHECKLIST_SPACE_TYPE_ELEMENT_LIST_PATH = "http://10.0.0.146:8082/inspection/occchecklistspacetypeelement";
-    public static final String INSPECTION_OCC_LOCATION_DESCRIPTION_LIST_PATH = "http://10.0.0.146:8082/inspection/occlocationdescriptor";
-    public static final String INSPECTION_OCC_SPACE_TYPE_LIST_PATH = "http://10.0.0.146:8082/inspection/occspacetypes";
-    public static final String INSPECTION_INTENSITY_CLASS_LIST_PATH = "http://10.0.0.146:8082/inspection/intensityclass";
 
+    public static final String OCC_INSPECTION_ADDRESS = "http://10.0.0.146:8082/occInspection";
+    public static final String CNF_AUTHORIZATION_ADDRESS = "http://10.0.0.146:8081/login";
+
+    public static final String USER_LOGIN_PATH = CNF_AUTHORIZATION_ADDRESS + "/user";
+    public static final String AUTH_PERIOD_PATH = CNF_AUTHORIZATION_ADDRESS + "/authPeriod";
+
+    public static final String USER_AUTH_TYPE = "/userAuth";
+    public static final String PERIOD_AUTH_TYPE = "/periodAuth";
+
+    public static final String OCC_INSPECTION_INFRA_ADDRESS = OCC_INSPECTION_ADDRESS + USER_AUTH_TYPE + "/Infrastructure";
+    public static final String OCC_INSPECTION_DISPATCH_ALL_ADDRESS = OCC_INSPECTION_ADDRESS + PERIOD_AUTH_TYPE + "/dispatch/all";
+    public static final String OCC_INSPECTION_DISPATCH_UN_SYNCHRONIZE_ADDRESS = OCC_INSPECTION_ADDRESS + PERIOD_AUTH_TYPE + "/dispatch/unSynchronize";
+    public static final String OCC_INSPECTION_DISPATCH_SYNCHRONIZED_ADDRESS = OCC_INSPECTION_ADDRESS + PERIOD_AUTH_TYPE + "/dispatch/synchronized";
+
+    public static final String OCC_INSPECTION_UPLOAD = OCC_INSPECTION_ADDRESS + PERIOD_AUTH_TYPE + "/synchronize";
 
 }

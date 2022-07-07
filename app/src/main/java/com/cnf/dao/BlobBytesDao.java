@@ -13,13 +13,16 @@ import java.util.List;
 public interface BlobBytesDao {
 
     @Insert
-    void insertBlobBytes(List<BlobBytes> BlobBytesList);
+    void insertBlobByteList(List<BlobBytes> BlobBytesList);
 
     @Insert
-    long insertBlobBytes(BlobBytes BlobBytes);
+    long insertBlobByteList(BlobBytes BlobBytes);
 
     @Query("SELECT * FROM BlobBytes")
-    List<BlobBytes> selectBlobBytes();
+    List<BlobBytes> selectBlobByteList();
+
+    @Query("SELECT * FROM BlobBytes WHERE bytesid = :bytesId")
+    BlobBytes selectBlobByteById(int bytesId);
 
     @Delete
     void deleteBlobByte(BlobBytes BlobBytes);
@@ -33,7 +36,7 @@ public interface BlobBytesDao {
             "join occinspectedspaceelementphotodoc o " +
             "on p.photodocid = o.photodoc_photodocid " +
             "where o.inspectedspaceelement_elementid = :inspectedElementId")
-    List<BlobBytes> selectBlobBytesByInspectedElementId(int inspectedElementId);
+    List<BlobBytes> selectBlobByteListByInspectedElementId(int inspectedElementId);
 
     @Query("select * from blobbytes " +
             "join photodoc p " +

@@ -2,4 +2,29 @@
     <string name="app_name">CodeNforce Mobile Android</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_back">Back</string>
+    <string name="text_address">Address</string>
+    <string name="text_inspector">Inspector</string>
+    <string name="text_checklist">Checklist</string>
+    <string name="text_created_date">Created Date</string>
+    <string name="text_description">Description</string>
+    <string name="button_text_inspect">Inspect</string>
+    <string name="button_text_upload">Upload</string>
+    <string name="button_text_cancel">Cancel</string>
+    <string name="button_text_add_space">Add Space</string>
+    <string name="inspection_nav_title">INSPECTION</string>
+    <string name="btn_text_retrieve">Retrieve</string>
+    <string name="btn_text_load_guide">Reload Infra</string>
+    <string name="logo_of_codenforce">Logo of CodeNforce</string>
+    <string name="login_enter_username">Enter Username</string>
+    <string name="login_enter_password">Enter Password</string>
+    <string name="login_remember_user_id">Remember User ID</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_online">Online</string>
+    <string name="btn_offline">Offline</string>
+    <string name="muni_session">Session</string>
+
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="capture_photo">Capture Photo</string>
 </resources>

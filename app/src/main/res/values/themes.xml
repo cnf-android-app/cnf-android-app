@@ -1,20 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.CodeNforceMobileAndroid" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/shade</item>
-        <item name="colorPrimaryVariant">@color/shade</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/shade</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-    </style>
+  <!-- Base application theme. -->
+  <style name="Theme.CodeNforceMobileAndroid" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!-- Primary brand color. -->
+    <item name="colorPrimary">@color/shade</item>
+    <item name="colorPrimaryVariant">@color/shade</item>
+    <item name="colorOnPrimary">@color/white</item>
+    <!-- Secondary brand color. -->
+    <item name="colorSecondary">@color/shade</item>
+    <item name="colorSecondaryVariant">@color/teal_700</item>
+    <item name="colorOnSecondary">@color/black</item>
+    <!-- Status bar color. -->
+    <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    <!-- Customize your theme here. -->
+  </style>
 
-    <style name="Button.Regular" parent="ThemeOverlay.AppCompat">
-        <item name="colorAccent">#CECECE</item>
-    </style>
+  <style name="Button.Regular" parent="ThemeOverlay.AppCompat">
+    <item name="colorAccent">#CECECE</item>
+  </style>
+
+  <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Light">
+    <item name="android:colorBackground">@color/borders</item>
+    <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item> <!--新增一个item，用于控制menu-->
+  </style>
+
+  <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+    <item name="overlapAnchor">false</item>  <!--把该属性改为false即可使menu位置位于toolbar之下-->
+  </style>
+
 </resources>

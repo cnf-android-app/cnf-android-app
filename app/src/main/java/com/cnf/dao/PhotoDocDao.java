@@ -12,19 +12,26 @@ import java.util.List;
 public interface PhotoDocDao {
 
 
-    @Insert
-    void insertPhotoDoc(List<PhotoDoc> PhotoDocList);
+  @Insert
+  void insertPhotoDoc(List<PhotoDoc> PhotoDocList);
 
-    @Insert
-    long insertPhotoDoc(PhotoDoc PhotoDoc);
+  @Insert
+  long insertPhotoDoc(PhotoDoc PhotoDoc);
 
-    @Query("SELECT * FROM PhotoDoc")
-    List<PhotoDoc> selectPhotoDoc();
+  @Query("SELECT * FROM PhotoDoc")
+  List<PhotoDoc> selectPhotoDoc();
 
-    @Query("DELETE FROM PhotoDoc")
-    void deleteAllPhotoDoc();
+  @Query("DELETE FROM PhotoDoc")
+  void deleteAllPhotoDoc();
 
-    @Query("SELECT * FROM PhotoDoc WHERE blobbytes_bytesid = :blobByteId")
-    PhotoDoc selectOnePhotoDoc(int blobByteId);
+  @Query("SELECT * FROM PhotoDoc WHERE blobbytes_bytesid = :blobByteId")
+  PhotoDoc selectOnePhotoDoc(int blobByteId);
+
+  @Query("SELECT * "
+      + "FROM photodoc "
+      + "INNER JOIN occinspectedspaceelementphotodoc "
+      + "ON photodoc.photodocid = occinspectedspaceelementphotodoc.photodoc_photodocid "
+      + "WHERE occinspectedspaceelementphotodoc.inspectedspaceelement_elementid = :occInspectedSpaceTypeElementId")
+  List<PhotoDoc> selectAllPhotoDocListByOccInspectedSpaceTypeElementId(int occInspectedSpaceTypeElementId);
 
 }

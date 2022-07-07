@@ -1,47 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".fragment.InspectionSelectOccInspectedSpaceFragment">
+
+  <RadioGroup
+    android:id="@+id/rg_inspected_space_is_finish_or_not"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.InspectionAddSpaceFragment">
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <RadioButton
+      android:id="@+id/rb_inspected_space_un_finish"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:button="@null"
+      android:gravity="center"
+      android:text="IN PROGRESS"
+      />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_inspection_inspected_space"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="60dp" />
+    <RadioButton
+      android:id="@+id/rb_inspected_space_finished"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:button="@null"
+      android:gravity="center"
+      android:text="DONE"
+      />
+  </RadioGroup>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
-            android:weightSum="6">
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_occ_inspected_space"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/outer_margin"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/rg_inspected_space_is_finish_or_not" />
 
-            <Button
-                android:id="@+id/btn_add_space_cancel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="5dp"
-                android:layout_weight="3"
-                android:backgroundTint="@color/brand_navigation"
-                android:text="CANCEL" />
 
-            <Button
-                android:id="@+id/btn_add_space"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="5dp"
-                android:layout_weight="3"
-                android:backgroundTint="@color/brand_navigation"
-                android:text="Add Space" />
-        </LinearLayout>
-    </RelativeLayout>
-</FrameLayout>
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/btn_add_space"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="30dp"
+    android:backgroundTint="@color/blue_button"
+    android:src="@drawable/icon_plus"
+    android:text="Add Space"
+    android:textColor="@color/white"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

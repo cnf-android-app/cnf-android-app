@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_margin="5dp"
+  android:id="@+id/cl_occ_inspected_space_item"
+  android:background="@drawable/layout_card">
+
+
+  <TextView
+    android:id="@+id/tv_occ_inspected_space_item_title"
+    android:textStyle="bold"
+    android:paddingTop="15dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingHorizontal="10dp"
-    android:paddingVertical="15dp">
+    android:gravity="center"
+    android:text="Title"
+    android:textColor="@color/text"
+    android:textSize="20dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/rl_inspection_inspected_space_item"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/layout_bg">
+  <TextView
+    android:id="@+id/tv_occ_inspected_space_item_is_required"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:text="(Require)"
+    android:textColor="@color/text"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tv_occ_inspected_space_item_title" />
 
-        <LinearLayout
-            android:id="@+id/ly_inspection_inspected_space_item_row_01"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_inspection_inspected_space_item_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/text"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_inspection_inspected_space_item_location_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/text" />
-
-        </LinearLayout>
+  <TextView
+    android:id="@+id/tv_occ_inspected_space_item_location_description"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center"
+    android:text="Description"
+    android:textColor="@color/text"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tv_occ_inspected_space_item_is_required" />
 
 
-        <LinearLayout
-            android:id="@+id/ly_inspection_inspected_space_item_row_02"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@id/ly_inspection_inspected_space_item_row_01">
+  <TextView
+    android:id="@+id/tv_occ_inspected_space_item_status"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:gravity="center"
+    android:text="Status"
+    android:textColor="@color/text"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/tv_occ_inspected_space_item_location_description" />
 
-            <TextView
-                android:id="@+id/tv_inspection_inspected_space_item_complete_status"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@color/text" />
-        </LinearLayout>
 
-    </RelativeLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

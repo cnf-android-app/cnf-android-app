@@ -5,9 +5,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.cnf.domain.CodeElementGuide;
 import com.cnf.domain.OccInspectedSpaceElement;
 import com.cnf.domain.OccInspectedSpaceElementHeavy;
+import com.cnf.domain.infra.CodeElementGuide;
 
 import java.util.List;
 import java.util.Map;
@@ -15,50 +15,58 @@ import java.util.Map;
 @Dao
 public interface OccInspectedSpaceElementDao {
 
-    @Insert
-    void insertOccInspectedSpaceElementList(List<OccInspectedSpaceElement> OccInspectedSpaceElementList);
+  @Insert
+  void insertOccInspectedSpaceElementList(List<OccInspectedSpaceElement> OccInspectedSpaceElementList);
 
-    @Query("SELECT * FROM OccInspectedSpaceElement WHERE inspectedspace_inspectedspaceid = :inspectedSpaceId")
-    List<OccInspectedSpaceElement> selectAllOccInspectedSpaceElementList(int inspectedSpaceId);
+  @Query("SELECT * FROM OccInspectedSpaceElement WHERE inspectedspace_inspectedspaceid = :inspectedSpaceId")
+  List<OccInspectedSpaceElement> selectAllOccInspectedSpaceElementList(int inspectedSpaceId);
 
-    @Query("DELETE FROM OccInspectedSpaceElement")
-    void deleteAllOccInspectedSpaceElementList();
+  @Query("DELETE FROM OccInspectedSpaceElement")
+  void deleteAllOccInspectedSpaceElementList();
 
-    @Update
-    void updateOccInspectedSpaceElementList(OccInspectedSpaceElement occInspectedSpaceElement);
+  @Update
+  void updateOccInspectedSpaceElementList(OccInspectedSpaceElement occInspectedSpaceElement);
 
-    @Query("select * from occinspectedspaceelement " +
-            "join occchecklistspacetypeelement o " +
-            "on occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid " +
-            "join codeelement c " +
-            "on o.codeelement_id = c.elementid " +
-            "where inspectedspace_inspectedspaceid = :inspectedSpaceId")
-    List<OccInspectedSpaceElementHeavy> selectAllOccInspectedSpaceElementHeavyList(int inspectedSpaceId);
+  @Query("SELECT * "
+      + "FROM occinspectedspaceelement "
+      + "JOIN occchecklistspacetypeelement o "
+      + "ON occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid "
+      + "JOIN codesetelement c "
+      + "ON o.codesetelement_seteleid = c.codesetelementid "
+      + "JOIN codeelement c2 "
+      + "ON c.codelement_elementid = c2.elementid "
+      + "JOIN codesource c3 "
+      + "ON c2.codesource_sourceid = c3.sourceid "
+      + "WHERE  inspectedspace_inspectedspaceid = :inspectedSpaceId")
+  List<OccInspectedSpaceElementHeavy> selectAllOccInspectedSpaceElementHeavyList(int inspectedSpaceId);
 
-    @Query("select * from occinspectedspaceelement " +
-            "join occchecklistspacetypeelement o " +
-            "on occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid " +
-            "join codeelement c " +
-            "on o.codeelement_id = c.elementid " +
-            "join codeelementguide g " +
-            "on c.guideentryid = g.guideentryid " +
-            "where inspectedspace_inspectedspaceid = :inspectedSpaceId")
-    Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>> selectAllOccInspectedSpaceElementHeavyMap(int inspectedSpaceId);
+  @Query("SELECT * FROM occinspectedspaceelement "
+      + "INNER JOIN occchecklistspacetypeelement o "
+      + "ON occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid "
+      + "INNER JOIN codesetelement c "
+      + "ON o.codesetelement_seteleid = c.codesetelementid "
+      + "INNER JOIN codeelement c2 "
+      + "ON c.codelement_elementid = c2.elementid "
+      + "INNER JOIN codesource c3 "
+      + "ON c2.codesource_sourceid = c3.sourceid "
+      + "INNER JOIN codeelementguide c4 "
+      + "ON c2.guideentryid = c4.guideentryid "
+      + "WHERE inspectedspace_inspectedspaceid = :inspectedSpaceId")
+  Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>> selectAllOccInspectedSpaceElementHeavyMap(int inspectedSpaceId);
 
-
-    @Query("select * from occinspectedspaceelement " +
-            "join occchecklistspacetypeelement o " +
-            "on occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid " +
-            "join codeelement c " +
-            "on o.codeelement_id = c.elementid " +
-            "join codeelementguide g " +
-            "on c.guideentryid = g.guideentryid " +
-            "join codesource c2 on c. codesource_sourceid = c2.sourceid " +
-            "where inspectedspace_inspectedspaceid = :inspectedSpaceId and g.guideentryid == :inspectedSpaceElementGuideId")
-    List<OccInspectedSpaceElementHeavy> selectAllOccInspectedSpaceElementHeavyList(int inspectedSpaceElementGuideId, int inspectedSpaceId);
-
-
-
-
-
+  @Query("SELECT * "
+      + "FROM occinspectedspaceelement "
+      + "INNER JOIN occchecklistspacetypeelement o "
+      + "ON occinspectedspaceelement.occchecklistspacetypeelement_elementid = o.spaceelementid "
+      + "INNER JOIN codesetelement c "
+      + "ON o.codesetelement_seteleid = c.codesetelementid "
+      + "INNER JOIN codeelement c2 "
+      + "ON c.codelement_elementid = c2.elementid "
+      + "INNER JOIN codesource c3 "
+      + "ON c2.codesource_sourceid = c3.sourceid "
+      + "INNER JOIN codeelementguide c4 "
+      + "ON c2.guideentryid = c4.guideentryid "
+      + "WHERE  inspectedspace_inspectedspaceid = :inspectedSpaceId "
+      + "AND c2.guideentryid == :inspectedSpaceElementGuideId")
+  List<OccInspectedSpaceElementHeavy> selectAllOccInspectedSpaceElementHeavyList(int inspectedSpaceElementGuideId, int inspectedSpaceId);
 }

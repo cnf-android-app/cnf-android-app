@@ -1,6 +1,6 @@
 package com.cnf.db;
 
-import static com.cnf.utils.RequestConstants.INSPECTION_INFO_PATH;
+
 import static org.junit.Assert.*;
 
 import android.content.Context;

@@ -8,7 +8,9 @@ import lombok.Data;
 
 @Data
 public class OccInspectedSpaceElementDTO {
+
     private OccInspectedSpaceElement occInspectedSpaceElement;
+
     private List<PhotoDto> photoDtoList;
 
     public OccInspectedSpaceElementDTO(OccInspectedSpaceElement occInspectedSpaceElement, List<PhotoDto> photoDtoList) {
@@ -30,5 +32,13 @@ public class OccInspectedSpaceElementDTO {
 
     public void setPhotoDtoList(List<PhotoDto> photoDtoList) {
         this.photoDtoList = photoDtoList;
+    }
+
+    @Override
+    public String toString() {
+        return "OccInspectedSpaceElementDTO{" +
+            "occInspectedSpaceElement=" + occInspectedSpaceElement +
+            ", photoDtoList=" + photoDtoList +
+            '}';
     }
 }

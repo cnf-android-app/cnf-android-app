@@ -1,54 +1,82 @@
 package com.cnf.domain;
 
-import androidx.room.Dao;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
 
-import lombok.Data;
-
-@Data
 @Entity
 public class OccInspectedSpaceElement {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer inspectedspaceelementid;
+    @ColumnInfo(name = "inspectedspaceelementid")
+    private Integer inspectedSpaceElementId;
+    @ColumnInfo(name = "notes")
     private String notes;
-    private Integer locationdescription_id;
-    private Integer lastinspectedby_userid;
-    private String lastinspectedts;
-    private Integer compliancegrantedby_userid;
-    private String compliancegrantedts;
-    private Integer inspectedspace_inspectedspaceid;
-    private Integer overriderequiredflagnotinspected_userid;
-    private Integer occchecklistspacetypeelement_elementid;
-    private Integer failureseverity_intensityclassid;
-    private Boolean migratetocecaseonfail;
+    @ColumnInfo(name = "locationdescription_id")
+    private Integer locationDescriptionId;
+    @ColumnInfo(name = "lastinspectedby_userid")
+    private Integer lastInspectedByUserId;
+    @ColumnInfo(name = "lastinspectedts")
+    private String lastInspectedTS;
+    @ColumnInfo(name = "compliancegrantedby_userid")
+    private Integer complianceGrantedByUserId;
+    @ColumnInfo(name = "compliancegrantedts")
+    private String complianceGrantedTS;
+    @ColumnInfo(name = "inspectedspace_inspectedspaceid")
+    private Integer inspectedSpaceId;
+    @ColumnInfo(name = "overriderequiredflagnotinspected_userid")
+    private Integer overrideRequiredFlagNotInspectedUserid;
+    @ColumnInfo(name = "occchecklistspacetypeelement_elementid")
+    private Integer occChecklistSpaceTypeElementId;
+    @ColumnInfo(name = "failureseverity_intensityclassid")
+    private Integer failureSeverityIntensityClassId;
+    @ColumnInfo(name = "migratetocecaseonfail")
+    private Boolean migrateToCECaseOnFail;
+    @ColumnInfo(name = "transferredts")
+    private String transferredTS;//
+    @ColumnInfo(name = "transferredby_userid")
+    private Integer transferredByUserId;//
+    @ColumnInfo(name = "transferredtocecase_caseid")
+    private Integer transferredToCECaseId;//
 
     @Ignore
     private OccInspectableStatus status;
 
-    public OccInspectedSpaceElement(String notes, Integer locationdescription_id, Integer lastinspectedby_userid, String lastinspectedts, Integer compliancegrantedby_userid, String compliancegrantedts, Integer inspectedspace_inspectedspaceid, Integer overriderequiredflagnotinspected_userid, Integer occchecklistspacetypeelement_elementid, Integer failureseverity_intensityclassid, Boolean migratetocecaseonfail) {
+    @Ignore
+    private boolean isToUseDefaultDescription;
+
+    public OccInspectedSpaceElement() {
+    }
+
+    public OccInspectedSpaceElement(Integer inspectedSpaceElementId, String notes, Integer locationDescriptionId, Integer lastInspectedByUserId, String lastInspectedTS,
+        Integer complianceGrantedByUserId, String complianceGrantedTS, Integer inspectedSpaceId, Integer overrideRequiredFlagNotInspectedUserid, Integer occChecklistSpaceTypeElementId,
+        Integer failureSeverityIntensityClassId, Boolean migrateToCECaseOnFail, String transferredTS, Integer transferredByUserId, Integer transferredToCECaseId,
+        OccInspectableStatus status) {
+        this.inspectedSpaceElementId = inspectedSpaceElementId;
         this.notes = notes;
-        this.locationdescription_id = locationdescription_id;
-        this.lastinspectedby_userid = lastinspectedby_userid;
-        this.lastinspectedts = lastinspectedts;
-        this.compliancegrantedby_userid = compliancegrantedby_userid;
-        this.compliancegrantedts = compliancegrantedts;
-        this.inspectedspace_inspectedspaceid = inspectedspace_inspectedspaceid;
-        this.overriderequiredflagnotinspected_userid = overriderequiredflagnotinspected_userid;
-        this.occchecklistspacetypeelement_elementid = occchecklistspacetypeelement_elementid;
-        this.failureseverity_intensityclassid = failureseverity_intensityclassid;
-        this.migratetocecaseonfail = migratetocecaseonfail;
+        this.locationDescriptionId = locationDescriptionId;
+        this.lastInspectedByUserId = lastInspectedByUserId;
+        this.lastInspectedTS = lastInspectedTS;
+        this.complianceGrantedByUserId = complianceGrantedByUserId;
+        this.complianceGrantedTS = complianceGrantedTS;
+        this.inspectedSpaceId = inspectedSpaceId;
+        this.overrideRequiredFlagNotInspectedUserid = overrideRequiredFlagNotInspectedUserid;
+        this.occChecklistSpaceTypeElementId = occChecklistSpaceTypeElementId;
+        this.failureSeverityIntensityClassId = failureSeverityIntensityClassId;
+        this.migrateToCECaseOnFail = migrateToCECaseOnFail;
+        this.transferredTS = transferredTS;
+        this.transferredByUserId = transferredByUserId;
+        this.transferredToCECaseId = transferredToCECaseId;
+        this.status = status;
     }
 
-    public Integer getInspectedspaceelementid() {
-        return inspectedspaceelementid;
+    public Integer getInspectedSpaceElementId() {
+        return inspectedSpaceElementId;
     }
 
-    public void setInspectedspaceelementid(Integer inspectedspaceelementid) {
-        this.inspectedspaceelementid = inspectedspaceelementid;
+    public void setInspectedSpaceElementId(Integer inspectedSpaceElementId) {
+        this.inspectedSpaceElementId = inspectedSpaceElementId;
     }
 
     public String getNotes() {
@@ -59,84 +87,109 @@ public class OccInspectedSpaceElement {
         this.notes = notes;
     }
 
-    public Integer getLocationdescription_id() {
-        return locationdescription_id;
+    public Integer getLocationDescriptionId() {
+        return locationDescriptionId;
     }
 
-    public void setLocationdescription_id(Integer locationdescription_id) {
-        this.locationdescription_id = locationdescription_id;
+    public void setLocationDescriptionId(Integer locationDescriptionId) {
+        this.locationDescriptionId = locationDescriptionId;
     }
 
-    public Integer getLastinspectedby_userid() {
-        return lastinspectedby_userid;
+    public Integer getLastInspectedByUserId() {
+        return lastInspectedByUserId;
     }
 
-    public void setLastinspectedby_userid(Integer lastinspectedby_userid) {
-        this.lastinspectedby_userid = lastinspectedby_userid;
+    public void setLastInspectedByUserId(Integer lastInspectedByUserId) {
+        this.lastInspectedByUserId = lastInspectedByUserId;
     }
 
-    public String getLastinspectedts() {
-        return lastinspectedts;
+    public String getLastInspectedTS() {
+        return lastInspectedTS;
     }
 
-    public void setLastinspectedts(String lastinspectedts) {
-        this.lastinspectedts = lastinspectedts;
+    public void setLastInspectedTS(String lastInspectedTS) {
+        this.lastInspectedTS = lastInspectedTS;
     }
 
-    public Integer getCompliancegrantedby_userid() {
-        return compliancegrantedby_userid;
+    public Integer getComplianceGrantedByUserId() {
+        return complianceGrantedByUserId;
     }
 
-    public void setCompliancegrantedby_userid(Integer compliancegrantedby_userid) {
-        this.compliancegrantedby_userid = compliancegrantedby_userid;
+    public void setComplianceGrantedByUserId(Integer complianceGrantedByUserId) {
+        this.complianceGrantedByUserId = complianceGrantedByUserId;
     }
 
-    public String getCompliancegrantedts() {
-        return compliancegrantedts;
+    public String getComplianceGrantedTS() {
+        return complianceGrantedTS;
     }
 
-    public void setCompliancegrantedts(String compliancegrantedts) {
-        this.compliancegrantedts = compliancegrantedts;
+    public void setComplianceGrantedTS(String complianceGrantedTS) {
+        this.complianceGrantedTS = complianceGrantedTS;
     }
 
-    public Integer getInspectedspace_inspectedspaceid() {
-        return inspectedspace_inspectedspaceid;
+    public Integer getInspectedSpaceId() {
+        return inspectedSpaceId;
     }
 
-    public void setInspectedspace_inspectedspaceid(Integer inspectedspace_inspectedspaceid) {
-        this.inspectedspace_inspectedspaceid = inspectedspace_inspectedspaceid;
+    public void setInspectedSpaceId(Integer inspectedSpaceId) {
+        this.inspectedSpaceId = inspectedSpaceId;
     }
 
-    public Integer getOverriderequiredflagnotinspected_userid() {
-        return overriderequiredflagnotinspected_userid;
+    public Integer getOverrideRequiredFlagNotInspectedUserid() {
+        return overrideRequiredFlagNotInspectedUserid;
     }
 
-    public void setOverriderequiredflagnotinspected_userid(Integer overriderequiredflagnotinspected_userid) {
-        this.overriderequiredflagnotinspected_userid = overriderequiredflagnotinspected_userid;
+    public void setOverrideRequiredFlagNotInspectedUserid(Integer overrideRequiredFlagNotInspectedUserid) {
+        this.overrideRequiredFlagNotInspectedUserid = overrideRequiredFlagNotInspectedUserid;
     }
 
-    public Integer getOccchecklistspacetypeelement_elementid() {
-        return occchecklistspacetypeelement_elementid;
+    public Integer getOccChecklistSpaceTypeElementId() {
+        return occChecklistSpaceTypeElementId;
     }
 
-    public void setOccchecklistspacetypeelement_elementid(Integer occchecklistspacetypeelement_elementid) {
-        this.occchecklistspacetypeelement_elementid = occchecklistspacetypeelement_elementid;
+    public void setOccChecklistSpaceTypeElementId(Integer occChecklistSpaceTypeElementId) {
+        this.occChecklistSpaceTypeElementId = occChecklistSpaceTypeElementId;
     }
 
-    public Integer getFailureseverity_intensityclassid() {
-        return failureseverity_intensityclassid;
+
+    public Integer getFailureSeverityIntensityClassId() {
+        return failureSeverityIntensityClassId;
     }
 
-    public void setFailureseverity_intensityclassid(Integer failureseverity_intensityclassid) {
-        this.failureseverity_intensityclassid = failureseverity_intensityclassid;
+    public void setFailureSeverityIntensityClassId(Integer failureSeverityIntensityClassId) {
+        this.failureSeverityIntensityClassId = failureSeverityIntensityClassId;
     }
 
-    public Boolean getMigratetocecaseonfail() {
-        return migratetocecaseonfail;
+    public Boolean getMigrateToCECaseOnFail() {
+        return migrateToCECaseOnFail;
     }
 
-    public void setMigratetocecaseonfail(Boolean migratetocecaseonfail) {
-        this.migratetocecaseonfail = migratetocecaseonfail;
+    public void setMigrateToCECaseOnFail(Boolean migrateToCECaseOnFail) {
+        this.migrateToCECaseOnFail = migrateToCECaseOnFail;
+    }
+
+    public String getTransferredTS() {
+        return transferredTS;
+    }
+
+    public void setTransferredTS(String transferredTS) {
+        this.transferredTS = transferredTS;
+    }
+
+    public Integer getTransferredByUserId() {
+        return transferredByUserId;
+    }
+
+    public void setTransferredByUserId(Integer transferredByUserId) {
+        this.transferredByUserId = transferredByUserId;
+    }
+
+    public Integer getTransferredToCECaseId() {
+        return transferredToCECaseId;
+    }
+
+    public void setTransferredToCECaseId(Integer transferredToCECaseId) {
+        this.transferredToCECaseId = transferredToCECaseId;
     }
 
     public OccInspectableStatus getStatus() {
@@ -145,5 +198,13 @@ public class OccInspectedSpaceElement {
 
     public void setStatus(OccInspectableStatus status) {
         this.status = status;
+    }
+
+    public boolean isToUseDefaultDescription() {
+        return isToUseDefaultDescription;
+    }
+
+    public void setToUseDefaultDescription(boolean toUseDefaultDescription) {
+        isToUseDefaultDescription = toUseDefaultDescription;
     }
 }

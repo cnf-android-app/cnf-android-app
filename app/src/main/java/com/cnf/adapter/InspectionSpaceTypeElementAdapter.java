@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cnf.R;
-import com.cnf.domain.OccChecklistSpaceTypeElementHeavyDetails;
+import com.cnf.domain.infra_heavy.OccChecklistSpaceTypeElementHeavy;
 
 import java.util.List;
 
@@ -18,28 +18,28 @@ public class InspectionSpaceTypeElementAdapter extends RecyclerView.Adapter<Insp
 
 
     private Context context;
-    private List<OccChecklistSpaceTypeElementHeavyDetails> occChecklistSpaceTypeElementHeavyDetailsList;
+    private List<OccChecklistSpaceTypeElementHeavy> occChecklistSpaceTypeElementHeavyList;
 
 
-    public InspectionSpaceTypeElementAdapter(Context context, List<OccChecklistSpaceTypeElementHeavyDetails> occChecklistSpaceTypeElementHeavyDetailsList) {
+    public InspectionSpaceTypeElementAdapter(Context context, List<OccChecklistSpaceTypeElementHeavy> occChecklistSpaceTypeElementHeavyList) {
         this.context = context;
-        this.occChecklistSpaceTypeElementHeavyDetailsList = occChecklistSpaceTypeElementHeavyDetailsList;
+        this.occChecklistSpaceTypeElementHeavyList = occChecklistSpaceTypeElementHeavyList;
     }
 
     @NonNull
     @Override
     public LinearViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LinearViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_inspection_space_type_details_item, parent, false));
+        return new LinearViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_inspection_occ_checklist_space_type_element_details_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull LinearViewHolder holder, int position) {
-        OccChecklistSpaceTypeElementHeavyDetails occChecklistSpaceTypeElementHeavyDetails = occChecklistSpaceTypeElementHeavyDetailsList.get(position);
+        OccChecklistSpaceTypeElementHeavy occChecklistSpaceTypeElementHeavy = occChecklistSpaceTypeElementHeavyList.get(position);
 
-        String elementid = String.valueOf(occChecklistSpaceTypeElementHeavyDetails.getElementid());
-        String ordsecnum = occChecklistSpaceTypeElementHeavyDetails.getOrdsecnum();
-        String ordsubsectitle = occChecklistSpaceTypeElementHeavyDetails.getOrdsubsectitle();
-        String ordtechnicaltext = occChecklistSpaceTypeElementHeavyDetails.getOrdtechnicaltext();
+        String elementid = String.valueOf(occChecklistSpaceTypeElementHeavy.getCodeElement().getElementId());
+        String ordsecnum = occChecklistSpaceTypeElementHeavy.getCodeElement().getOrdSecNum();
+        String ordsubsectitle = occChecklistSpaceTypeElementHeavy.getCodeElement().getOrdSubSecTitle();
+        String ordtechnicaltext = occChecklistSpaceTypeElementHeavy.getCodeElement().getOrdTechnicalText();
 
         View itemView = holder.itemView;
 
@@ -60,7 +60,7 @@ public class InspectionSpaceTypeElementAdapter extends RecyclerView.Adapter<Insp
 
     @Override
     public int getItemCount() {
-        return occChecklistSpaceTypeElementHeavyDetailsList.size();
+        return occChecklistSpaceTypeElementHeavyList.size();
     }
 
     class LinearViewHolder extends RecyclerView.ViewHolder {

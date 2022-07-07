@@ -3,23 +3,22 @@ package com.cnf.dto;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.time.OffsetDateTime;
-
-import lombok.Data;
-
-@Data
 @Entity
 public class InspectionTaskDTO {
 
     @PrimaryKey(autoGenerate = false)
     private Integer inspectionId;
-    private String fname;
-    private String lname;
+    private String firstName;
+    private String lastName;
     private String address;
-    private String unitnumber;
+    private String unitNumber;
     private String title;
     private String description;
-    private String createdts;
+    private String createdTS;
+    private String synchronizationTS;
+    private Integer periodId;
+    private boolean uploaded;
+
 
     public Integer getInspectionId() {
         return inspectionId;
@@ -29,20 +28,20 @@ public class InspectionTaskDTO {
         this.inspectionId = inspectionId;
     }
 
-    public String getFname() {
-        return fname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFname(String fname) {
-        this.fname = fname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLname() {
-        return lname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLname(String lname) {
-        this.lname = lname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getAddress() {
@@ -53,12 +52,12 @@ public class InspectionTaskDTO {
         this.address = address;
     }
 
-    public String getUnitnumber() {
-        return unitnumber;
+    public String getUnitNumber() {
+        return unitNumber;
     }
 
-    public void setUnitnumber(String unitnumber) {
-        this.unitnumber = unitnumber;
+    public void setUnitNumber(String unitNumber) {
+        this.unitNumber = unitNumber;
     }
 
     public String getTitle() {
@@ -77,11 +76,52 @@ public class InspectionTaskDTO {
         this.description = description;
     }
 
-    public String getCreatedts() {
-        return createdts;
+    public String getCreatedTS() {
+        return createdTS;
     }
 
-    public void setCreatedts(String createdts) {
-        this.createdts = createdts;
+    public void setCreatedTS(String createdTS) {
+        this.createdTS = createdTS;
+    }
+
+    public String getSynchronizationTS() {
+        return synchronizationTS;
+    }
+
+    public void setSynchronizationTS(String synchronizationTS) {
+        this.synchronizationTS = synchronizationTS;
+    }
+
+    public Integer getPeriodId() {
+        return periodId;
+    }
+
+    public void setPeriodId(Integer periodId) {
+        this.periodId = periodId;
+    }
+
+    public boolean isUploaded() {
+        return uploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        this.uploaded = uploaded;
+    }
+
+    @Override
+    public String toString() {
+        return "InspectionTaskDTO{" +
+                "inspectionId=" + inspectionId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address='" + address + '\'' +
+                ", unitNumber='" + unitNumber + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", createdTS='" + createdTS + '\'' +
+                ", synchronizationTS='" + synchronizationTS + '\'' +
+                ", periodId=" + periodId +
+                ", uploaded=" + uploaded +
+                '}';
     }
 }

@@ -1,51 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="20dp"
-    android:paddingTop="20dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="20dp"
+    android:background="@color/black"
+    android:padding="20dp"
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/iv_logo"
+        android:id="@+id/iv_main_logo"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginHorizontal="15dp"
+        android:contentDescription="@string/logo_of_codenforce"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:src="@drawable/logo_main" />
+
+    <ImageView
+        android:id="@+id/iv_main_logo_font"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/iv_main_logo"
+        android:layout_marginHorizontal="15dp"
+        android:contentDescription="@string/logo_of_codenforce"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:src="@drawable/logo_main_font" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="100dp"
-        android:paddingBottom="50dp"
-        android:src="@drawable/logo" />
+        android:layout_below="@+id/iv_main_logo_font"
+        android:layout_margin="@dimen/outer_margin"
+        android:gravity="center">
 
-    <EditText
-        android:id="@+id/et_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/iv_logo"
-        android:hint="Enter Username"></EditText>
+        <Button
+            android:id="@+id/btn_online"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_bottom_height"
+            android:layout_margin="@dimen/inner_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/layout_card"
+            android:text="@string/btn_online" />
 
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_username"
-        android:hint="Enter Password"
-        android:inputType="textPassword"></EditText>
-
-    <CheckBox
-        android:id="@+id/cb_isSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_password"
-        android:text="Remember User ID" />
-
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_password"
-        android:layout_alignParentRight="true"
-        android:text="Login" />
+        <Button
+            android:id="@+id/btn_offline"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_bottom_height"
+            android:layout_margin="@dimen/inner_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/layout_card"
+            android:text="@string/btn_offline" />
+    </LinearLayout>
 
 </RelativeLayout>
