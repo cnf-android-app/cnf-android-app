@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "865315101158",
-    "project_id": "cnf-mobile-app",
-    "storage_bucket": "cnf-mobile-app.appspot.com"
+    "project_number": "1032759248057",
+    "project_id": "cnf-mobile-notification",
+    "storage_bucket": "cnf-mobile-notification.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:865315101158:android:8e72bf477288c50ac49e27",
+        "mobilesdk_app_id": "1:1032759248057:android:a1dd69c3c1f9db83670768",
         "android_client_info": {
           "package_name": "com.cnf"
         }
       },
       "oauth_client": [
         {
-          "client_id": "865315101158-jsbmtci5hb4106a14blh82vb8ibla76g.apps.googleusercontent.com",
+          "client_id": "1032759248057-m62ej8he29kc62avb9c6pk33qn8qck53.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXorPXf-Y9NdPiBrKfFi-uf2JiEBtORGs"
+          "current_key": "AIzaSyAO_BetvOlsYZXvIXfmVwf1uF7_2o3qO6U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "865315101158-jsbmtci5hb4106a14blh82vb8ibla76g.apps.googleusercontent.com",
+              "client_id": "1032759248057-m62ej8he29kc62avb9c6pk33qn8qck53.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

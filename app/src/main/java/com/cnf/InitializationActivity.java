@@ -196,9 +196,12 @@ public class InitializationActivity extends AppCompatActivity {
           alertDialog.show();
         });
       } else {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SP_KEY_USER_LOGIN_TOKEN, null);
+        editor.apply();
         textHandler.post(() -> {
           builder.setTitle("Initialization Failed!");
-          builder.setMessage("Switch to Online mode!");
+          builder.setMessage("Back to Login!");
           builder.setPositiveButton("Yes", (dialog, which) -> {
             Intent intent = new Intent(InitializationActivity.this, MainActivity.class);
             startActivity(intent);
