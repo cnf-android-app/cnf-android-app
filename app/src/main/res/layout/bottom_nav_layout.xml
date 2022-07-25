@@ -1,90 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:padding="@dimen/outer_margin"
   android:gravity="center_horizontal"
-  android:orientation="vertical"
-  android:background="@drawable/layout_card"
-  android:padding="@dimen/outer_margin">
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="Online Mode"/>
-
-    <Switch
-      android:layout_width="match_parent"
-      android:layout_weight="1"
-      android:layout_height="wrap_content"/>
-
-  </LinearLayout>
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-
-    android:background="@color/borders"/>
-
-  <LinearLayout
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="Synchronized Inspection"/>
-
-    <Switch
-      android:layout_width="match_parent"
-      android:layout_weight="1"
-      android:layout_height="wrap_content"/>
-
-  </LinearLayout>
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/borders"/>
-
-  <LinearLayout
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="Finished Inspection"/>
-
-    <Switch
-      android:layout_width="match_parent"
-      android:layout_weight="1"
-      android:layout_height="wrap_content"/>
-
-  </LinearLayout>
+  android:orientation="vertical">
 
   <Button
-
+    android:id="@+id/btn_logout"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:text="Logout"
-    android:background="@drawable/layout_card">
+    android:text="Logout"/>
 
-  </Button>
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:orientation="horizontal">
 
+    <Switch
+      android:id="@+id/sw_is_online"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Online Mode" />
+
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/borders" />
 
 
 </LinearLayout>

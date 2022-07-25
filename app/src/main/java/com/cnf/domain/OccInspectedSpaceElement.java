@@ -1,16 +1,19 @@
 package com.cnf.domain;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import java.util.UUID;
 
 @Entity
 public class OccInspectedSpaceElement {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "inspectedspaceelementid")
-    private Integer inspectedSpaceElementId;
+    @NonNull
+    private String inspectedSpaceElementId = UUID.randomUUID().toString();
     @ColumnInfo(name = "notes")
     private String notes;
     @ColumnInfo(name = "locationdescription_id")
@@ -24,7 +27,7 @@ public class OccInspectedSpaceElement {
     @ColumnInfo(name = "compliancegrantedts")
     private String complianceGrantedTS;
     @ColumnInfo(name = "inspectedspace_inspectedspaceid")
-    private Integer inspectedSpaceId;
+    private String inspectedSpaceId;
     @ColumnInfo(name = "overriderequiredflagnotinspected_userid")
     private Integer overrideRequiredFlagNotInspectedUserid;
     @ColumnInfo(name = "occchecklistspacetypeelement_elementid")
@@ -49,11 +52,11 @@ public class OccInspectedSpaceElement {
     public OccInspectedSpaceElement() {
     }
 
-    public OccInspectedSpaceElement(Integer inspectedSpaceElementId, String notes, Integer locationDescriptionId, Integer lastInspectedByUserId, String lastInspectedTS,
-        Integer complianceGrantedByUserId, String complianceGrantedTS, Integer inspectedSpaceId, Integer overrideRequiredFlagNotInspectedUserid, Integer occChecklistSpaceTypeElementId,
+    public OccInspectedSpaceElement(String notes, Integer locationDescriptionId, Integer lastInspectedByUserId, String lastInspectedTS,
+        Integer complianceGrantedByUserId, String complianceGrantedTS, String inspectedSpaceId, Integer overrideRequiredFlagNotInspectedUserid, Integer occChecklistSpaceTypeElementId,
         Integer failureSeverityIntensityClassId, Boolean migrateToCECaseOnFail, String transferredTS, Integer transferredByUserId, Integer transferredToCECaseId,
         OccInspectableStatus status) {
-        this.inspectedSpaceElementId = inspectedSpaceElementId;
+//        this.inspectedSpaceElementId = inspectedSpaceElementId;
         this.notes = notes;
         this.locationDescriptionId = locationDescriptionId;
         this.lastInspectedByUserId = lastInspectedByUserId;
@@ -71,11 +74,11 @@ public class OccInspectedSpaceElement {
         this.status = status;
     }
 
-    public Integer getInspectedSpaceElementId() {
+    public String getInspectedSpaceElementId() {
         return inspectedSpaceElementId;
     }
 
-    public void setInspectedSpaceElementId(Integer inspectedSpaceElementId) {
+    public void setInspectedSpaceElementId(String inspectedSpaceElementId) {
         this.inspectedSpaceElementId = inspectedSpaceElementId;
     }
 
@@ -127,11 +130,11 @@ public class OccInspectedSpaceElement {
         this.complianceGrantedTS = complianceGrantedTS;
     }
 
-    public Integer getInspectedSpaceId() {
+    public String getInspectedSpaceId() {
         return inspectedSpaceId;
     }
 
-    public void setInspectedSpaceId(Integer inspectedSpaceId) {
+    public void setInspectedSpaceId(String inspectedSpaceId) {
         this.inspectedSpaceId = inspectedSpaceId;
     }
 

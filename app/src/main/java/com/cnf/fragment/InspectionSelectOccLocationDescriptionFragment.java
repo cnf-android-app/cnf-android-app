@@ -40,7 +40,7 @@ public class InspectionSelectOccLocationDescriptionFragment extends Fragment {
   private RecyclerView inspection_location_description_rv;
   private Integer CSTId;
   private InspectionDatabase inspectionDB;
-  private Integer occInspectedSpaceId;
+  private String occInspectedSpaceId;
 
   private TextView tvNavTitle;
 
@@ -52,7 +52,7 @@ public class InspectionSelectOccLocationDescriptionFragment extends Fragment {
 
 
   @SuppressLint("ValidFragment")
-  public InspectionSelectOccLocationDescriptionFragment(Integer CSTId, Integer occInspectedSpaceId) {
+  public InspectionSelectOccLocationDescriptionFragment(Integer CSTId, String occInspectedSpaceId) {
     this.CSTId = CSTId;
     this.occInspectedSpaceId = occInspectedSpaceId;
   }
@@ -80,14 +80,14 @@ public class InspectionSelectOccLocationDescriptionFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    Button backBtn = getActivity().findViewById(R.id.btn_location_description_back);
-    Button cancelBtn = getActivity().findViewById(R.id.btn_location_description_cancel);
-    backBtn.setOnClickListener(view1 -> getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, new InspectionSelectOccChecklistSpaceTypeFragment()).commit());
-    cancelBtn.setOnClickListener(view12 -> {
-      Intent intent = new Intent(getActivity(), InspectionActivity.class);
-      getActivity().finish();
-      startActivity(intent);
-    });
+   // Button backBtn = getActivity().findViewById(R.id.btn_location_description_back);
+    //Button cancelBtn = getActivity().findViewById(R.id.btn_location_description_cancel);
+//    backBtn.setOnClickListener(view1 -> getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, new InspectionSelectOccChecklistSpaceTypeFragment()).commit());
+//    cancelBtn.setOnClickListener(view12 -> {
+//      Intent intent = new Intent(getActivity(), InspectionActivity.class);
+//      getActivity().finish();
+//      startActivity(intent);
+//    });
     new Thread(new LoadOccLocationDescription()).start();
 
   }

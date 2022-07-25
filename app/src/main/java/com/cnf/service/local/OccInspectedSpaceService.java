@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class OccInspectedSpaceService {
 
@@ -63,24 +64,22 @@ public class OccInspectedSpaceService {
     List<OccChecklistSpaceType> occChecklistSpaceTypeList = inspectionDatabase.getOccChecklistSpaceTypeDao().selectAllOccChecklistSpaceTypeList(occChecklistId);
     for (OccChecklistSpaceType occChecklistSpaceType : occChecklistSpaceTypeList) {
       OccInspectedSpace occInspectedSpace = new OccInspectedSpace();
-
-      occInspectedSpace.setInspectedSpaceId(null);
+      String inspectedSpaceId = UUID.randomUUID().toString();
+      occInspectedSpace.setInspectedSpaceId(inspectedSpaceId);
       occInspectedSpace.setOccInspectionId(inspectionId);
       occInspectedSpace.setOccLocationDescriptionId(null);
       occInspectedSpace.setAddedToChecklistByUserid(userId);
       occInspectedSpace.setAddedToChecklistTS(OffsetDateTime.now().toString());
       occInspectedSpace.setOccChecklistSpaceTypeId(occChecklistSpaceType.getChecklistSpaceTypeId());
 
-      long occInspectedSpaceId = insertInspectedSpace(inspectionDatabase, occInspectedSpace);
-      occInspectedSpace.setInspectedSpaceId((int) occInspectedSpaceId);
-
+      insertInspectedSpace(inspectionDatabase, occInspectedSpace);
+      occInspectedSpace.setInspectedSpaceId(inspectedSpaceId);
+      //todo
       OccInspectionSpaceElementService.getInstance().createDefaultOccInspectedSpaceElementList(inspectionDatabase, occInspectedSpace);
-
-      OccInspectionService.getInstance().markOccInspectionInitialized(inspectionDatabase, inspectionId);
     }
   }
 
-  public void updateOccInspectedSpaceLocationDescription(InspectionDatabase inspectionDatabase, int occInspectedSpaceId, int occLocationDescriptionId) {
+  public void updateOccInspectedSpaceLocationDescription(InspectionDatabase inspectionDatabase, String occInspectedSpaceId, int occLocationDescriptionId) {
     inspectionDatabase.getOccInspectedSpaceDao().updateLocationDesForOccInspectedSpace(occInspectedSpaceId, occLocationDescriptionId);
   }
 
@@ -88,16 +87,17 @@ public class OccInspectedSpaceService {
     List<OccInspectedSpaceHeavy> unFinishOccInspectedSpaceHeavyList = new ArrayList<>();
     List<OccInspectedSpaceHeavy> finishedOccInspectedSpaceHeavyList = new ArrayList<>();
     for (OccInspectedSpaceHeavy occInspectedSpaceHeavy : occInspectedSpaceHeavyList) {
-      Integer inspectedSpaceId = occInspectedSpaceHeavy.getOccInspectedSpace().getInspectedSpaceId();
-      boolean isFinished = true;
+      if (occInspectedSpaceHeavy.getOccInspectedSpace().getOccLocationDescriptionId() == null) {
+        unFinishOccInspectedSpaceHeavyList.add(occInspectedSpaceHeavy);
+        continue;
+      }
+      String inspectedSpaceId = occInspectedSpaceHeavy.getOccInspectedSpace().getInspectedSpaceId();
+
       List<OccInspectedSpaceElement> occInspectedSpaceElementList = OccInspectionSpaceElementService.getInstance()
           .getOccInspectedSpaceElementList(inspectionDatabase, inspectedSpaceId);
       if (!OccInspectionSpaceElementService.getInstance().isAllInspectedSpaceElementComplete(occInspectedSpaceElementList)) {
         unFinishOccInspectedSpaceHeavyList.add(occInspectedSpaceHeavy);
-        isFinished = false;
-      }
-
-      if (isFinished) {
+      } else {
         finishedOccInspectedSpaceHeavyList.add(occInspectedSpaceHeavy);
       }
     }

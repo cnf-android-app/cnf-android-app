@@ -240,7 +240,7 @@ public class OccInspectionDispatchService {
 
   public void deleteOccInspectionTask(InspectionDatabase inspectionDatabase) {
     deleteAllOccInspectionDispatchList(inspectionDatabase);
-    deleteAllOccInspectionList(inspectionDatabase);
+    //deleteAllOccInspectionList(inspectionDatabase);
     deleteAllCECaseList(inspectionDatabase);
     deleteAllPropertyList(inspectionDatabase);
     deleteAllOccPeriodList(inspectionDatabase);
@@ -256,6 +256,12 @@ public class OccInspectionDispatchService {
     insertPropertyList(inspectionDatabase, occInspectionTasks.getPropertyList());
     insertLoginList(inspectionDatabase, occInspectionTasks.getLoginList());
     insertPersonList(inspectionDatabase, occInspectionTasks.getPersonList());
+
+    inspectionDatabase.getOccInspectedSpaceDao().insertOccInspectedSpaceList(occInspectionTasks.getOccInspectedSpaceList());
+    inspectionDatabase.getOccInspectedSpaceElementDao().insertOccInspectedSpaceElementList(occInspectionTasks.getOccInspectedSpaceElementList());
+    inspectionDatabase.getOccInspectedSpaceElementPhotoDocDao().insertOccInspectedSpaceElementPhotoDocList(occInspectionTasks.getOccInspectedSpaceElementPhotoDocList());
+    inspectionDatabase.getPhotoDocDao().insertPhotoDoc(occInspectionTasks.getPhotoDocList());
+    inspectionDatabase.getBlobBytesDao().insertBlobByteList(occInspectionTasks.getBlobBytesList());
   }
 
   public List<OccInspectionDispatchHeavy> getUnSynchronizeInspectionDispatchHeavy(InspectionDatabase inspectionDatabase,int muniCode) {

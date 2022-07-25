@@ -38,6 +38,10 @@ public class UserActivity extends AppCompatActivity {
 
   private final Handler textHandler = new Handler();
 
+  private EditText loginUsernameEt;
+  private EditText loginPasswordEt;
+  private Button loginBtn;
+
   private UserLoginApiService userLoginApiService;
   private String loginUserToken;
   private SharedPreferences sp;
@@ -52,6 +56,9 @@ public class UserActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_user);
 
+    this.loginUsernameEt = findViewById(R.id.et_username);
+    this.loginPasswordEt = findViewById(R.id.et_password);
+    this.loginBtn = findViewById(R.id.btn_login);
     this.userLoginApiService = UserLoginApiService.getInstance();
     this.sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
     this.loginUserToken = sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
@@ -61,16 +68,10 @@ public class UserActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
+
     if (loginUserToken != null && !loginUserToken.isEmpty()) {
-      Intent intent = new Intent(this, InitializationActivity.class);
-      startActivity(intent);
-      return;
+      new Thread(new UserTokenLogin()).start();
     }
-
-    EditText loginUsernameEt = findViewById(R.id.et_username);
-    EditText loginPasswordEt = findViewById(R.id.et_password);
-    Button loginBtn = findViewById(R.id.btn_login);
-
     loginBtn.setOnClickListener(view -> {
       username = loginUsernameEt.getText().toString().trim();
       password = loginPasswordEt.getText().toString().trim();
@@ -86,10 +87,25 @@ public class UserActivity extends AppCompatActivity {
     });
   }
 
-  class Login implements Runnable {
-
+  class UserTokenLogin implements Runnable {
     View view = UserActivity.this.getWindow().getDecorView();
+    @Override
+    public void run() {
+      boolean isValidLoginUserToken = userLoginApiService.isLoginUserTokenValid(loginUserToken);
+      if (isValidLoginUserToken) {
+        Intent intent = new Intent(UserActivity.this, InitializationActivity.class);
+        startActivity(intent);
+      } else {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SP_KEY_USER_LOGIN_TOKEN, null);
+        editor.apply();
+        Snackbar.make(view, "Invalid User Token. Please login again..", Snackbar.LENGTH_LONG).show();
+      }
+    }
+  }
 
+  class Login implements Runnable {
+    View view = UserActivity.this.getWindow().getDecorView();
     @Override
     public void run() {
       try {

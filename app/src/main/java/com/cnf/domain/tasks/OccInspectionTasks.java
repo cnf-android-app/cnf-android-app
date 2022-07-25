@@ -1,5 +1,10 @@
 package com.cnf.domain.tasks;
 
+import com.cnf.domain.BlobBytes;
+import com.cnf.domain.OccInspectedSpace;
+import com.cnf.domain.OccInspectedSpaceElement;
+import com.cnf.domain.OccInspectedSpaceElementPhotoDoc;
+import com.cnf.domain.PhotoDoc;
 import java.util.List;
 
 public class OccInspectionTasks {
@@ -10,6 +15,11 @@ public class OccInspectionTasks {
   private List<Property> propertyList;
   private List<Login> loginList;
   private List<Person> personList;
+  private List<OccInspectedSpace> occInspectedSpaceList;
+  private List<OccInspectedSpaceElement> occInspectedSpaceElementList;
+  private List<OccInspectedSpaceElementPhotoDoc> occInspectedSpaceElementPhotoDocList;
+  private List<PhotoDoc> photoDocList;
+  private List<BlobBytes> blobBytesList;
 
   public List<OccInspectionDispatch> getOccInspectionDispatchList() {
     return occInspectionDispatchList;
@@ -59,6 +69,46 @@ public class OccInspectionTasks {
     this.personList = personList;
   }
 
+  public List<OccInspectedSpace> getOccInspectedSpaceList() {
+    return occInspectedSpaceList;
+  }
+
+  public void setOccInspectedSpaceList(List<OccInspectedSpace> occInspectedSpaceList) {
+    this.occInspectedSpaceList = occInspectedSpaceList;
+  }
+
+  public List<OccInspectedSpaceElement> getOccInspectedSpaceElementList() {
+    return occInspectedSpaceElementList;
+  }
+
+  public void setOccInspectedSpaceElementList(List<OccInspectedSpaceElement> occInspectedSpaceElementList) {
+    this.occInspectedSpaceElementList = occInspectedSpaceElementList;
+  }
+
+  public List<OccInspectedSpaceElementPhotoDoc> getOccInspectedSpaceElementPhotoDocList() {
+    return occInspectedSpaceElementPhotoDocList;
+  }
+
+  public void setOccInspectedSpaceElementPhotoDocList(List<OccInspectedSpaceElementPhotoDoc> occInspectedSpaceElementPhotoDocList) {
+    this.occInspectedSpaceElementPhotoDocList = occInspectedSpaceElementPhotoDocList;
+  }
+
+  public List<PhotoDoc> getPhotoDocList() {
+    return photoDocList;
+  }
+
+  public void setPhotoDocList(List<PhotoDoc> photoDocList) {
+    this.photoDocList = photoDocList;
+  }
+
+  public List<BlobBytes> getBlobBytesList() {
+    return blobBytesList;
+  }
+
+  public void setBlobBytesList(List<BlobBytes> blobBytesList) {
+    this.blobBytesList = blobBytesList;
+  }
+
   @Override
   public String toString() {
     return "OccInspectionTasks{" +
@@ -68,6 +118,11 @@ public class OccInspectionTasks {
         ", propertyList=" + propertyList +
         ", loginList=" + loginList +
         ", personList=" + personList +
+        ", occInspectedSpaceList=" + occInspectedSpaceList +
+        ", occInspectedSpaceElementList=" + occInspectedSpaceElementList +
+        ", occInspectedSpaceElementPhotoDocList=" + occInspectedSpaceElementPhotoDocList +
+        ", photoDocList=" + photoDocList +
+        ", blobBytesList=" + blobBytesList +
         '}';
   }
 }

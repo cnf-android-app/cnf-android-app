@@ -21,6 +21,9 @@ public class OccInspectedPhotoService {
 
   public void deleteOccInspectedPhotoBlobByte(InspectionDatabase inspectionDatabase, BlobBytes blobBytes) {
     inspectionDatabase.getBlobBytesDao().deleteBlobByte(blobBytes);
+    PhotoDoc photoDoc = inspectionDatabase.getPhotoDocDao().selectOnePhotoDoc(blobBytes.getBytesId());
+    inspectionDatabase.getPhotoDocDao().deletePhotoDoc(photoDoc);
+    inspectionDatabase.getOccInspectedSpaceElementPhotoDocDao().deleteOccInspectedSpaceElementPhotoDocList(photoDoc.getPhotoDocId());
   }
 
   public long insertBlobBytes(InspectionDatabase inspectionDatabase, BlobBytes blobBytes) {

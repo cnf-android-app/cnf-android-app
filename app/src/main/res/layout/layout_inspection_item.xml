@@ -17,9 +17,20 @@
       android:id="@+id/tv_inspection_inspectionId"
       android:textStyle="bold"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:textColor="@color/text_dark"
-      android:textSize="@dimen/card_title_size" />
+      android:gravity="center_vertical"
+      android:layout_weight="1"
+      android:textSize="@dimen/card_title_size"
+      android:text="inspection Id"/>
+
+    <ImageView
+      android:id="@+id/iv_inspection_direction"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:src="@drawable/ic_baseline_directions_24"
+      android:layout_weight="1"/>
+
 
   </LinearLayout>
 

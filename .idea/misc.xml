@@ -32,6 +32,7 @@
         <entry key="app/src/main/res/layout/fragment_inspection_inspected_space_element.xml" value="0.2504528985507246" />
         <entry key="app/src/main/res/layout/fragment_inspection_inspected_space_element_category.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/layout/fragment_inspection_inspected_space_elements.xml" value="0.20878623188405798" />
+        <entry key="app/src/main/res/layout/fragment_inspection_occ_inspected_space_element.xml" value="0.16337386018237082" />
         <entry key="app/src/main/res/layout/fragment_inspection_select_location_description.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_inspection_select_occ_checklist_space_type.xml" value="0.14868287740628167" />
         <entry key="app/src/main/res/layout/fragment_inspection_select_occ_checklist_space_type_element_details.xml" value="0.16337386018237082" />
@@ -48,6 +49,7 @@
         <entry key="app/src/main/res/layout/layout_inspection_occ_checklist_space_type_element_details_item.xml" value="0.15307971014492755" />
         <entry key="app/src/main/res/layout/layout_inspection_occ_checklist_space_type_item.xml" value="0.16337386018237082" />
         <entry key="app/src/main/res/layout/layout_inspection_occ_inspected_space_element_category_item.xml" value="0.15307971014492755" />
+        <entry key="app/src/main/res/layout/layout_inspection_occ_inspected_space_element_photo_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_inspection_occ_location_description_item.xml" value="0.1337386018237082" />
         <entry key="app/src/main/res/layout/layout_inspection_space_type_details_item.xml" value="0.20878623188405798" />
         <entry key="app/src/main/res/layout/layout_inspection_space_type_item.xml" value="0.20878623188405798" />

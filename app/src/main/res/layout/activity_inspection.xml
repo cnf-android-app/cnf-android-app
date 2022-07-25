@@ -6,6 +6,19 @@
   android:layout_height="match_parent"
   tools:context=".InspectionActivity">
 
+  <EditText
+    android:id="@+id/et_inspection_search"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_margin="@dimen/outer_margin"
+    android:background="@drawable/layout_card"
+    android:paddingHorizontal="@dimen/inner_padding_horizontal"
+    android:hint="Search..."
+    android:paddingVertical="5dp"
+    android:drawableRight="@drawable/ic_baseline_search_24"
+    app:layout_constraintTop_toBottomOf="@+id/rg_inspection_is_finish_or_not" >
+  </EditText>
+
   <RadioGroup
     android:id="@+id/rg_inspection_is_finish_or_not"
     android:layout_width="match_parent"
@@ -37,8 +50,18 @@
       android:onClick="onIsFinishedRadioButtonClicked"
       android:text="DONE"
       android:textColor="@color/off_switch_font" />
-  </RadioGroup>
 
+    <RadioButton
+      android:id="@+id/rb_inspection_synchronized"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:button="@null"
+      android:gravity="center"
+      android:onClick="onIsFinishedRadioButtonClicked"
+      android:text="SYNCHRONIZED"
+      android:textColor="@color/off_switch_font" />
+  </RadioGroup>
   <View
     android:id="@+id/v_inspection_toolbar_border"
     android:layout_width="match_parent"
@@ -46,7 +69,6 @@
     android:background="@color/borders"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/inspection_toolbar" />
-
   <androidx.appcompat.widget.Toolbar
     android:id="@+id/inspection_toolbar"
     android:layout_width="match_parent"
@@ -71,8 +93,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/outer_margin"
+    android:paddingBottom="100dp"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/rg_inspection_is_finish_or_not" />
+    app:layout_constraintTop_toBottomOf="@+id/et_inspection_search" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/btn_inspection_fetch_dispatch"

@@ -43,7 +43,7 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
 
   private RecyclerView rvOccInspectedSpaceElementCategory;
   private OccInspectionSpaceElementService occInspectionSpaceElementService;
-  private int inspectedSpaceId;
+  private String inspectedSpaceId;
   private InspectionDatabase inspectionDB;
 
   private RadioButton rBtnUnFinish;
@@ -59,7 +59,7 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     this.occInspectionSpaceElementService = OccInspectionSpaceElementService.getInstance();
-    this.inspectedSpaceId = this.getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME, -1);
+    this.inspectedSpaceId = this.getActivity().getIntent().getStringExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME);
     this.occInspectionSpaceElementService = OccInspectionSpaceElementService.getInstance();
     this.inspectionDB = Room.databaseBuilder(getActivity(), InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
 
@@ -139,6 +139,7 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
     @Override
     public void run() {
       occInspectedSpaceElementHeavyMap = occInspectionSpaceElementService.getOccInspectedSpaceElementHeavyMap(inspectionDB, inspectedSpaceId);
+      System.out.println();
       Map<String, Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>>> occInspectedSpaceElementHeavyStatusMap = occInspectionSpaceElementService.getOccInspectedSpaceElementHeavyStatusMap(
           inspectionDB, occInspectedSpaceElementHeavyMap);
       unFinishOccInspectedSpaceElementHeavyMap = occInspectedSpaceElementHeavyStatusMap.get("UNFINISH");

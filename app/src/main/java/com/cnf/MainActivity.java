@@ -5,7 +5,7 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
-import android.os.Handler;
+import android.database.CursorWindow;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
     this.loginUserToken = this.sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
     Log.d(TAG, String.format("Date: %s, %s, %s", LocalDateTime.now(), MuniActivity.class.getName(), "is online: " + this.isOnline));
     Log.d(TAG, String.format("Date: %s, %s, %s", LocalDateTime.now(), MuniActivity.class.getName(), "login user token: " + this.loginUserToken));
+
+    try {
+      Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+      field.setAccessible(true);
+      field.set(null, 100 * 1024 * 1024); //the 100MB is the new size
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override

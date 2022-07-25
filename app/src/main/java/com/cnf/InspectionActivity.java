@@ -12,12 +12,20 @@ import static com.cnf.utils.AppConstants.SUCCESS_INSPECTION_TASK_FETCH_MSG;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Switch;
 
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,9 +50,11 @@ import com.cnf.service.exception.HttpUnAuthorizedException;
 import com.cnf.service.exception.HttpUnknownErrorException;
 import com.cnf.service.local.OccInspectedSpaceService;
 import com.cnf.service.local.OccInspectionDispatchService;
+import com.cnf.service.local.OccInspectionService;
 import com.cnf.service.remote.OccInspectionApiService;
 import com.cnf.service.local.OccInspectionInfraService;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
@@ -59,6 +69,7 @@ public class InspectionActivity extends AppCompatActivity {
   private OccInspectionInfraService occInspectionInfraService;
   private OccInspectionDispatchService occInspectionDispatchService;
   private OccInspectedSpaceService occInspectedSpaceService;
+  private OccInspectionService occInspectionService;
 
   private InspectionDatabase inspectionDB;
 
@@ -83,6 +94,8 @@ public class InspectionActivity extends AppCompatActivity {
   private AlertDialog.Builder dialog;
   private RadioButton rBtnUnFinish;
   private RadioButton rBtnFinished;
+  private RadioButton rBtnSynchronized;
+  private EditText etSearch;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +106,8 @@ public class InspectionActivity extends AppCompatActivity {
     this.occInspectionInfraService = OccInspectionInfraService.getInstance();
     this.occInspectionDispatchService = OccInspectionDispatchService.getInstance();
     this.occInspectedSpaceService = OccInspectedSpaceService.getInstance();
+    this.occInspectionService = OccInspectionService.getInstance();
+
     this.inspectionDB = Room.databaseBuilder(this, InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
 
     this.sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
@@ -103,6 +118,8 @@ public class InspectionActivity extends AppCompatActivity {
 
     this.rBtnUnFinish = findViewById(R.id.rb_inspection_un_finish);
     this.rBtnFinished = findViewById(R.id.rb_inspection_finished);
+    this.rBtnSynchronized = findViewById(R.id.rb_inspection_synchronized);
+    this.etSearch = findViewById(R.id.et_inspection_search);
   }
 
   @Override
@@ -135,6 +152,29 @@ public class InspectionActivity extends AppCompatActivity {
       return true;
     });
 
+    etSearch.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (rBtnUnFinish.isChecked()) {
+          unFinishOccInspectionDispatchAdapter.getFilter().filter(s.toString());
+        }else if (rBtnFinished.isChecked()) {
+          finishedOccInspectionDispatchAdapter.getFilter().filter(s.toString());
+        }else if (rBtnSynchronized.isChecked()) {
+          occInspectionDispatchSynchronizedAdapter.getFilter().filter(s.toString());
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+
+      }
+    });
+
     btnFetchDispatch.setOnClickListener(view -> {
       dialog.setTitle("Confirm");
       dialog.setMessage("Are you sure to re-load inspection dispatches?");
@@ -149,6 +189,7 @@ public class InspectionActivity extends AppCompatActivity {
     new Thread(new LoadingDispatchHeavy()).start();
   }
 
+  // TODO CASE TO IGNORE VS CASE TO REPLACE
   class FetchOccInspectionDispatch implements Runnable {
 
     @Override
@@ -158,6 +199,7 @@ public class InspectionActivity extends AppCompatActivity {
         occInspectionTasks = occInspectionApiService.getOccInspectionDispatch(loginUserToken, String.valueOf(authPeriodId), String.valueOf(muniCode), null);
         occInspectionDispatchService.insertOccInspectionTask(inspectionDB, occInspectionTasks);
         Snackbar.make(getWindow().getDecorView(), SUCCESS_INSPECTION_TASK_FETCH_MSG, Snackbar.LENGTH_LONG).show();
+        startActivity(new Intent(InspectionActivity.this, InspectionActivity.class));
       } catch (HttpBadRequestException
           | HttpServerErrorException
           | HttpUnknownErrorException
@@ -180,6 +222,8 @@ public class InspectionActivity extends AppCompatActivity {
           rBtnUnFinish.setBackground(getDrawable(R.drawable.toggle_widget_background));
           rBtnFinished.setTextColor(getColor(R.color.off_switch_font));
           rBtnFinished.setBackground(null);
+          rBtnSynchronized.setTextColor(getColor(R.color.off_switch_font));
+          rBtnSynchronized.setBackground(null);
         }
         break;
       case R.id.rb_inspection_finished:
@@ -189,8 +233,20 @@ public class InspectionActivity extends AppCompatActivity {
           rBtnFinished.setBackground(getDrawable(R.drawable.toggle_widget_background));
           rBtnUnFinish.setTextColor(getColor(R.color.off_switch_font));
           rBtnUnFinish.setBackground(null);
+          rBtnSynchronized.setTextColor(getColor(R.color.off_switch_font));
+          rBtnSynchronized.setBackground(null);
         }
         break;
+      case R.id.rb_inspection_synchronized :
+        if (checked) {
+          inspectionListRv.setAdapter(occInspectionDispatchSynchronizedAdapter);
+          rBtnSynchronized.setTextColor(getColor(R.color.on_switch_font));
+          rBtnSynchronized.setBackground(getDrawable(R.drawable.toggle_widget_background));
+          rBtnUnFinish.setTextColor(getColor(R.color.off_switch_font));
+          rBtnUnFinish.setBackground(null);
+          rBtnFinished.setTextColor(getColor(R.color.off_switch_font));
+          rBtnFinished.setBackground(null);
+        }
     }
   }
 
@@ -199,20 +255,15 @@ public class InspectionActivity extends AppCompatActivity {
     public void run() {
       synchronizedInspectionDispatchHeavyList = occInspectionDispatchService.getSynchronizedInspectionDispatchHeavy(inspectionDB, muniCode);
       unSynchronizeInspectionDispatchHeavyList = occInspectionDispatchService.getUnSynchronizeInspectionDispatchHeavy(inspectionDB, muniCode);
-
-      for (OccInspectionDispatchHeavy occInspectionDispatchHeavy : unSynchronizeInspectionDispatchHeavyList) {
-        OccInspection occInspection = occInspectionDispatchHeavy.getOccInspection();
-        if (!occInspection.isInit()) {
-          occInspectedSpaceService.createDefaultOccInspectedSpace(inspectionDB, occInspection);
-        }
-      }
-
+      occInspectionDispatchSynchronizedAdapter = new InspectionAdapter(InspectionActivity.this, synchronizedInspectionDispatchHeavyList, true);
       Map<String, List<OccInspectionDispatchHeavy>> occInspectionDispatchHeavyListMap = occInspectionDispatchService.getOccInspectionDispatchHeavyListMap(inspectionDB,
           unSynchronizeInspectionDispatchHeavyList);
       finishedInspectionDispatchHeavyList = occInspectionDispatchHeavyListMap.get("FINISHED");
       unFinishInspectionDispatchHeavyList = occInspectionDispatchHeavyListMap.get("UNFINISH");
-      finishedOccInspectionDispatchAdapter = new InspectionAdapter(InspectionActivity.this, finishedInspectionDispatchHeavyList, true);
+      finishedOccInspectionDispatchAdapter = new InspectionAdapter(InspectionActivity.this, finishedInspectionDispatchHeavyList, false);
       unFinishOccInspectionDispatchAdapter = new InspectionAdapter(InspectionActivity.this, unFinishInspectionDispatchHeavyList, false);
+      finishedOccInspectionDispatchAdapter.setFinished(true);
+      unFinishOccInspectionDispatchAdapter.setFinished(false);
       textHandler.post(() -> inspectionListRv.setAdapter(unFinishOccInspectionDispatchAdapter));
     }
   }
@@ -223,17 +274,7 @@ public class InspectionActivity extends AppCompatActivity {
     return true;
   }
 
-  private void buildRecycleView(Switch sw, RecyclerView inspectionListRv) {
-    InspectionAdapter inspectionAdapter;
-    if (!sw.isChecked()) {
-      inspectionAdapter = occInspectionDispatchUnSynchronizeAdapter;
-      sw.setText("UN-SYNCHRONIZE");
-    } else {
-      inspectionAdapter = occInspectionDispatchSynchronizedAdapter;
-      sw.setText("SYNCHRONIZED");
-    }
-    inspectionListRv.setAdapter(inspectionAdapter);
-  }
+
 
   private void buildDeviceMode(Switch sw) {
     if (!sw.isChecked()) {
@@ -251,12 +292,4 @@ public class InspectionActivity extends AppCompatActivity {
     }
   }
 
-  private void logout() {
-    Intent intent = new Intent(InspectionActivity.this, MainActivity.class);
-    SharedPreferences sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
-    SharedPreferences.Editor editor = sp.edit();
-    editor.putString(SP_KEY_USER_LOGIN_TOKEN, null);
-    editor.apply();
-    startActivity(intent);
-  }
 }

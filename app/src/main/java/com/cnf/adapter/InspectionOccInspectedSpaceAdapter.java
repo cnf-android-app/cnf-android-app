@@ -32,6 +32,7 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
   private List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList;
   private Context context;
   private Fragment fragment;
+  private boolean isFinished;
 
   private OccInspectionSpaceElementService occInspectionSpaceElementService;
 
@@ -73,7 +74,14 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     String inspectedLocationDescription = null;
     String completeStatus;
 
-    if (occInspectionSpaceElementService.isAllInspectedSpaceElementComplete(occInspectedSpaceElementList)) {
+//    if (occInspectionSpaceElementService.isAllInspectedSpaceElementComplete(occInspectedSpaceElementList)) {
+//      completeStatus = FINISHED_STATUS;
+//      holder.clOccInspectedSpaceItem.setBackgroundResource(R.drawable.layout_bg_blue);
+//    } else {
+//      completeStatus = UNFINISH_STATUS;
+//    }
+
+    if (isFinished) {
       completeStatus = FINISHED_STATUS;
       holder.clOccInspectedSpaceItem.setBackgroundResource(R.drawable.layout_bg_blue);
     } else {
@@ -127,4 +135,11 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     }
   }
 
+  public boolean isFinished() {
+    return isFinished;
+  }
+
+  public void setFinished(boolean finished) {
+    isFinished = finished;
+  }
 }

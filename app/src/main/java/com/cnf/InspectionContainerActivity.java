@@ -9,7 +9,12 @@ import static com.cnf.utils.AppConstants.SP_KEY_USER_ID;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 
+import android.content.ClipData;
+import android.content.ClipData.Item;
+import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
@@ -20,6 +25,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 
+
 import com.cnf.db.InspectionDatabase;
 import com.cnf.domain.BlobBytes;
 import com.cnf.domain.OccInspectedSpaceElementPhotoDoc;
@@ -28,7 +34,10 @@ import com.cnf.fragment.InspectionSelectOccInspectedSpaceFragment;
 import com.cnf.service.local.OccInspectedPhotoService;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.Base64;
+import java.util.UUID;
 
 public class InspectionContainerActivity extends AppCompatActivity {
 
@@ -76,6 +85,9 @@ public class InspectionContainerActivity extends AppCompatActivity {
 
     if (requestCode == 1 && resultCode == RESULT_OK) {
       Bundle extras = data.getExtras();
+      if(extras == null) {
+        return;
+      }
       Bitmap imageBitmap = (Bitmap) extras.get("data");
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
@@ -87,6 +99,28 @@ public class InspectionContainerActivity extends AppCompatActivity {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
+    } else if (requestCode == 3 && resultCode == RESULT_OK) {
+      ClipData clipData = data.getClipData();
+      for (int i = 0; i < clipData.getItemCount(); i++ ) {
+        Item item = clipData.getItemAt(i);
+        Uri imageUri = item.getUri();
+        try {
+          Bitmap imageBitmap = Media.getBitmap(this.getContentResolver(), imageUri);
+          ByteArrayOutputStream bos = new ByteArrayOutputStream();
+          imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+          byte[] bArray = bos.toByteArray();
+          Thread thread = new Thread(new SaveOccInspectedSpaceElementPhotoDoc(bArray));
+          thread.start();
+          try {
+            thread.join();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+
     }
   }
 
@@ -103,27 +137,31 @@ public class InspectionContainerActivity extends AppCompatActivity {
       SharedPreferences sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
       int userId = sp.getInt(SP_KEY_USER_ID, 0);
       int muniId = sp.getInt(SP_KEY_MUNICIPALITY_CODE, 0);
-      int inspectedSpaceElementId = getIntent().getIntExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, 0);
+      String inspectedSpaceElementId = getIntent().getStringExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY);
       String inspectedSpaceElementPhotoName = getIntent().getStringExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY);
       String createTime = OffsetDateTime.now().toString();
-      BlobBytes blobBytes = new BlobBytes(null, createTime, bArray, userId, inspectedSpaceElementPhotoName);
-      long blobBytesId = occInspectedPhotoService.insertBlobBytes(inspectionDB, blobBytes);
+      String s = Base64.getEncoder().encodeToString(bArray);
+      String blobBytesId = UUID.randomUUID().toString();
+      BlobBytes blobBytes = new BlobBytes(blobBytesId, createTime, s, userId, inspectedSpaceElementPhotoName);
+      occInspectedPhotoService.insertBlobBytes(inspectionDB, blobBytes);
+      String photoDocId = UUID.randomUUID().toString();
       PhotoDoc photoDoc = new PhotoDoc();
-      photoDoc.setPhotoDocId(null);
+      photoDoc.setPhotoDocId(photoDocId);
       photoDoc.setPhotoDocDescription(null);
       photoDoc.setPhotoDocCommitted(true);
-      photoDoc.setBlobBytesId((int) blobBytesId);
+      photoDoc.setBlobBytesId(blobBytesId);
       photoDoc.setMunicode(muniId);
-      photoDoc.setBlobTypeId(null);
+      // TODO HARDCODE
+      photoDoc.setBlobTypeId(201);
       photoDoc.setMetaDataMap(null);
       photoDoc.setTitle(null);
       photoDoc.setCreatedTS(createTime);
       photoDoc.setCreatedByUserid(userId);
       photoDoc.setLastUpdatedTS(createTime);
       photoDoc.setLastUpdatedByUserId(userId);
-      long photoDocId = occInspectedPhotoService.insertPhotoDoc(inspectionDB, photoDoc);
-      OccInspectedSpaceElementPhotoDoc occInspectedSpaceElementPhotoDoc = new OccInspectedSpaceElementPhotoDoc((int) photoDocId, inspectedSpaceElementId);
-      long i = occInspectedPhotoService.insertOccInspectedSpaceElementPhotoDoc(inspectionDB, occInspectedSpaceElementPhotoDoc);
+      occInspectedPhotoService.insertPhotoDoc(inspectionDB, photoDoc);
+      OccInspectedSpaceElementPhotoDoc occInspectedSpaceElementPhotoDoc = new OccInspectedSpaceElementPhotoDoc(photoDocId, inspectedSpaceElementId);
+      occInspectedPhotoService.insertOccInspectedSpaceElementPhotoDoc(inspectionDB, occInspectedSpaceElementPhotoDoc);
     }
   }
 

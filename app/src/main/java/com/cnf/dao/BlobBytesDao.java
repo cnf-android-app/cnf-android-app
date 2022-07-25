@@ -3,6 +3,7 @@ package com.cnf.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.cnf.domain.BlobBytes;
@@ -12,17 +13,17 @@ import java.util.List;
 @Dao
 public interface BlobBytesDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertBlobByteList(List<BlobBytes> BlobBytesList);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insertBlobByteList(BlobBytes BlobBytes);
 
     @Query("SELECT * FROM BlobBytes")
     List<BlobBytes> selectBlobByteList();
 
     @Query("SELECT * FROM BlobBytes WHERE bytesid = :bytesId")
-    BlobBytes selectBlobByteById(int bytesId);
+    BlobBytes selectBlobByteById(String bytesId);
 
     @Delete
     void deleteBlobByte(BlobBytes BlobBytes);
@@ -36,7 +37,7 @@ public interface BlobBytesDao {
             "join occinspectedspaceelementphotodoc o " +
             "on p.photodocid = o.photodoc_photodocid " +
             "where o.inspectedspaceelement_elementid = :inspectedElementId")
-    List<BlobBytes> selectBlobByteListByInspectedElementId(int inspectedElementId);
+    List<BlobBytes> selectBlobByteListByInspectedElementId(String inspectedElementId);
 
     @Query("select * from blobbytes " +
             "join photodoc p " +
@@ -44,6 +45,6 @@ public interface BlobBytesDao {
             "join occinspectedspaceelementphotodoc o " +
             "on p.photodocid = o.photodoc_photodocid " +
             "where o.inspectedspaceelement_elementid = :inspectedElementId")
-    int countBlobBytesByInspectedElementId(int inspectedElementId);
+    int countBlobBytesByInspectedElementId(String inspectedElementId);
 
 }

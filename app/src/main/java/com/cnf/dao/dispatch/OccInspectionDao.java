@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface OccInspectionDao {
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
   void insertOccInspectionList(List<OccInspection> OccInspectionList);
 
   @Query("SELECT * FROM OccInspection")

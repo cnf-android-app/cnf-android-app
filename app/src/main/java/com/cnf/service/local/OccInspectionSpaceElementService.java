@@ -26,9 +26,12 @@ import com.cnf.service.exception.OccInspectedSpaceElementNullPointerException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 
 public class OccInspectionSpaceElementService {
 
@@ -98,7 +101,7 @@ public class OccInspectionSpaceElementService {
       return new ArrayList<>();
     }
 
-    Integer inspectedSpaceId = occInspectedSpace.getInspectedSpaceId();
+    String inspectedSpaceId = occInspectedSpace.getInspectedSpaceId();
     Integer occChecklistSpaceTypeId = occInspectedSpace.getOccChecklistSpaceTypeId();
 
     // Make sure no duplicates
@@ -120,8 +123,9 @@ public class OccInspectionSpaceElementService {
 
     // Create Occ Inspected Space Type Element BY Occ Checklist Space Type Element
     for (OccChecklistSpaceTypeElement occChecklistSpaceTypeElement : occChecklistSpaceTypeElementList) {
+
       OccInspectedSpaceElement e = new OccInspectedSpaceElement();
-      e.setInspectedSpaceElementId(null);
+      e.setInspectedSpaceElementId(UUID.randomUUID().toString());
       e.setNotes(null);
       e.setLocationDescriptionId(occInspectedSpace.getOccLocationDescriptionId());
       e.setLastInspectedByUserId(null);
@@ -142,6 +146,10 @@ public class OccInspectionSpaceElementService {
 
     inspectionDatabase.getOccInspectedSpaceElementDao().insertOccInspectedSpaceElementList(occInspectedSpaceElementList);
     return occInspectedSpaceElementList;
+  }
+
+  public void insertOccInspectedSpaceElementList(InspectionDatabase inspectionDatabase, List<OccInspectedSpaceElement> occInspectedSpaceElementList) {
+    inspectionDatabase.getOccInspectedSpaceElementDao().insertOccInspectedSpaceElementList(occInspectedSpaceElementList);
   }
 
   public boolean isAllInspectedSpaceElementComplete(List<OccInspectedSpaceElement> occInspectedSpaceElementList) {
@@ -230,9 +238,33 @@ public class OccInspectionSpaceElementService {
     return false;
   }
 
-  public Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>> getOccInspectedSpaceElementHeavyMap(InspectionDatabase inspectionDatabase, int inspectedSpaceId) {
-    return inspectionDatabase.getOccInspectedSpaceElementDao()
-        .selectAllOccInspectedSpaceElementHeavyMap(inspectedSpaceId);
+  public Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>> getOccInspectedSpaceElementHeavyMap(InspectionDatabase inspectionDatabase, String inspectedSpaceId) {
+    Map<CodeElementGuide, List<OccInspectedSpaceElementHeavy>> map = new HashMap<>();
+    List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList = inspectionDatabase.getOccInspectedSpaceElementDao().selectAllOccInspectedSpaceElementHeavyList(inspectedSpaceId);
+    List<CodeElementGuide> codeElementGuideList = inspectionDatabase.getCodeElementGuideDao().selectCodeElementGuideList();
+    Map<Integer, CodeElementGuide> codeElementGuideMap = new HashMap<>();
+    for (CodeElementGuide codeElementGuide : codeElementGuideList) {
+      Integer guideEntryId = codeElementGuide.getGuideEntryId();
+      codeElementGuideMap.putIfAbsent(guideEntryId, codeElementGuide);
+    }
+
+    for (OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy: occInspectedSpaceElementHeavyList) {
+      Integer guideEntryId = occInspectedSpaceElementHeavy.getCodeElement().getGuideEntryId();
+      CodeElementGuide codeElementGuide = codeElementGuideMap.get(guideEntryId);
+      if (codeElementGuide != null) {
+        if (map.get(codeElementGuide) == null) {
+          map.put(codeElementGuide, new ArrayList<>());
+        }
+        map.get(codeElementGuide).add(occInspectedSpaceElementHeavy);
+      } else {
+        CodeElementGuide unknownCodeElementGuide = new CodeElementGuide(-1, "UnCategorized", "UnCategorized", "UnCategorized", "UnCategorized", "UnCategorized", false);
+        if (map.get(unknownCodeElementGuide) == null) {
+          map.put(unknownCodeElementGuide, new ArrayList<>());
+        }
+        map.get(unknownCodeElementGuide).add(occInspectedSpaceElementHeavy);
+      }
+    }
+    return map;
   }
 
   public Map<OccInspectionStatusEnum, List<OccInspectedSpaceElementHeavy>> getElementStatusMap(List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList) {
@@ -279,11 +311,14 @@ public class OccInspectionSpaceElementService {
     return new ArrayList<>();
   }
 
-  public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyList(InspectionDatabase inspectionDatabase, int inspectedSpaceElementGuideId, int inspectedSpaceId) {
+  public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyList(InspectionDatabase inspectionDatabase, int inspectedSpaceElementGuideId, String inspectedSpaceId) {
+    if (inspectedSpaceElementGuideId == -1) {
+      return inspectionDatabase.getOccInspectedSpaceElementDao().selectAllUnCategoryOccInspectedSpaceElementHeavyList(inspectedSpaceId);
+    }
     return inspectionDatabase.getOccInspectedSpaceElementDao().selectAllOccInspectedSpaceElementHeavyList(inspectedSpaceElementGuideId, inspectedSpaceId);
   }
 
-  public List<OccInspectedSpaceElement> getOccInspectedSpaceElementList(InspectionDatabase inspectionDatabase, int inspectedSpaceId) {
+  public List<OccInspectedSpaceElement> getOccInspectedSpaceElementList(InspectionDatabase inspectionDatabase, String inspectedSpaceId) {
     return inspectionDatabase.getOccInspectedSpaceElementDao().selectAllOccInspectedSpaceElementList(inspectedSpaceId);
   }
 
@@ -325,12 +360,12 @@ public class OccInspectionSpaceElementService {
   }
 
 
-  public List<BlobBytes> getInspectedPhotoBlobBytesList(InspectionDatabase inspectionDatabase, int inspectedSpaceElementId) {
+  public List<BlobBytes> getInspectedPhotoBlobBytesList(InspectionDatabase inspectionDatabase, String inspectedSpaceElementId) {
     return inspectionDatabase.getBlobBytesDao().selectBlobByteListByInspectedElementId(inspectedSpaceElementId);
   }
 
 
-  public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyList(InspectionDatabase inspectionDatabase, int inspectedSpaceId) {
+  public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyList(InspectionDatabase inspectionDatabase, String inspectedSpaceId) {
     return inspectionDatabase.getOccInspectedSpaceElementDao().selectAllOccInspectedSpaceElementHeavyList(inspectedSpaceId);
   }
 

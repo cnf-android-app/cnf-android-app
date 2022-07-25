@@ -31,6 +31,8 @@ import com.cnf.service.exception.OccInspectionCopyNullPointerException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OccInspectionInfraService {
 
@@ -508,24 +510,54 @@ public class OccInspectionInfraService {
     List<OccInspectedSpace> occInspectedSpaceList = inspectionDatabase.getOccInspectedSpaceDao().selectAllOccInspectedSpaceList(inspectionId);
     List<OccInspectedSpaceDTO> occInspectedSpaceDTOList = new ArrayList<>();
     for (OccInspectedSpace occInspectedSpace : occInspectedSpaceList) {
-      Integer inspectedSpaceId = occInspectedSpace.getInspectedSpaceId();
+      String inspectedSpaceId = occInspectedSpace.getInspectedSpaceId();
       List<OccInspectedSpaceElement> occInspectedSpaceElementList = inspectionDatabase.getOccInspectedSpaceElementDao().selectAllOccInspectedSpaceElementList(inspectedSpaceId);
       List<OccInspectedSpaceElementDTO> occInspectedSpaceElementDTOList = new ArrayList<>();
       for (OccInspectedSpaceElement occInspectedSpaceElement : occInspectedSpaceElementList) {
-        Integer inspectedSpaceElementId = occInspectedSpaceElement.getInspectedSpaceElementId();
+        String inspectedSpaceElementId = occInspectedSpaceElement.getInspectedSpaceElementId();
         List<PhotoDto> photoDtoList = new ArrayList<>();
         List<PhotoDoc> photoDocList = inspectionDatabase.getPhotoDocDao().selectAllPhotoDocListByOccInspectedSpaceTypeElementId(inspectedSpaceElementId);
         for (PhotoDoc photoDoc : photoDocList) {
-          Integer blobBytesId = photoDoc.getBlobBytesId();
+          String blobBytesId = photoDoc.getBlobBytesId();
           BlobBytes blobBytes = inspectionDatabase.getBlobBytesDao().selectBlobByteById(blobBytesId);
+          if (blobBytes != null) {
+            inspectionDatabase.getBlobBytesDao().deleteBlobByte(blobBytes);
+          }
+          inspectionDatabase.getPhotoDocDao().deletePhotoDoc(photoDoc);
+          if (!isNumeric(blobBytesId)) {
+            blobBytes.setBytesId("-1");
+            photoDoc.setBlobBytesId("-1");
+          }
+          String photoDocId = photoDoc.getPhotoDocId();
+          if (!isNumeric(photoDocId)) {
+            photoDoc.setPhotoDocId("-1");
+          }
           photoDtoList.add(new PhotoDto(photoDoc, blobBytes));
         }
+        inspectionDatabase.getOccInspectedSpaceElementDao().deleteOccInspectedSpaceElement(occInspectedSpaceElement);
+        if (!isNumeric(inspectedSpaceElementId)) {
+          occInspectedSpaceElement.setInspectedSpaceElementId("-1");
+          occInspectedSpaceElement.setInspectedSpaceId("-1");
+        }
         occInspectedSpaceElementDTOList.add(new OccInspectedSpaceElementDTO(occInspectedSpaceElement, photoDtoList));
+      }
+      inspectionDatabase.getOccInspectedSpaceDao().deleteOccInspectedSpace(occInspectedSpace);
+      if (!isNumeric(inspectedSpaceId)) {
+        occInspectedSpace.setInspectedSpaceId("-1");
       }
       occInspectedSpaceDTOList.add(new OccInspectedSpaceDTO(occInspectedSpace, occInspectedSpaceElementDTOList));
     }
     UploadDTO uploadDTO = new UploadDTO(inspectionId, occInspectedSpaceDTOList);
     return uploadDTO;
+  }
+
+  private boolean isNumeric(String str) {
+    Pattern pattern = Pattern.compile("[0-9]*");
+    Matcher isNum = pattern.matcher(str);
+    if (!isNum.matches()) {
+      return false;
+    }
+    return true;
   }
 
 }

@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -53,8 +56,9 @@ public class InspectionEditOccInspectedSpaceElementFragment extends Fragment {
   private FloatingActionButton btnFinish;
   private TextView tvNavTitle;
   private Toolbar toolbar;
+  private EditText etSearch;
 
-  private int inspectedSpaceId;
+  private String inspectedSpaceId;
   private int codeElementGuideId;
 
   public InspectionEditOccInspectedSpaceElementFragment() {
@@ -66,7 +70,7 @@ public class InspectionEditOccInspectedSpaceElementFragment extends Fragment {
     super.onCreate(savedInstanceState);
     this.inspectionDB = Room.databaseBuilder(getActivity(), InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
     this.occInspectionSpaceElementService = OccInspectionSpaceElementService.getInstance();
-    this.inspectedSpaceId = this.getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME, -1);
+    this.inspectedSpaceId = this.getActivity().getIntent().getStringExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME);
     this.codeElementGuideId = this.getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTED_SPACE_ELEMENT_GUIDE_ID_NAME, -1);
   }
 
@@ -88,6 +92,25 @@ public class InspectionEditOccInspectedSpaceElementFragment extends Fragment {
 
     this.tvNavTitle.setText("INSPECTED SPACE ELEMENT");
     this.progressDialog = new ProgressDialog(getActivity());
+
+    this.etSearch = getActivity().findViewById(R.id.et_inspection_inspected_space_elements_search);
+
+    this.etSearch.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+        inspectionOccInspectedSpaceElementAdapter.getFilter().filter(s.toString());
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+
+      }
+    });
 
     this.toolbar.setNavigationOnClickListener(v -> {
       InspectionSelectOccInspectedSpaceElementCategoryFragment inspectionSelectOccInspectedSpaceElementCategoryFragment = new InspectionSelectOccInspectedSpaceElementCategoryFragment();
@@ -122,6 +145,7 @@ public class InspectionEditOccInspectedSpaceElementFragment extends Fragment {
           progressDialog.show();
         }
       });
+
       occInspectedSpaceElementHeavyList = occInspectionSpaceElementService.getOccInspectedSpaceElementHeavyList(inspectionDB, codeElementGuideId, inspectedSpaceId);
       occInspectedSpaceElementHeavyList = occInspectionSpaceElementService.configureOccInspectedSpaceElementHeavyListStatus(occInspectedSpaceElementHeavyList);
       intensityClassList = occInspectionSpaceElementService.selectAllIntensityClassListBySchemaLabel(inspectionDB, INTENSITY_SCHEMA_VIOLATION_SEVERITY);

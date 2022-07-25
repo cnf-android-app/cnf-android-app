@@ -1,7 +1,9 @@
 package com.cnf.dao;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.cnf.domain.OccInspectedSpace;
@@ -15,7 +17,7 @@ public interface OccInspectedSpaceDao {
   @Insert
   long insertInspectedSpace(OccInspectedSpace occInspectedSpace);
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
   void insertOccInspectedSpaceList(List<OccInspectedSpace> OccInspectedSpaceList);
 
   @Query("SELECT * FROM OccInspectedSpace")
@@ -24,8 +26,11 @@ public interface OccInspectedSpaceDao {
   @Query("DELETE FROM OccInspectedSpace")
   void deleteAllOccInspectedSpaceList();
 
+  @Delete
+  void deleteOccInspectedSpace(OccInspectedSpace occInspectedSpace);
+
   @Query("SELECT * FROM OccInspectedSpace WHERE inspectedspaceid = :inspectedSpaceId")
-  OccInspectedSpace selectOneOccInspectedSpaceById(int inspectedSpaceId);
+  OccInspectedSpace selectOneOccInspectedSpaceById(String inspectedSpaceId);
 
   @Query("SELECT * "
       + "FROM occinspectedspace "
@@ -43,6 +48,6 @@ public interface OccInspectedSpaceDao {
   List<OccInspectedSpace> selectAllOccInspectedSpaceList(int inspectionId);
 
   @Query("UPDATE occinspectedspace SET occlocationdescription_descid = :occLocationDescriptionId  WHERE inspectedspaceid = :occInspectedSpaceId")
-  void updateLocationDesForOccInspectedSpace(int occInspectedSpaceId, int occLocationDescriptionId);
+  void updateLocationDesForOccInspectedSpace(String occInspectedSpaceId, int occLocationDescriptionId);
 
 }

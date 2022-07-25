@@ -7,6 +7,7 @@ public class RequestConstants {
 
     public static final String USER_LOGIN_PATH = CNF_AUTHORIZATION_ADDRESS + "/user";
     public static final String AUTH_PERIOD_PATH = CNF_AUTHORIZATION_ADDRESS + "/authPeriod";
+    public static final String IS_VALID_USER_TOKEN_PATH = CNF_AUTHORIZATION_ADDRESS + "/isValidUserToken";
 
     public static final String USER_AUTH_TYPE = "/userAuth";
     public static final String PERIOD_AUTH_TYPE = "/periodAuth";

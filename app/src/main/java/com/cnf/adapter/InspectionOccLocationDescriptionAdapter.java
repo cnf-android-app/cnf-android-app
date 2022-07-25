@@ -32,6 +32,7 @@ import com.cnf.service.local.OccInspectedSpaceService;
 import com.cnf.service.local.OccInspectionSpaceElementService;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class InspectionOccLocationDescriptionAdapter extends RecyclerView.Adapter<OccLocationDescriptionHolder> {
 
@@ -47,9 +48,9 @@ public class InspectionOccLocationDescriptionAdapter extends RecyclerView.Adapte
 
   private int userId;
   private int inspectionId;
-  private Integer occInspectedSpaceId;
+  private String occInspectedSpaceId;
 
-  public InspectionOccLocationDescriptionAdapter(Fragment fragment, Context context, List<OccLocationDescription> occLocationDescriptionList, Integer occInspectedSpaceId) {
+  public InspectionOccLocationDescriptionAdapter(Fragment fragment, Context context, List<OccLocationDescription> occLocationDescriptionList, String occInspectedSpaceId) {
     this.occInspectedSpaceId = occInspectedSpaceId;
     this.context = context;
     this.fragment = fragment;
@@ -126,15 +127,14 @@ public class InspectionOccLocationDescriptionAdapter extends RecyclerView.Adapte
 
       } else {
         OccInspectedSpace occInspectedSpace = new OccInspectedSpace();
-        occInspectedSpace.setInspectedSpaceId(null);
+        String occInspectedSpaceId = UUID.randomUUID().toString();
+        occInspectedSpace.setInspectedSpaceId(occInspectedSpaceId);
         occInspectedSpace.setOccInspectionId(inspectionId);
         occInspectedSpace.setOccLocationDescriptionId(occLocationDescriptionId);
         occInspectedSpace.setAddedToChecklistByUserid(userId);
         occInspectedSpace.setAddedToChecklistTS(OffsetDateTime.now().toString());
         occInspectedSpace.setOccChecklistSpaceTypeId(occChecklistSpaceTypeId);
-        long occInspectedSpaceId = occInspectedSpaceService.insertInspectedSpace(inspectionDB, occInspectedSpace);
-        occInspectedSpace.setInspectedSpaceId((int) occInspectedSpaceId);
-
+        occInspectedSpaceService.insertInspectedSpace(inspectionDB, occInspectedSpace);
         occInspectionSpaceElementService.createDefaultOccInspectedSpaceElementList(inspectionDB, occInspectedSpace);
         textHandler.post(() -> {
           InspectionSelectOccInspectedSpaceFragment inspectionSelectOccInspectedSpaceFragment = new InspectionSelectOccInspectedSpaceFragment();

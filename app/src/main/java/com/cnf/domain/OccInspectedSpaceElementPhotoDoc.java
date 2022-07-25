@@ -1,5 +1,6 @@
 package com.cnf.domain;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,30 +8,32 @@ import androidx.room.PrimaryKey;
 @Entity
 public class OccInspectedSpaceElementPhotoDoc {
 
-    @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "photodoc_photodocid")
-    private Integer photoDocId;
-    @ColumnInfo(name = "inspectedspaceelement_elementid")
-    private Integer inspectedSpaceElementId;
 
-    public OccInspectedSpaceElementPhotoDoc(Integer photoDocId, Integer inspectedSpaceElementId) {
+    @ColumnInfo(name = "photodoc_photodocid")
+    @PrimaryKey
+    @NonNull
+    private String photoDocId;
+    @ColumnInfo(name = "inspectedspaceelement_elementid")
+    private String inspectedSpaceElementId;
+
+    public OccInspectedSpaceElementPhotoDoc(String photoDocId, String inspectedSpaceElementId) {
         this.photoDocId = photoDocId;
         this.inspectedSpaceElementId = inspectedSpaceElementId;
     }
 
-    public Integer getPhotoDocId() {
+    public String getPhotoDocId() {
         return photoDocId;
     }
 
-    public void setPhotoDocId(Integer photoDocId) {
+    public void setPhotoDocId(String photoDocId) {
         this.photoDocId = photoDocId;
     }
 
-    public Integer getInspectedSpaceElementId() {
+    public String getInspectedSpaceElementId() {
         return inspectedSpaceElementId;
     }
 
-    public void setInspectedSpaceElementId(Integer inspectedSpaceElementId) {
+    public void setInspectedSpaceElementId(String inspectedSpaceElementId) {
         this.inspectedSpaceElementId = inspectedSpaceElementId;
     }
 

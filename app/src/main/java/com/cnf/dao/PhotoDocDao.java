@@ -1,7 +1,9 @@
 package com.cnf.dao;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.cnf.domain.PhotoDoc;
@@ -12,7 +14,7 @@ import java.util.List;
 public interface PhotoDocDao {
 
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
   void insertPhotoDoc(List<PhotoDoc> PhotoDocList);
 
   @Insert
@@ -24,14 +26,17 @@ public interface PhotoDocDao {
   @Query("DELETE FROM PhotoDoc")
   void deleteAllPhotoDoc();
 
+  @Delete
+  void deletePhotoDoc(PhotoDoc photoDoc);
+
   @Query("SELECT * FROM PhotoDoc WHERE blobbytes_bytesid = :blobByteId")
-  PhotoDoc selectOnePhotoDoc(int blobByteId);
+  PhotoDoc selectOnePhotoDoc(String blobByteId);
 
   @Query("SELECT * "
       + "FROM photodoc "
       + "INNER JOIN occinspectedspaceelementphotodoc "
       + "ON photodoc.photodocid = occinspectedspaceelementphotodoc.photodoc_photodocid "
       + "WHERE occinspectedspaceelementphotodoc.inspectedspaceelement_elementid = :occInspectedSpaceTypeElementId")
-  List<PhotoDoc> selectAllPhotoDocListByOccInspectedSpaceTypeElementId(int occInspectedSpaceTypeElementId);
+  List<PhotoDoc> selectAllPhotoDocListByOccInspectedSpaceTypeElementId(String occInspectedSpaceTypeElementId);
 
 }

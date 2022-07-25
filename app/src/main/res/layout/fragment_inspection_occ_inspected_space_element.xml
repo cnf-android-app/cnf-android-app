@@ -6,13 +6,27 @@
   android:layout_height="match_parent"
   tools:context=".fragment.InspectionEditOccInspectedSpaceElementFragment">
 
+  <EditText
+    android:id="@+id/et_inspection_inspected_space_elements_search"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_margin="@dimen/outer_margin"
+    android:background="@drawable/layout_card"
+    android:paddingHorizontal="@dimen/inner_padding_horizontal"
+    android:hint="Search..."
+    android:paddingVertical="5dp"
+    android:drawableRight="@drawable/ic_baseline_search_24"
+    app:layout_constraintTop_toTopOf="parent"
+    >
+  </EditText>
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_inspection_inspected_space_elements"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/outer_margin"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toBottomOf="@+id/et_inspection_inspected_space_elements_search" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/btn_inspection_occ_inspected_space_elements_finish"

@@ -3,12 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <item
-    android:id="@+id/occ_inspection_search"
-    android:icon="@drawable/icon_search"
-    android:title=""
-    app:showAsAction="always" />
-
-  <item
     android:id="@+id/occ_inspection_config"
     android:icon="@drawable/icon_more"
     android:title=""

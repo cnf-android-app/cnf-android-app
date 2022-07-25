@@ -1,30 +1,33 @@
 package com.cnf.domain;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 
 @Entity
 public class PhotoDoc {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "photodocid")
-    private Integer photoDocId;
+    @NonNull
+    private String photoDocId = UUID.randomUUID().toString();
     @ColumnInfo(name = "photodocdescription")
     private String photoDocDescription;
     @ColumnInfo(name = "photodoccommitted")
     private boolean photoDocCommitted;
     @ColumnInfo(name = "blobbytes_bytesid")
-    private Integer blobBytesId;
+    private String blobBytesId;
     @ColumnInfo(name = "muni_municode")
     private Integer municode;
     @ColumnInfo(name = "blobtype_typeid")
     private Integer blobTypeId;
     @ColumnInfo(name = "metadatamap")
-    private byte[] metaDataMap;
+    private String metaDataMap;
     @ColumnInfo(name = "title")
     private String title;
     @ColumnInfo(name = "createdts")
@@ -42,37 +45,18 @@ public class PhotoDoc {
     @ColumnInfo(name = "dateofrecord")
     private String dateOfRecord;
     @ColumnInfo(name = "courtdocument")
-    private Integer courtDocument;
+    private Boolean courtDocument;
 
     public PhotoDoc() {
+
     }
 
-    public PhotoDoc(Integer photoDocId, String photoDocDescription, boolean photoDocCommitted, Integer blobBytesId, Integer municode, Integer blobTypeId, byte[] metaDataMap, String title,
-        String createdTS, Integer createdByUserid, String lastUpdatedTS, Integer lastUpdatedByUserId, String deActivatedTS, Integer deActivatedByUserUd, String dateOfRecord,
-        Integer courtDocument) {
-        this.photoDocId = photoDocId;
-        this.photoDocDescription = photoDocDescription;
-        this.photoDocCommitted = photoDocCommitted;
-        this.blobBytesId = blobBytesId;
-        this.municode = municode;
-        this.blobTypeId = blobTypeId;
-        this.metaDataMap = metaDataMap;
-        this.title = title;
-        this.createdTS = createdTS;
-        this.createdByUserid = createdByUserid;
-        this.lastUpdatedTS = lastUpdatedTS;
-        this.lastUpdatedByUserId = lastUpdatedByUserId;
-        this.deActivatedTS = deActivatedTS;
-        this.deActivatedByUserUd = deActivatedByUserUd;
-        this.dateOfRecord = dateOfRecord;
-        this.courtDocument = courtDocument;
-    }
 
-    public Integer getPhotoDocId() {
+    public String getPhotoDocId() {
         return photoDocId;
     }
 
-    public void setPhotoDocId(Integer photoDocId) {
+    public void setPhotoDocId(String photoDocId) {
         this.photoDocId = photoDocId;
     }
 
@@ -92,11 +76,11 @@ public class PhotoDoc {
         this.photoDocCommitted = photoDocCommitted;
     }
 
-    public Integer getBlobBytesId() {
+    public String getBlobBytesId() {
         return blobBytesId;
     }
 
-    public void setBlobBytesId(Integer blobBytesId) {
+    public void setBlobBytesId(String blobBytesId) {
         this.blobBytesId = blobBytesId;
     }
 
@@ -116,11 +100,12 @@ public class PhotoDoc {
         this.blobTypeId = blobTypeId;
     }
 
-    public byte[] getMetaDataMap() {
+
+    public String getMetaDataMap() {
         return metaDataMap;
     }
 
-    public void setMetaDataMap(byte[] metaDataMap) {
+    public void setMetaDataMap(String metaDataMap) {
         this.metaDataMap = metaDataMap;
     }
 
@@ -188,11 +173,11 @@ public class PhotoDoc {
         this.dateOfRecord = dateOfRecord;
     }
 
-    public Integer getCourtDocument() {
+    public Boolean getCourtDocument() {
         return courtDocument;
     }
 
-    public void setCourtDocument(Integer courtDocument) {
+    public void setCourtDocument(Boolean courtDocument) {
         this.courtDocument = courtDocument;
     }
 
@@ -205,7 +190,7 @@ public class PhotoDoc {
             ", blobBytesId=" + blobBytesId +
             ", municode=" + municode +
             ", blobTypeId=" + blobTypeId +
-            ", metaDataMap=" + Arrays.toString(metaDataMap) +
+            ", metaDataMap='" + metaDataMap + '\'' +
             ", title='" + title + '\'' +
             ", createdTS='" + createdTS + '\'' +
             ", createdByUserid=" + createdByUserid +

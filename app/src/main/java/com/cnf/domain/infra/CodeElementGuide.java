@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class CodeElementGuide implements Serializable {
@@ -24,6 +25,19 @@ public class CodeElementGuide implements Serializable {
   private String inspectionGuidelines;
   @ColumnInfo(name = "priority")
   private Boolean priority;
+
+  public CodeElementGuide() {
+  }
+
+  public CodeElementGuide(Integer guideEntryId, String category, String subCategory, String description, String enforcementGuidelines, String inspectionGuidelines, Boolean priority) {
+    this.guideEntryId = guideEntryId;
+    this.category = category;
+    this.subCategory = subCategory;
+    this.description = description;
+    this.enforcementGuidelines = enforcementGuidelines;
+    this.inspectionGuidelines = inspectionGuidelines;
+    this.priority = priority;
+  }
 
   public Integer getGuideEntryId() {
     return guideEntryId;
@@ -79,6 +93,25 @@ public class CodeElementGuide implements Serializable {
 
   public void setPriority(Boolean priority) {
     this.priority = priority;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    CodeElementGuide that = (CodeElementGuide) o;
+    return Objects.equals(guideEntryId, that.guideEntryId) && Objects.equals(category, that.category) && Objects.equals(subCategory, that.subCategory)
+        && Objects.equals(description, that.description) && Objects.equals(enforcementGuidelines, that.enforcementGuidelines) && Objects.equals(inspectionGuidelines,
+        that.inspectionGuidelines) && Objects.equals(priority, that.priority);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(guideEntryId, category, subCategory, description, enforcementGuidelines, inspectionGuidelines, priority);
   }
 
   @Override

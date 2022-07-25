@@ -14,13 +14,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -39,12 +43,20 @@ import com.cnf.domain.BlobBytes;
 import com.cnf.domain.OccInspectedSpaceElement;
 import com.cnf.domain.OccInspectedSpaceElementHeavy;
 import com.cnf.domain.infra.IntensityClass;
+import com.cnf.domain.infra.OccCheckList;
+import com.cnf.domain.infra_heavy.OccInspectionDispatchHeavy;
+import com.cnf.domain.tasks.OccInspection;
+import com.cnf.domain.tasks.OccInspectionDispatch;
+import com.cnf.domain.tasks.Person;
+import com.cnf.domain.tasks.Property;
 import com.cnf.service.local.OccInspectionSpaceElementService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adapter<InspectionOccInspectedSpaceElementHolder> {
+public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adapter<InspectionOccInspectedSpaceElementHolder> implements Filterable {
 
   private final Handler handler = new Handler();
 
@@ -52,6 +64,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
   private Fragment fragment;
   private RecyclerView.RecycledViewPool viewPool;
   private List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList;
+  private List<OccInspectedSpaceElementHeavy> filterOccInspectedSpaceElementHeavyList;
   private OccInspectionSpaceElementService occInspectionSpaceElementService;
   private List<IntensityClass> intensityClassList;
 
@@ -62,6 +75,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     this.context = context;
     this.fragment = fragment;
     this.occInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
+    this.filterOccInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
     this.intensityClassList = intensityClassList;
     this.occInspectionSpaceElementService = OccInspectionSpaceElementService.getInstance();
     this.viewPool = new RecyclerView.RecycledViewPool();
@@ -97,6 +111,40 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
 
     holder.inspectedElementSectionNumberTv.setText(sectionNumber);
     holder.inspectedElementSectionTitleTv.setText(sectionTitle);
+  }
+
+  @Override
+  public Filter getFilter() {
+    return new Filter() {
+      @Override
+      protected FilterResults performFiltering(CharSequence charSequence) {
+        String charString = charSequence.toString();
+        if(charString.isEmpty()) {
+          filterOccInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
+        } else {
+          List<OccInspectedSpaceElementHeavy> filteredList = new ArrayList<>();
+          for (int i = 0; i < occInspectedSpaceElementHeavyList.size(); i++) {
+            OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavyList.get(i);
+            String sectionNumber = occInspectionSpaceElementService.getOrdinanceHeaderSectionNumber(occInspectedSpaceElementHeavy);
+            String sectionTitle = occInspectionSpaceElementService.getOrdinanceHeaderSectionTitle(occInspectedSpaceElementHeavy);
+
+            if (sectionNumber.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
+                || sectionTitle.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))) {
+              filteredList.add(occInspectedSpaceElementHeavy);
+            }
+          }
+          filterOccInspectedSpaceElementHeavyList = filteredList;
+        }
+        FilterResults filterResults = new FilterResults();
+        filterResults.values = filterOccInspectedSpaceElementHeavyList;
+        return filterResults;
+      }
+      @Override
+      protected void publishResults(CharSequence constraint, FilterResults results) {
+        filterOccInspectedSpaceElementHeavyList = (List<OccInspectedSpaceElementHeavy>) results.values;
+        notifyDataSetChanged();
+      }
+    };
   }
 
   class SaveNotInspected implements Runnable {
@@ -217,7 +265,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     });
   }
 
-  class SavePass implements Runnable {
+  public class SavePass implements Runnable {
 
     private InspectionOccInspectedSpaceElementHolder holder;
     private OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy;
@@ -253,11 +301,23 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     holder.findingPassEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
 
     holder.takePhotoPassBtn.setOnClickListener(v -> {
-      int inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
       Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
       context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
       fragment.getActivity().startActivityForResult(intent, 1);
+    });
+
+    holder.selectGalleryPassBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+        Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+        fragment.getActivity().startActivityForResult(intent, 3);
+      }
     });
 
     holder.savePassTv.setOnClickListener(v -> {
@@ -365,7 +425,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     });
 
     holder.takePhotoViolateBtn.setOnClickListener(v -> {
-      int inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
       Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
       context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
@@ -400,7 +460,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
 
   @Override
   public void onBindViewHolder(@NonNull InspectionOccInspectedSpaceElementHolder holder, int position) {
-    OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavyList.get(position);
+    OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = filterOccInspectedSpaceElementHeavyList.get(position);
 
     buildOccInspectedSpaceElementPhotoDocSectionRV(holder, occInspectedSpaceElementHeavy);
     buildOccInspectedSpaceElementMainCard(holder, occInspectedSpaceElementHeavy);
@@ -415,7 +475,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
 
   @Override
   public int getItemCount() {
-    return occInspectedSpaceElementHeavyList.size();
+    return filterOccInspectedSpaceElementHeavyList.size();
   }
 
   class InspectionOccInspectedSpaceElementHolder extends RecyclerView.ViewHolder {
@@ -424,7 +484,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     RadioButton notInspectedRadioBtn, passRadioBtn, violationRadioBtn;
     TextView inspectedElementSectionNumberTv, inspectedElementSectionTitleTv;
     TextView savePassTv, saveViolationTv, saveNotInspectedTv, exitPassTv, exitViolationTv, exitNotInspectedTv;
-    Button takePhotoPassBtn, takePhotoViolateBtn;
+    Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn;
     RecyclerView inspectedSpaceElementPassPhotoRv, inspectedSpaceElementViolatePhotoRv;
     EditText findingPassEt, findingViolateEt;
     Spinner severityS;
@@ -448,6 +508,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       savePassTv = itemView.findViewById(R.id.tv_inspection_occ_inspected_space_element_item_pass_save);
       exitPassTv = itemView.findViewById(R.id.tv_inspection_occ_inspected_space_element_item_pass_exit);
       findingPassEt = itemView.findViewById(R.id.et_inspection_occ_inspected_space_element_item_pass_finding);
+      selectGalleryPassBtn = itemView.findViewById(R.id.btn_inspection_occ_inspected_space_element_item_pass_select_from_gallery);
       // violate
       violationRadioBtn = itemView.findViewById(R.id.rBtn_inspection_occ_inspected_space_element_item_violation);
       violationRl = itemView.findViewById(R.id.rl_inspection_occ_inspected_space_element_item_violation_expand);

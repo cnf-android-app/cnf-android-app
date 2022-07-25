@@ -10,14 +10,20 @@ import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,17 +55,21 @@ import com.cnf.service.local.OccInspectionInfraService;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHolder> {
+public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHolder> implements Filterable {
 
   private Context context;
   private boolean isSynchronized;
+  private boolean isFinished;
   private List<OccInspectionDispatchHeavy> occInspectionDispatchHeavyList;
   private InspectionDatabase inspectionDB;
   private OccInspectionApiService occInspectionApiService;
   private OccInspectionInfraService occInspectionInfraService;
   private OccInspectionDispatchService occInspectionDispatchService;
+  private List<OccInspectionDispatchHeavy> filterOccInspectionDispatchHeavyList;
 
   public InspectionAdapter(Context context, List<OccInspectionDispatchHeavy> occInspectionDispatchHeavyList, boolean isSynchronized) {
     this.context = context;
@@ -69,6 +79,7 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     this.occInspectionApiService = OccInspectionApiService.getInstance();
     this.occInspectionInfraService = OccInspectionInfraService.getInstance();
     this.occInspectionDispatchService = OccInspectionDispatchService.getInstance();
+    this.filterOccInspectionDispatchHeavyList = occInspectionDispatchHeavyList;
   }
 
   @NonNull
@@ -79,7 +90,7 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
 
   @Override
   public void onBindViewHolder(@NonNull InspectionDispatchHolder holder, int position) {
-    OccInspectionDispatchHeavy occInspectionDispatchHeavy = occInspectionDispatchHeavyList.get(position);
+    OccInspectionDispatchHeavy occInspectionDispatchHeavy = filterOccInspectionDispatchHeavyList.get(position);
     if (occInspectionDispatchHeavy == null) {
       return;
     }
@@ -88,7 +99,7 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     Property property = occInspectionDispatchHeavy.getProperty();
     Person person = occInspectionDispatchHeavy.getPerson();
     OccCheckList occCheckList = occInspectionDispatchHeavy.getOccCheckList();
-    if (occInspectionDispatch == null || occInspection == null || property == null ||  person == null || occCheckList == null) {
+    if (occInspectionDispatch == null || occInspection == null || property == null || person == null || occCheckList == null) {
       return;
     }
     String title = String.format("Inspection ID: %s", occInspection.getInspectionId());
@@ -102,6 +113,16 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     holder.tvChecklist.setText(checklist);
     holder.tvCreatedDate.setText(cratedDate);
 
+    holder.ivDirection.setOnClickListener(v -> {
+      Uri location = Uri.parse("geo:0,0?q=" + field);
+      Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+      try {
+        context.startActivity(mapIntent);
+      } catch (ActivityNotFoundException e) {
+        // Define what your app should do if no activity can handle the intent.
+      }
+    });
+
     holder.btnInspect.setOnClickListener(view -> {
       Intent intent = new Intent(context, InspectionContainerActivity.class);
       intent.putExtra(INTENT_EXTRA_INSPECTION_ID_KEY, occInspection.getInspectionId());
@@ -109,22 +130,72 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       context.startActivity(intent);
     });
 
-    holder.btnUpload.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        new Thread(new UploadOccInspection(occInspection.getInspectionId(), occInspectionDispatch)).start();
-      }
-    });
+    holder.btnUpload.setOnClickListener(v -> new Thread(new UploadOccInspection(occInspection.getInspectionId(), occInspectionDispatch)).start());
 
-//    if (!isSynchronized) {
-//      holder.btnInspect.setVisibility(View.GONE);
-//      holder.btnUpload.setVisibility(View.GONE);
-//    }
+    if (isSynchronized) {
+      holder.btnInspect.setVisibility(View.GONE);
+      holder.btnUpload.setVisibility(View.GONE);
+    } else if (!isFinished) {
+      holder.btnInspect.setVisibility(View.VISIBLE);
+      holder.btnUpload.setVisibility(View.GONE);
+    } else {
+      holder.btnInspect.setVisibility(View.VISIBLE);
+      holder.btnUpload.setVisibility(View.VISIBLE);
+    }
+
+  }
+
+  @Override
+  public Filter getFilter() {
+    return new Filter() {
+      @Override
+      protected FilterResults performFiltering(CharSequence charSequence) {
+        String charString = charSequence.toString();
+        if (charString.isEmpty()) {
+          filterOccInspectionDispatchHeavyList = occInspectionDispatchHeavyList;
+        } else {
+          List<OccInspectionDispatchHeavy> filteredList = new ArrayList<>();
+          for (int i = 0; i < occInspectionDispatchHeavyList.size(); i++) {
+            OccInspectionDispatchHeavy occInspectionDispatchHeavy = occInspectionDispatchHeavyList.get(i);
+            OccInspectionDispatch occInspectionDispatch = occInspectionDispatchHeavy.getOccInspectionDispatch();
+            OccInspection occInspection = occInspectionDispatchHeavy.getOccInspection();
+            Property property = occInspectionDispatchHeavy.getProperty();
+            Person person = occInspectionDispatchHeavy.getPerson();
+            OccCheckList occCheckList = occInspectionDispatchHeavy.getOccCheckList();
+            if (occInspectionDispatch == null || occInspection == null || property == null || person == null || occCheckList == null) {
+              continue;
+            }
+            String title = String.format("Inspection ID: %s", occInspection.getInspectionId());
+            String field = property.getAddress();
+            String inspector = String.format("%s %s", person.getFirstName(), person.getLastName());
+            String checklist = occCheckList.getTitle();
+            String cratedDate = occInspection.getCreatedTS();
+            if (title.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT)) ||
+                field.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT)) ||
+                inspector.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT)) ||
+                checklist.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT)) ||
+                cratedDate.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))) {
+              filteredList.add(occInspectionDispatchHeavy);
+            }
+          }
+          filterOccInspectionDispatchHeavyList = filteredList;
+        }
+        FilterResults filterResults = new FilterResults();
+        filterResults.values = filterOccInspectionDispatchHeavyList;
+        return filterResults;
+      }
+
+      @Override
+      protected void publishResults(CharSequence constraint, FilterResults results) {
+        filterOccInspectionDispatchHeavyList = (List<OccInspectionDispatchHeavy>) results.values;
+        notifyDataSetChanged();
+      }
+    };
   }
 
   class UploadOccInspection implements Runnable {
 
-    private Integer inspectionId ;
+    private Integer inspectionId;
     private OccInspectionDispatch occInspectionDispatch;
 
     public UploadOccInspection(Integer inspectionId, OccInspectionDispatch occInspectionDispatch) {
@@ -145,6 +216,7 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
         occInspectionDispatch.setSynchronizationTS(OffsetDateTime.now().toString());
         occInspectionDispatchService.updateOccInspectionDispatch(inspectionDB, occInspectionDispatch);
         context.startActivity(new Intent(context, InspectionActivity.class));
+
       } catch (IOException e) {
         e.printStackTrace();
       } catch (HttpUnAuthorizedException e) {
@@ -164,13 +236,14 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
 
   @Override
   public int getItemCount() {
-    return occInspectionDispatchHeavyList.size();
+    return filterOccInspectionDispatchHeavyList.size();
   }
 
   class InspectionDispatchHolder extends RecyclerView.ViewHolder {
 
     TextView tvTitle, tvField, tvInspector, tvChecklist, tvCreatedDate;
     Button btnInspect, btnUpload;
+    ImageView ivDirection;
 
     public InspectionDispatchHolder(@NonNull View itemView) {
       super(itemView);
@@ -181,6 +254,15 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       tvCreatedDate = itemView.findViewById(R.id.tv_inspection_created_date_value);
       btnInspect = itemView.findViewById(R.id.btn_inspection_edit);
       btnUpload = itemView.findViewById(R.id.btn_inspection_upload);
+      ivDirection = itemView.findViewById(R.id.iv_inspection_direction);
     }
+  }
+
+  public boolean isFinished() {
+    return isFinished;
+  }
+
+  public void setFinished(boolean finished) {
+    isFinished = finished;
   }
 }

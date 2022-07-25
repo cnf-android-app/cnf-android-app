@@ -1,18 +1,21 @@
 package com.cnf.domain;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
 import lombok.Data;
 
 @Entity
 public class OccInspectedSpace {
 
-  @PrimaryKey(autoGenerate = true)
+  @PrimaryKey(autoGenerate = false)
   @ColumnInfo(name = "inspectedspaceid")
-  private Integer inspectedSpaceId;
+  @NonNull
+  private String inspectedSpaceId = UUID.randomUUID().toString();
   @ColumnInfo(name = "occinspection_inspectionid")
   private Integer occInspectionId;
   @ColumnInfo(name = "occlocationdescription_descid")
@@ -27,7 +30,7 @@ public class OccInspectedSpace {
   public OccInspectedSpace() {
   }
 
-  public OccInspectedSpace(Integer inspectedSpaceId, Integer occInspectionId, Integer occLocationDescriptionId, Integer addedToChecklistByUserid, String addedToChecklistTS,
+  public OccInspectedSpace(String inspectedSpaceId, Integer occInspectionId, Integer occLocationDescriptionId, Integer addedToChecklistByUserid, String addedToChecklistTS,
       Integer occChecklistSpaceTypeId) {
     this.inspectedSpaceId = inspectedSpaceId;
     this.occInspectionId = occInspectionId;
@@ -37,11 +40,11 @@ public class OccInspectedSpace {
     this.occChecklistSpaceTypeId = occChecklistSpaceTypeId;
   }
 
-  public Integer getInspectedSpaceId() {
+  public String getInspectedSpaceId() {
     return inspectedSpaceId;
   }
 
-  public void setInspectedSpaceId(Integer inspectedSpaceId) {
+  public void setInspectedSpaceId(String inspectedSpaceId) {
     this.inspectedSpaceId = inspectedSpaceId;
   }
 

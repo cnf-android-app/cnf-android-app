@@ -2,9 +2,14 @@ package com.cnf.fragment;
 
 import static com.cnf.utils.AppConstants.INSPECTION_DATABASE_NAME;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_ID_KEY;
+import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
+import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -26,11 +31,16 @@ import com.cnf.InspectionActivity;
 import com.cnf.InspectionContainerActivity;
 import com.cnf.R;
 import com.cnf.adapter.InspectionOccInspectedSpaceAdapter;
+import com.cnf.adapter.InspectionOccInspectedSpaceElementAdapter.SavePass;
 import com.cnf.db.InspectionDatabase;
 import com.cnf.domain.OccInspectedSpaceElement;
 import com.cnf.domain.OccInspectedSpaceHeavy;
+import com.cnf.domain.infra_heavy.OccInspectionDispatchHeavy;
+import com.cnf.domain.tasks.OccInspection;
 import com.cnf.service.local.OccInspectedSpaceService;
 
+import com.cnf.service.local.OccInspectionDispatchService;
+import com.cnf.service.local.OccInspectionService;
 import com.cnf.service.local.OccInspectionSpaceElementService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
@@ -54,6 +64,8 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
 
   private OccInspectedSpaceService occInspectedSpaceService;
   private OccInspectionSpaceElementService occInspectionSpaceElementService;
+  private OccInspectionDispatchService occInspectionDispatchService;
+  private OccInspectionService occInspectionService;
   private InspectionDatabase inspectionDB;
 
   private RadioButton rBtnUnFinish;
@@ -64,6 +76,8 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
   private Toolbar toolbar;
 
   private Integer inspectionId;
+  private Integer muniCode;
+  private SharedPreferences sp;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +85,11 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     this.inspectionDB = Room.databaseBuilder(getActivity(), InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
     this.occInspectedSpaceService = OccInspectedSpaceService.getInstance();
     this.occInspectionSpaceElementService = OccInspectionSpaceElementService.getInstance();
-
+    this.occInspectionDispatchService = OccInspectionDispatchService.getInstance();
+    this.occInspectionService = OccInspectionService.getInstance();
     this.inspectionId = getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTION_ID_KEY, -1);
+    this.sp = getActivity().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    this.muniCode = sp.getInt(SP_KEY_MUNICIPALITY_CODE, -1);
 
   }
 
@@ -105,8 +122,19 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     configAfterClickOnUnFinishBtn();
 
     this.btnAddSpace.setOnClickListener(v -> {
-      this.inspectionSelectOccChecklistSpaceTypeFragment = new InspectionSelectOccChecklistSpaceTypeFragment();
-      getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccChecklistSpaceTypeFragment).commit();
+
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      builder.setTitle("Options");
+      builder.setMessage("Do you want to add all spaces automatically or individual space manually?");
+      builder.setPositiveButton("All", (dialog, which) -> {
+        new Thread(new AutoGenerateInspectedSpace()).start();
+      });
+      builder.setNegativeButton("One", (dialog, which) -> {
+        this.inspectionSelectOccChecklistSpaceTypeFragment = new InspectionSelectOccChecklistSpaceTypeFragment();
+        getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccChecklistSpaceTypeFragment).commit();
+      });
+      AlertDialog alertDialog = builder.create();
+      alertDialog.show();
     });
 
     this.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -120,7 +148,7 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
   }
 
 
-  private void configAfterClickOnUnFinishBtn () {
+  private void configAfterClickOnUnFinishBtn() {
     rvOccInspectedSpace.setAdapter(unFinishOccInspectedSpaceAdapter);
     rBtnUnFinish.setChecked(true);
     rBtnFinished.setChecked(false);
@@ -130,7 +158,7 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     rBtnFinished.setBackground(null);
   }
 
-  private void configAfterClickOnFinishedBtn () {
+  private void configAfterClickOnFinishedBtn() {
     rvOccInspectedSpace.setAdapter(finishedOccInspectedSpaceAdapter);
     rBtnUnFinish.setChecked(false);
     rBtnFinished.setChecked(true);
@@ -140,13 +168,23 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     rBtnUnFinish.setBackground(null);
   }
 
+  private class AutoGenerateInspectedSpace implements Runnable {
+
+    @Override
+    public void run() {
+      OccInspection occInspection = occInspectionService.getOccInspection(inspectionDB, inspectionId);
+      occInspectedSpaceService.createDefaultOccInspectedSpace(inspectionDB, occInspection);
+      new Thread(new LoadOccInspectedSpace()).start();
+    }
+  }
+
   private class LoadOccInspectedSpace implements Runnable {
 
     @Override
     public void run() {
       allOccInspectedSpaceHeavyList = occInspectedSpaceService.getOccInspectedSpaceHeavyListByInspectionId(inspectionDB, inspectionId);
       for (OccInspectedSpaceHeavy occInspectedSpaceHeavy : allOccInspectedSpaceHeavyList) {
-        Integer inspectedSpaceId = occInspectedSpaceHeavy.getOccInspectedSpace().getInspectedSpaceId();
+        String inspectedSpaceId = occInspectedSpaceHeavy.getOccInspectedSpace().getInspectedSpaceId();
         List<OccInspectedSpaceElement> occInspectedSpaceElementList = occInspectionSpaceElementService.getOccInspectedSpaceElementList(inspectionDB, inspectedSpaceId);
         occInspectedSpaceHeavy.setOccInspectedSpaceElementList(occInspectedSpaceElementList);
       }
@@ -156,9 +194,12 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
       finishedOccInspectedSpaceHeavyList = occInspectedSpaceHeavyListMap.get("FINISHED");
       finishedOccInspectedSpaceAdapter = new InspectionOccInspectedSpaceAdapter(finishedOccInspectedSpaceHeavyList, getActivity(), InspectionSelectOccInspectedSpaceFragment.this);
       unFinishOccInspectedSpaceAdapter = new InspectionOccInspectedSpaceAdapter(unFinishOccInspectedSpaceHeavyList, getActivity(), InspectionSelectOccInspectedSpaceFragment.this);
+      unFinishOccInspectedSpaceAdapter.setFinished(false);
+      finishedOccInspectedSpaceAdapter.setFinished(true);
       textHandler.post(() -> {
         rvOccInspectedSpace.setAdapter(unFinishOccInspectedSpaceAdapter);
       });
     }
   }
+
 }
