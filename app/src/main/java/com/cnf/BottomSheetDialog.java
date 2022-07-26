@@ -41,9 +41,15 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
     });
 
     Switch swIsOnline = v.findViewById(R.id.sw_is_online);
+    SharedPreferences sp = v.getContext().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
+    if (isOnline) {
+      swIsOnline.setChecked(true);
+    }else {
+      swIsOnline.setChecked(false);
+    }
     swIsOnline.setOnCheckedChangeListener((buttonView, isChecked) -> {
       Intent intent = new Intent(buttonView.getContext(), InspectionActivity.class);
-      SharedPreferences sp = buttonView.getContext().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
       SharedPreferences.Editor editor = sp.edit();
       if(isChecked) {
         editor.putBoolean(SP_KEY_IS_ONLINE, true);

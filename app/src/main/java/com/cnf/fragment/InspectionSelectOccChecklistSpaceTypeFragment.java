@@ -72,7 +72,7 @@ public class InspectionSelectOccChecklistSpaceTypeFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     this.toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
     this.tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
-    this.tvNavTitle.setText("INSPECTED SPACE CATEGORY");
+    this.tvNavTitle.setText("SELECT A SPACE");
     toolbar.setNavigationOnClickListener(v -> {
       InspectionSelectOccInspectedSpaceFragment inspectionSelectOccInspectedSpaceFragment = new InspectionSelectOccInspectedSpaceFragment();
       getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccInspectedSpaceFragment).commit();

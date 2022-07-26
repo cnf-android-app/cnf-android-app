@@ -455,6 +455,18 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       AlertDialog alertDialog = builder.create();
       alertDialog.show();
     });
+
+    holder.selectGalleryViolateBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+        Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+        fragment.getActivity().startActivityForResult(intent, 3);
+      }
+    });
   }
 
 
@@ -484,7 +496,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     RadioButton notInspectedRadioBtn, passRadioBtn, violationRadioBtn;
     TextView inspectedElementSectionNumberTv, inspectedElementSectionTitleTv;
     TextView savePassTv, saveViolationTv, saveNotInspectedTv, exitPassTv, exitViolationTv, exitNotInspectedTv;
-    Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn;
+    Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn, selectGalleryViolateBtn;
     RecyclerView inspectedSpaceElementPassPhotoRv, inspectedSpaceElementViolatePhotoRv;
     EditText findingPassEt, findingViolateEt;
     Spinner severityS;
@@ -520,6 +532,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       severityS = itemView.findViewById(R.id.et_inspection_occ_inspected_space_element_item_violation_spinner);
       defaultViolationDesSw = itemView.findViewById(R.id.sw_inspection_occ_inspected_space_element_item_violation_default_description);
       includeInCNFSw = itemView.findViewById(R.id.sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case);
+      selectGalleryViolateBtn = itemView.findViewById(R.id.btn_inspection_occ_inspected_space_element_item_violation_select_from_gallery);
     }
   }
 

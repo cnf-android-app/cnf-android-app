@@ -137,6 +137,10 @@ public class InspectionActivity extends AppCompatActivity {
 
     setSupportActionBar(toolbar);
 
+    if (!isOnline) {
+      btnFetchDispatch.setVisibility(View.GONE);
+    }
+
     toolbar.setNavigationOnClickListener(v -> {
       Intent intent = new Intent(InspectionActivity.this, MuniActivity.class);
       startActivity(intent);

@@ -68,7 +68,7 @@ public class InspectionSpaceTypeDetailsFragment extends Fragment {
 
     this.toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
     this.tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
-    this.tvNavTitle.setText("Checklist Space Element(s)");
+    this.tvNavTitle.setText("CHECKLIST SPACE ELEMENTS");
 
     this.toolbar.setNavigationOnClickListener(v -> {
       InspectionSelectOccChecklistSpaceTypeFragment inspectionSelectOccChecklistSpaceTypeFragment = new InspectionSelectOccChecklistSpaceTypeFragment();

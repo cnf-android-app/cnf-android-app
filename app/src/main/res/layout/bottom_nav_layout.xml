@@ -13,22 +13,23 @@
     android:text="Logout"/>
 
   <LinearLayout
+    android:layout_margin="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/inner_margin_vertical"
     android:orientation="horizontal">
-
-    <Switch
-      android:id="@+id/sw_is_online"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1" />
 
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:text="Online Mode" />
+
+    <Switch
+      android:id="@+id/sw_is_online"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
 
   </LinearLayout>
 

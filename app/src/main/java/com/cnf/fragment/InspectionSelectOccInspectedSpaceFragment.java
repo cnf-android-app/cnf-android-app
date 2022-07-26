@@ -125,11 +125,11 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
 
       AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
       builder.setTitle("Options");
-      builder.setMessage("Do you want to add all spaces automatically or individual space manually?");
-      builder.setPositiveButton("All", (dialog, which) -> {
+      builder.setMessage("Do you want to add all required spaces automatically or individual space manually?");
+      builder.setPositiveButton("Automatically", (dialog, which) -> {
         new Thread(new AutoGenerateInspectedSpace()).start();
       });
-      builder.setNegativeButton("One", (dialog, which) -> {
+      builder.setNegativeButton("Manually", (dialog, which) -> {
         this.inspectionSelectOccChecklistSpaceTypeFragment = new InspectionSelectOccChecklistSpaceTypeFragment();
         getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccChecklistSpaceTypeFragment).commit();
       });

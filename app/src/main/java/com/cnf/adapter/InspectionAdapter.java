@@ -6,6 +6,7 @@ import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KE
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_ID_KEY;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_AUTH_PERIOD_ID;
+import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
 import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
@@ -90,6 +91,8 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
 
   @Override
   public void onBindViewHolder(@NonNull InspectionDispatchHolder holder, int position) {
+    SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    Boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
     OccInspectionDispatchHeavy occInspectionDispatchHeavy = filterOccInspectionDispatchHeavyList.get(position);
     if (occInspectionDispatchHeavy == null) {
       return;
@@ -140,9 +143,12 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       holder.btnUpload.setVisibility(View.GONE);
     } else {
       holder.btnInspect.setVisibility(View.VISIBLE);
-      holder.btnUpload.setVisibility(View.VISIBLE);
+      if (isOnline) {
+        holder.btnUpload.setVisibility(View.VISIBLE);
+      } else {
+        holder.btnUpload.setVisibility(View.GONE);
+      }
     }
-
   }
 
   @Override
