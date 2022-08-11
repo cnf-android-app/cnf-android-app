@@ -12,6 +12,12 @@
     android:layout_height="40dp"
     android:text="Logout"/>
 
+  <Button
+    android:id="@+id/btn_change_session"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:text="Change Session"/>
+
   <LinearLayout
     android:layout_margin="5dp"
     android:layout_width="match_parent"

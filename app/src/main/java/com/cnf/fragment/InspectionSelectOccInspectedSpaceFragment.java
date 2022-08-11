@@ -79,6 +79,8 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
   private Integer muniCode;
   private SharedPreferences sp;
 
+  private TextView tvIsCompletedIndicator;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -119,6 +121,8 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     this.rvOccInspectedSpace.setLayoutManager(new GridLayoutManager(getActivity(), 2));
     this.btnAddSpace = view.findViewById(R.id.btn_add_space);
 
+    this.tvIsCompletedIndicator = view.findViewById(R.id.tv_inspection_space_is_completed_indicator);
+
     configAfterClickOnUnFinishBtn();
 
     this.btnAddSpace.setOnClickListener(v -> {
@@ -156,6 +160,13 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
     rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
     rBtnFinished.setBackground(null);
+    if (unFinishOccInspectedSpaceHeavyList == null || unFinishOccInspectedSpaceHeavyList.size() == 0) {
+      tvIsCompletedIndicator.setText(String.format("All inspected spaces for Inspection ID: %s have been completed", inspectionId));
+      tvIsCompletedIndicator.setGravity(View.TEXT_ALIGNMENT_CENTER);
+      tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+    } else {
+      tvIsCompletedIndicator.setVisibility(View.GONE);
+    }
   }
 
   private void configAfterClickOnFinishedBtn() {
@@ -166,6 +177,7 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
     rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
     rBtnUnFinish.setBackground(null);
+    tvIsCompletedIndicator.setVisibility(View.GONE);
   }
 
   private class AutoGenerateInspectedSpace implements Runnable {
@@ -196,6 +208,17 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
       unFinishOccInspectedSpaceAdapter = new InspectionOccInspectedSpaceAdapter(unFinishOccInspectedSpaceHeavyList, getActivity(), InspectionSelectOccInspectedSpaceFragment.this);
       unFinishOccInspectedSpaceAdapter.setFinished(false);
       finishedOccInspectedSpaceAdapter.setFinished(true);
+
+      if (unFinishOccInspectedSpaceHeavyList == null || unFinishOccInspectedSpaceHeavyList.size() == 0) {
+        textHandler.post(() -> {
+          tvIsCompletedIndicator.setText(String.format("All inspected spaces for Inspection ID: %s have been completed!", inspectionId));
+          tvIsCompletedIndicator.setGravity(View.TEXT_ALIGNMENT_CENTER);
+          tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+        });
+      } else {
+        textHandler.post(() -> tvIsCompletedIndicator.setVisibility(View.GONE));
+      }
+
       textHandler.post(() -> {
         rvOccInspectedSpace.setAdapter(unFinishOccInspectedSpaceAdapter);
       });

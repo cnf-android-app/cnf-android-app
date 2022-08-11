@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cnf.adapter.InspectionOccInspectedSpaceElementAdapter.SavePass;
 import com.cnf.db.InspectionDatabase;
 import com.cnf.domain.infra.LoginMuniAuthPeriod;
 import com.cnf.domain.infra.OccInspectionInfra;
@@ -86,10 +87,23 @@ public class InitializationActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
+
     if (this.isInitialized) {
       Intent intent = new Intent(InitializationActivity.this, MuniActivity.class);
       startActivity(intent);
-      return;
+    }
+
+    if (!this.isOnline) {
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle("Alert");
+      builder.setMessage("Initialization is not working in offline Mode. Please switch to online mode");
+      builder.setPositiveButton("Yes", (dialog, which) -> {
+        Intent intent = new Intent(InitializationActivity.this, MainActivity.class);
+        startActivity(intent);
+      });
+      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+      AlertDialog alertDialog = builder.create();
+      alertDialog.show();
     }
 
     this.builder = new AlertDialog.Builder(InitializationActivity.this);

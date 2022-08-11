@@ -35,6 +35,19 @@
       android:text="DONE" />
   </RadioGroup>
 
+  <TextView
+    android:id="@+id/tv_inspection_space_element_is_completed_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="All inspected space elements are completed!"
+    android:visibility="gone"
+    android:padding="30dp"
+    android:textAlignment="center"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_occ_inspected_space_element_category"
     android:layout_width="match_parent"
@@ -43,7 +56,6 @@
     android:paddingBottom="50dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/rg_occ_inspected_space_element_category_is_finish_or_not" />
-
   <!--    <LinearLayout-->
   <!--        android:layout_width="match_parent"-->
   <!--        android:layout_height="wrap_content"-->

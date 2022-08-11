@@ -10,6 +10,7 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -298,6 +300,12 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       }
     });
 
+    holder.findingPassEt.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
+    });
+
     holder.findingPassEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
 
     holder.takePhotoPassBtn.setOnClickListener(v -> {
@@ -406,6 +414,11 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     holder.findingViolateEt.setOnFocusChangeListener((v, hasFocus) -> {
       if (holder.findingViolateEt.getText() != null) {
         occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setNotes(holder.findingViolateEt.getText().toString());
+      }
+    });
+    holder.findingViolateEt.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
       }
     });
     holder.defaultViolationDesSw.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -540,4 +553,8 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     this.occInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
   }
 
+  public void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager =(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+  }
 }

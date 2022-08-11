@@ -53,6 +53,7 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
   private TextView tvNavTitle;
 
   private Toolbar toolbar;
+  private TextView tvIsCompletedIndicator;
 
 
   @Override
@@ -84,6 +85,8 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
 
     this.toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
     this.tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
+    this.tvIsCompletedIndicator = view.findViewById(R.id.tv_inspection_space_element_is_completed_indicator);
+
     this.tvNavTitle.setText("INSPECTED SPACE CATEGORY");
     toolbar.setNavigationOnClickListener(v -> {
       InspectionSelectOccInspectedSpaceFragment inspectionSelectOccInspectedSpaceFragment = new InspectionSelectOccInspectedSpaceFragment();
@@ -122,6 +125,13 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
     rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
     rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
     rBtnFinished.setBackground(null);
+    if (unFinishOccInspectedSpaceElementHeavyMap == null || unFinishOccInspectedSpaceElementHeavyMap.size() == 0) {
+      tvIsCompletedIndicator.setText(String.format("All inspected spaces elements for Space ID: %s have been completed", inspectedSpaceId));
+      tvIsCompletedIndicator.setGravity(View.TEXT_ALIGNMENT_CENTER);
+      tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+    } else {
+      tvIsCompletedIndicator.setVisibility(View.GONE);
+    }
   }
 
   private void configAfterClickOnFinishedBtn() {
@@ -132,6 +142,7 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
     rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
     rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
     rBtnUnFinish.setBackground(null);
+    tvIsCompletedIndicator.setVisibility(View.GONE);
   }
 
   class LoadOccInspectedSpaceElementHeavyMap implements Runnable {
@@ -148,6 +159,16 @@ public class InspectionSelectOccInspectedSpaceElementCategoryFragment extends Fr
           InspectionSelectOccInspectedSpaceElementCategoryFragment.this, unFinishOccInspectedSpaceElementHeavyMap, false);
       finishedOccInspectedSpaceElementCategoryAdapter = new InspectionOccInspectedSpaceElementCategoryAdapter(
           InspectionSelectOccInspectedSpaceElementCategoryFragment.this, finishedOccInspectedSpaceElementHeavyMap, true);
+
+      if (unFinishOccInspectedSpaceElementHeavyMap == null || unFinishOccInspectedSpaceElementHeavyMap.size() == 0) {
+        textHandler.post(() -> {
+          tvIsCompletedIndicator.setText(String.format("All inspected spaces elements for the space have been completed!"));
+          tvIsCompletedIndicator.setGravity(View.TEXT_ALIGNMENT_CENTER);
+          tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+        });
+      } else {
+        textHandler.post(() -> tvIsCompletedIndicator.setVisibility(View.GONE));
+      }
 
       textHandler.post(() -> {
         rvOccInspectedSpaceElementCategory.setAdapter(unFinishOccInspectedSpaceElementCategoryAdapter);

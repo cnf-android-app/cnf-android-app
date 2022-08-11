@@ -8,6 +8,7 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Handler;
 import android.view.View;
@@ -174,11 +175,11 @@ public class MuniActivity extends AppCompatActivity {
           }
         }
 
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
-          Log.e(TAG, String.format(e.toString()));
-        }
+//        try {
+//          Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//          Log.e(TAG, String.format(e.toString()));
+//        }
 
         if (isSuccess) {
           textHandler.post(() -> {
@@ -188,7 +189,19 @@ public class MuniActivity extends AppCompatActivity {
         } else {
           textHandler.post(() -> {
             progressDialog.setProgress(100);
-            progressDialog.setMessage("Online loading failed!");
+            AlertDialog.Builder builder = new AlertDialog.Builder(MuniActivity.this);
+            builder.setTitle("Alert");
+            builder.setMessage("Server issue! Switch to offline mode");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+              SharedPreferences sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+              SharedPreferences.Editor editor = sp.edit();
+              editor.putBoolean(SP_KEY_IS_ONLINE, false);
+              editor.apply();
+              finish();
+              startActivity(getIntent());
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
           });
         }
       }

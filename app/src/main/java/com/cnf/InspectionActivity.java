@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,6 +97,7 @@ public class InspectionActivity extends AppCompatActivity {
   private RadioButton rBtnFinished;
   private RadioButton rBtnSynchronized;
   private EditText etSearch;
+  private TextView tvIsCompletedIndicator;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,7 @@ public class InspectionActivity extends AppCompatActivity {
     this.rBtnFinished = findViewById(R.id.rb_inspection_finished);
     this.rBtnSynchronized = findViewById(R.id.rb_inspection_synchronized);
     this.etSearch = findViewById(R.id.et_inspection_search);
+    this.tvIsCompletedIndicator = findViewById(R.id.tv_inspection_is_completed_indicator);
   }
 
   @Override
@@ -138,14 +141,14 @@ public class InspectionActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
 
     if (!isOnline) {
-      btnFetchDispatch.setVisibility(View.GONE);
+      btnFetchDispatch.setEnabled(false);
     }
 
-    toolbar.setNavigationOnClickListener(v -> {
-      Intent intent = new Intent(InspectionActivity.this, MuniActivity.class);
-      startActivity(intent);
-      return;
-    });
+//    toolbar.setNavigationOnClickListener(v -> {
+//      Intent intent = new Intent(InspectionActivity.this, MuniActivity.class);
+//      startActivity(intent);
+//      return;
+//    });
 
     toolbar.setOnMenuItemClickListener(item -> {
       if (item.getItemId() == R.id.occ_inspection_config) {
@@ -154,6 +157,12 @@ public class InspectionActivity extends AppCompatActivity {
         return true;
       }
       return true;
+    });
+
+    etSearch.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
     });
 
     etSearch.addTextChangedListener(new TextWatcher() {
@@ -228,6 +237,11 @@ public class InspectionActivity extends AppCompatActivity {
           rBtnFinished.setBackground(null);
           rBtnSynchronized.setTextColor(getColor(R.color.off_switch_font));
           rBtnSynchronized.setBackground(null);
+          if (unFinishInspectionDispatchHeavyList == null || unFinishInspectionDispatchHeavyList.size() == 0) {
+            tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+          } else {
+            tvIsCompletedIndicator.setVisibility(View.GONE);
+          }
         }
         break;
       case R.id.rb_inspection_finished:
@@ -239,6 +253,7 @@ public class InspectionActivity extends AppCompatActivity {
           rBtnUnFinish.setBackground(null);
           rBtnSynchronized.setTextColor(getColor(R.color.off_switch_font));
           rBtnSynchronized.setBackground(null);
+          tvIsCompletedIndicator.setVisibility(View.GONE);
         }
         break;
       case R.id.rb_inspection_synchronized :
@@ -250,6 +265,7 @@ public class InspectionActivity extends AppCompatActivity {
           rBtnUnFinish.setBackground(null);
           rBtnFinished.setTextColor(getColor(R.color.off_switch_font));
           rBtnFinished.setBackground(null);
+          tvIsCompletedIndicator.setVisibility(View.GONE);
         }
     }
   }
@@ -268,6 +284,15 @@ public class InspectionActivity extends AppCompatActivity {
       unFinishOccInspectionDispatchAdapter = new InspectionAdapter(InspectionActivity.this, unFinishInspectionDispatchHeavyList, false);
       finishedOccInspectionDispatchAdapter.setFinished(true);
       unFinishOccInspectionDispatchAdapter.setFinished(false);
+      if (unFinishInspectionDispatchHeavyList == null || unFinishInspectionDispatchHeavyList.size() == 0) {
+        textHandler.post(() -> {
+          tvIsCompletedIndicator.setVisibility(View.VISIBLE);
+        });
+      } else {
+        textHandler.post(() -> {
+          tvIsCompletedIndicator.setVisibility(View.GONE);
+        });
+      }
       textHandler.post(() -> inspectionListRv.setAdapter(unFinishOccInspectionDispatchAdapter));
     }
   }
@@ -294,6 +319,11 @@ public class InspectionActivity extends AppCompatActivity {
       editor.apply();
       sw.setText("ONLINE");
     }
+  }
+
+  public void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 
 }

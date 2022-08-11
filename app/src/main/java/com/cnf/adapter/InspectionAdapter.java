@@ -11,11 +11,13 @@ import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +36,7 @@ import androidx.room.Room;
 
 import com.cnf.InspectionActivity;
 import com.cnf.InspectionContainerActivity;
+import com.cnf.MuniActivity;
 import com.cnf.R;
 import com.cnf.adapter.InspectionAdapter.InspectionDispatchHolder;
 import com.cnf.db.InspectionDatabase;
@@ -62,6 +66,8 @@ import java.util.Locale;
 
 public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHolder> implements Filterable {
 
+
+
   private Context context;
   private boolean isSynchronized;
   private boolean isFinished;
@@ -81,6 +87,7 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     this.occInspectionInfraService = OccInspectionInfraService.getInstance();
     this.occInspectionDispatchService = OccInspectionDispatchService.getInstance();
     this.filterOccInspectionDispatchHeavyList = occInspectionDispatchHeavyList;
+
   }
 
   @NonNull
@@ -133,7 +140,9 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       context.startActivity(intent);
     });
 
-    holder.btnUpload.setOnClickListener(v -> new Thread(new UploadOccInspection(occInspection.getInspectionId(), occInspectionDispatch)).start());
+    holder.btnUpload.setOnClickListener(v -> {
+      new Thread(new UploadOccInspection(occInspection.getInspectionId(), occInspectionDispatch)).start();
+    });
 
     if (isSynchronized) {
       holder.btnInspect.setVisibility(View.GONE);
@@ -203,7 +212,8 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
 
     private Integer inspectionId;
     private OccInspectionDispatch occInspectionDispatch;
-
+    private  Handler textHandler = new Handler();
+    ProgressDialog progressDialog = new ProgressDialog(context);
     public UploadOccInspection(Integer inspectionId, OccInspectionDispatch occInspectionDispatch) {
       this.inspectionId = inspectionId;
       this.occInspectionDispatch = occInspectionDispatch;
@@ -211,6 +221,18 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
 
     @Override
     public void run() {
+
+      textHandler.post(new Runnable() {
+        @Override
+        public void run() {
+
+          progressDialog.setMessage("Uploading inspection...");
+          progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+          progressDialog.setIndeterminate(true);
+          progressDialog.show();
+        }
+      });
+
       UploadDTO uploadDTO = occInspectionInfraService.getUploadDTO(inspectionId, inspectionDB);
       Log.i(TAG, uploadDTO.toString());
       SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
@@ -235,6 +257,13 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
         e.printStackTrace();
       } catch (HttpNoFoundException e) {
         e.printStackTrace();
+      } finally {
+        textHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            progressDialog.dismiss();
+          }
+        });
       }
 
     }

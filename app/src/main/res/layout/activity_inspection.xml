@@ -4,12 +4,14 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".InspectionActivity">
+  tools:context=".InspectionActivity"
+  android:clickable="true"
+  android:focusableInTouchMode="true" >
 
   <EditText
     android:id="@+id/et_inspection_search"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/outer_margin"
     android:background="@drawable/layout_card"
     android:paddingHorizontal="@dimen/inner_padding_horizontal"
@@ -69,13 +71,13 @@
     android:background="@color/borders"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/inspection_toolbar" />
+
   <androidx.appcompat.widget.Toolbar
     android:id="@+id/inspection_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:navigationIcon="@drawable/icon_arrow_left">
+    app:layout_constraintTop_toTopOf="parent">
 
     <TextView
       android:id="@+id/tv_occ_inspection_container_nav_title"
@@ -92,10 +94,12 @@
     android:id="@+id/rv_inspection_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/outer_margin"
-    android:paddingBottom="100dp"
+    android:layout_marginTop="10dp"
+    android:paddingBottom="150dp"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/et_inspection_search" />
+    app:layout_constraintTop_toBottomOf="@+id/et_inspection_search"
+    android:clickable="true"
+    android:focusableInTouchMode="true" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/btn_inspection_fetch_dispatch"
@@ -108,5 +112,16 @@
     android:textColor="@color/white"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
+
+  <TextView
+    android:id="@+id/tv_inspection_is_completed_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:text="All inspected inspections are completed!"
+    android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

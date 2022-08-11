@@ -49,7 +49,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
       swIsOnline.setChecked(false);
     }
     swIsOnline.setOnCheckedChangeListener((buttonView, isChecked) -> {
-      Intent intent = new Intent(buttonView.getContext(), InspectionActivity.class);
+      Intent intent = new Intent(buttonView.getContext(), MuniActivity.class);
       SharedPreferences.Editor editor = sp.edit();
       if(isChecked) {
         editor.putBoolean(SP_KEY_IS_ONLINE, true);
@@ -58,6 +58,12 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         editor.putBoolean(SP_KEY_IS_ONLINE, false);
         editor.apply();
       }
+      startActivity(intent);
+    });
+
+    Button btnChangeSession = v.findViewById(R.id.btn_change_session);
+    btnChangeSession.setOnClickListener(v1 -> {
+      Intent intent = new Intent(v1.getContext(), MuniActivity.class);
       startActivity(intent);
     });
     return v;

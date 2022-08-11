@@ -5,6 +5,9 @@ public class RequestConstants {
     public static final String OCC_INSPECTION_ADDRESS = "http://10.0.0.146:8082/occInspection";
     public static final String CNF_AUTHORIZATION_ADDRESS = "http://10.0.0.146:8081/login";
 
+//    public static final String OCC_INSPECTION_ADDRESS = "http://198.199.84.209:8082/occInspection";
+//    public static final String CNF_AUTHORIZATION_ADDRESS = "http://198.199.84.209:8081/login";
+
     public static final String USER_LOGIN_PATH = CNF_AUTHORIZATION_ADDRESS + "/user";
     public static final String AUTH_PERIOD_PATH = CNF_AUTHORIZATION_ADDRESS + "/authPeriod";
     public static final String IS_VALID_USER_TOKEN_PATH = CNF_AUTHORIZATION_ADDRESS + "/isValidUserToken";

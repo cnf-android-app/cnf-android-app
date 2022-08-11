@@ -14,24 +14,29 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     android:usesCleartextTraffic="true"
+    android:largeHeap="true"
     >
 
     <activity
       android:exported="false"
-      android:name=".InitializationActivity" />
+      android:name=".InitializationActivity"
+      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
     <activity
       android:exported="false"
-      android:name=".UserActivity" />
+      android:name=".UserActivity"
+      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
     <activity
       android:exported="false"
       android:name=".InspectionContainerActivity"
-      android:configChanges="orientation|screenSize|keyboardHidden"/>
+      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
     <activity
       android:exported="false"
-      android:name=".InspectionActivity" />
+      android:name=".InspectionActivity"
+      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
     <activity
       android:exported="false"
-      android:name=".MuniActivity" />
+      android:name=".MuniActivity"
+      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
     <activity
       android:exported="true"
       android:name=".MainActivity">

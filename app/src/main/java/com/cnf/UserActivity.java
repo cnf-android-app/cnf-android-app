@@ -11,6 +11,7 @@ import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 import android.app.ProgressDialog;
 import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -85,6 +86,19 @@ public class UserActivity extends AppCompatActivity {
       progressDialog.show();
       new Thread(new Login()).start();
     });
+
+    loginUsernameEt.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
+    });
+
+    loginPasswordEt
+        .setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
+    });
   }
 
   class UserTokenLogin implements Runnable {
@@ -143,5 +157,10 @@ public class UserActivity extends AppCompatActivity {
         textHandler.post(() -> progressDialog.dismiss());
       }
     }
+  }
+
+  public void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 }
