@@ -8,6 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="transparent">#00FFFFFF</color>
+
+
+    <color name="light_blue">#F1FBFF</color>
+
+
+
     <color name="brand_navigation">#00B4ED</color>
     <color name="brand_navigation_0">#DEE461</color>
     <color name="action_needed">#C84687</color>
@@ -28,5 +35,7 @@
     <color name="on_switch_font">#00B4ED</color>
     <color name="off_switch_font">#6C6D70</color>
     <color name="white_font">#FFFFFF</color>
+    <color name="bottom_nav_background"></color>
+
 
 </resources>

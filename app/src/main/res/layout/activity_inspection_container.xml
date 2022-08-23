@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".InspectionContainerActivity">
+  tools:context=".module_inspection.activity.InspectionContainerActivity">
 
   <FrameLayout
     android:id="@+id/fl_occ_inspection_container"

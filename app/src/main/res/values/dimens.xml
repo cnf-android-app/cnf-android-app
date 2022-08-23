@@ -14,4 +14,5 @@
   <dimen name="icon_size">20</dimen>
   <dimen name="inner_padding_horizontal">10dp</dimen>
   <dimen name="inner_padding_vertical">5dp</dimen>
+  <dimen name="activity_title">30sp</dimen>
 </resources>

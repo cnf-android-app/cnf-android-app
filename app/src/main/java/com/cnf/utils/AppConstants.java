@@ -2,6 +2,8 @@ package com.cnf.utils;
 
 public class AppConstants {
 
+    private AppConstants(){};
+
     public static final String TOAST_INVALID_USERNAME_OR_PASSWORD_MSG = "Invalid Username or Password!";
     public static final String TOAST_NETWORK_CONNECTION_ERROR_MSG = "Network Connection Error!";
     public static final String TOAST_INVALID_LOGIN_AUTHORIZATION_MSG = "Invalid Login Authorization!";
@@ -41,4 +43,11 @@ public class AppConstants {
 
     public static final String INSPECTION_DATABASE_NAME = "inspection_database";
     public static final String INTENSITY_SCHEMA_VIOLATION_SEVERITY = "violationseverity";
+
+    public final static String FIREBASE_NOTIFICATION_REF_KEY = "CNF_NOTIFICATION";
+
+    public final static String LOG_INSPECTION_NOTIFICATION = "LOG_INSPECTION_NOTIFICATION";
+
+    public final static String FRAGMENT_INSPECTION = "FRAGMENT_INSPECTION";
+    public final static String FRAGMENT_NOTIFICATION = "FRAGMENT_NOTIFICATION";
 }

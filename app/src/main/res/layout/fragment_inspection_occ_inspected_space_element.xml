@@ -6,7 +6,7 @@
   android:layout_height="match_parent"
   android:clickable="true"
   android:focusableInTouchMode="true"
-  tools:context=".fragment.InspectionEditOccInspectedSpaceElementFragment">
+  tools:context=".module_inspection.fragment.InspectionEditOccInspectedSpaceElementFragment">
 
   <EditText
     android:id="@+id/et_inspection_inspected_space_elements_search"

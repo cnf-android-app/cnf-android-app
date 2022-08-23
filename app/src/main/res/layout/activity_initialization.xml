@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:layout_margin="@dimen/outer_margin"
-    tools:context=".InitializationActivity">
+    tools:context=".module_auth.activity.InitializationActivity">
 
     <TextView
         android:id="@+id/initialization_progress_bar_sync_message"

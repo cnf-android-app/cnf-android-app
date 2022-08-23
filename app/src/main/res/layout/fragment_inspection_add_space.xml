@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".fragment.InspectionSelectOccInspectedSpaceFragment">
+  tools:context=".module_inspection.fragment.InspectionSelectOccInspectedSpaceFragment">
 
   <RadioGroup
     android:id="@+id/rg_inspected_space_is_finish_or_not"

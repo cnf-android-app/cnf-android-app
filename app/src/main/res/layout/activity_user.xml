@@ -7,7 +7,7 @@
     android:paddingTop="20dp"
     android:paddingRight="20dp"
     android:paddingBottom="20dp"
-    tools:context=".UserActivity">
+    tools:context=".module_auth.activity.UserActivity">
 
     <ImageView
         android:id="@+id/iv_logo"

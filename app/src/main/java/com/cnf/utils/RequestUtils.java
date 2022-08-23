@@ -4,11 +4,11 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
-import com.cnf.service.exception.HttpBadRequestException;
-import com.cnf.service.exception.HttpNoFoundException;
-import com.cnf.service.exception.HttpServerErrorException;
-import com.cnf.service.exception.HttpUnAuthorizedException;
-import com.cnf.service.exception.HttpUnknownErrorException;
+import com.cnf.module_inspection.service.exception.HttpBadRequestException;
+import com.cnf.module_inspection.service.exception.HttpNoFoundException;
+import com.cnf.module_inspection.service.exception.HttpServerErrorException;
+import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
+import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
