@@ -13,6 +13,8 @@ import com.cnf.module_inspection.entity.OccInspectableStatus;
 import com.cnf.module_inspection.entity.OccInspectedSpace;
 import com.cnf.module_inspection.entity.OccInspectedSpaceElement;
 import com.cnf.module_inspection.entity.OccInspectedSpaceElementHeavy;
+import com.cnf.module_inspection.entity.OccInspectedSpaceHeavy;
+import com.cnf.module_inspection.entity.OccInspectedSpaceStatus;
 import com.cnf.module_inspection.entity.OccInspectionStatusEnum;
 import com.cnf.module_inspection.entity.infra.CodeElement;
 import com.cnf.module_inspection.entity.infra.CodeElementGuide;
@@ -409,6 +411,30 @@ public class OccInspectionSpaceElementRepository {
     map.put(Category.FINISHED, finishedOccInspectedSpaceElementHeavyMap);
     map.put(Category.UN_FINISH, unFinishOccInspectedSpaceElementHeavyMap);
     return map;
+  }
+
+
+  public OccInspectedSpaceStatus getOccInspectedSpaceStatus(OccInspectedSpaceHeavy occInspectedSpaceHeavy) {
+    Map<Category, Integer>  occInspectedSpaceElementMap = new HashMap<>();
+    occInspectedSpaceElementMap.put(Category.UN_FINISH, 0);
+    occInspectedSpaceElementMap.put(Category.FINISHED, 0);
+    List<OccInspectedSpaceElement> occInspectedSpaceElementList = occInspectedSpaceHeavy.getOccInspectedSpaceElementList();
+    if (occInspectedSpaceElementList == null || occInspectedSpaceElementList.size() == 0) {
+      return new OccInspectedSpaceStatus(0, 0);
+    }
+    for (OccInspectedSpaceElement o : occInspectedSpaceElementList) {
+      try {
+        configureOccInspectedSpaceElementStatus(o);
+        if (isInspectedSpaceElementNotInspected(o)) {
+          occInspectedSpaceElementMap.put(Category.UN_FINISH, occInspectedSpaceElementMap.get(Category.UN_FINISH) + 1);
+        } else {
+          occInspectedSpaceElementMap.put(Category.FINISHED, occInspectedSpaceElementMap.get(Category.FINISHED) + 1);
+        }
+      } catch (InvalidOccInspectedSpaceElementException e) {
+        Log.e(TAG, e.getMessage());
+      }
+    }
+    return new OccInspectedSpaceStatus(occInspectedSpaceElementMap.get(Category.FINISHED), occInspectedSpaceElementMap.get(Category.UN_FINISH));
   }
 
   // TODO CHECK THE LOGIC FROM ERIC

@@ -4,6 +4,8 @@ plugins {
 
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
+apply plugin: 'com.jakewharton.butterknife'
+
 android {
     compileSdk 32
 
@@ -23,6 +25,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -82,5 +89,9 @@ dependencies {
     implementation 'com.loopeer.library:itemtouchhelperextension:1.0.6'
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+
 
 }

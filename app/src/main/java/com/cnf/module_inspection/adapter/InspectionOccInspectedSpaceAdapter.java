@@ -3,7 +3,6 @@ package com.cnf.module_inspection.adapter;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTED_SPACE_ID_NAME;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,11 @@ import com.cnf.module_inspection.adapter.InspectionOccInspectedSpaceAdapter.OccI
 import com.cnf.module_inspection.entity.OccInspectedSpace;
 import com.cnf.module_inspection.entity.OccInspectedSpaceElement;
 import com.cnf.module_inspection.entity.OccInspectedSpaceHeavy;
+import com.cnf.module_inspection.entity.OccInspectedSpaceStatus;
 import com.cnf.module_inspection.entity.infra.OccChecklistSpaceType;
 import com.cnf.module_inspection.entity.infra.OccLocationDescription;
 import com.cnf.module_inspection.entity.infra.OccSpaceType;
 import com.cnf.module_inspection.fragment.InspectionSelectOccInspectedSpaceElementCategoryFragment;
-import com.cnf.module_inspection.fragment.InspectionSelectOccLocationDescriptionFragment;
 import com.cnf.module_inspection.service.local.OccInspectionSpaceElementRepository;
 
 import java.util.List;
@@ -30,63 +29,45 @@ import java.util.List;
 public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<OccInspectedSpaceHolder> {
 
   private List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList;
-  private Context context;
-  private Fragment fragment;
-  private boolean isFinished;
+  private final Fragment fragment;
 
-  private OccInspectionSpaceElementRepository occInspectionSpaceElementRepository;
+  private final static String IS_REQUIRED = "(Required)";
+  private final static String NOT_REQUIRED = "(Not Required)";
 
-  private final String FINISHED_STATUS = "Finished";
-  private final String UNFINISH_STATUS = "UnFinish";
-  private final String IS_REQUIRED = "(Required)";
-  private final String NOT_REQUIRED = "(Not Required)";
-
-  public InspectionOccInspectedSpaceAdapter(List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList, Context context, Fragment fragment) {
+  public InspectionOccInspectedSpaceAdapter(List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList, Fragment fragment) {
     this.occInspectedSpaceHeavyList = occInspectedSpaceHeavyList;
-    this.context = context;
     this.fragment = fragment;
-    this.occInspectionSpaceElementRepository = OccInspectionSpaceElementRepository.getInstance(context);
   }
 
   @NonNull
   @Override
   public OccInspectedSpaceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    return new OccInspectedSpaceHolder(LayoutInflater.from(context).inflate(R.layout.layout_inspected_space_item, parent, false));
+    return new OccInspectedSpaceHolder(LayoutInflater.from(this.fragment.getActivity()).inflate(R.layout.layout_inspected_space_item, parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull OccInspectedSpaceHolder holder, int position) {
 
-    OccInspectedSpaceHeavy occInspectedSpaceHeavy = occInspectedSpaceHeavyList.get(position);
-
-    OccInspectedSpace occInspectedSpace = occInspectedSpaceHeavy.getOccInspectedSpace();
-    OccChecklistSpaceType occChecklistSpaceType = occInspectedSpaceHeavy.getOccChecklistSpaceType();
-    OccSpaceType occSpaceType = occInspectedSpaceHeavy.getOccSpaceType();
-    OccLocationDescription occLocationDescription = occInspectedSpaceHeavy.getOccLocationDescription();
-
-    List<OccInspectedSpaceElement> occInspectedSpaceElementList = occInspectedSpaceHeavy.getOccInspectedSpaceElementList();
-
-    if (occInspectedSpaceElementList == null || occInspectedSpace == null) {
+    OccInspectedSpaceHeavy occInspectedSpaceHeavy = this.occInspectedSpaceHeavyList.get(position);
+    if (occInspectedSpaceHeavy == null) {
       return;
     }
 
+    OccInspectedSpace occInspectedSpace = occInspectedSpaceHeavy.getOccInspectedSpace();
+    OccChecklistSpaceType occChecklistSpaceType = occInspectedSpaceHeavy.getOccChecklistSpaceType();
+    List<OccInspectedSpaceElement> occInspectedSpaceElementList = occInspectedSpaceHeavy.getOccInspectedSpaceElementList();
+    OccSpaceType occSpaceType = occInspectedSpaceHeavy.getOccSpaceType();
+    OccLocationDescription occLocationDescription = occInspectedSpaceHeavy.getOccLocationDescription();
+
+    if (occInspectedSpace == null || occInspectedSpaceElementList == null) {
+      return;
+    }
+
+    String completeStatus = calculateStatus(occInspectedSpaceHeavy);
+
     String inspectedSpaceTypeTile = null;
     String inspectedLocationDescription = null;
-    String completeStatus;
-
-//    if (occInspectionSpaceElementService.isAllInspectedSpaceElementComplete(occInspectedSpaceElementList)) {
-//      completeStatus = FINISHED_STATUS;
-//      holder.clOccInspectedSpaceItem.setBackgroundResource(R.drawable.layout_bg_blue);
-//    } else {
-//      completeStatus = UNFINISH_STATUS;
-//    }
-
-    if (isFinished) {
-      completeStatus = FINISHED_STATUS;
-      holder.clOccInspectedSpaceItem.setBackgroundResource(R.drawable.layout_bg_blue);
-    } else {
-      completeStatus = UNFINISH_STATUS;
-    }
+    String requiredStatus = null;
 
     if (occChecklistSpaceType != null) {
       inspectedSpaceTypeTile = occSpaceType.getSpaceTitle();
@@ -96,22 +77,19 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
       inspectedLocationDescription = occLocationDescription.getDescription();
     }
 
+    if (occChecklistSpaceType.getRequired() != null) {
+      requiredStatus = occChecklistSpaceType.getRequired() ? IS_REQUIRED : NOT_REQUIRED;
+    }
+
     holder.tvOccInspectedSpaceCompleteStatus.setText(completeStatus);
     holder.tvOccInspectedSpaceTypeTitle.setText(inspectedSpaceTypeTile);
     holder.tvOccInspectedSpaceLocationDescription.setText(inspectedLocationDescription);
-    holder.tvOccInspectedSpaceIsRequired.setText(occChecklistSpaceType.getRequired() ? IS_REQUIRED: NOT_REQUIRED);
+    holder.tvOccInspectedSpaceIsRequired.setText(requiredStatus);
 
     holder.clOccInspectedSpaceItem.setOnClickListener(view -> {
-      if (occInspectedSpace.getOccLocationDescriptionId() == null) {
-        InspectionSelectOccLocationDescriptionFragment inspectionSelectOccLocationDescriptionFragment = new InspectionSelectOccLocationDescriptionFragment(null,
-            occInspectedSpace.getInspectedSpaceId());
-        fragment.getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccLocationDescriptionFragment).commit();
-      } else {
-        fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME, occInspectedSpace.getInspectedSpaceId());
-        InspectionSelectOccInspectedSpaceElementCategoryFragment inspectionSelectOccInspectedSpaceElementCategoryFragment = new InspectionSelectOccInspectedSpaceElementCategoryFragment();
-        fragment.getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccInspectedSpaceElementCategoryFragment).commit();
-      }
-
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_INSPECTED_SPACE_ID_NAME, occInspectedSpace.getInspectedSpaceId());
+      InspectionSelectOccInspectedSpaceElementCategoryFragment inspectionSelectOccInspectedSpaceElementCategoryFragment = new InspectionSelectOccInspectedSpaceElementCategoryFragment();
+      fragment.getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccInspectedSpaceElementCategoryFragment).commit();
     });
   }
 
@@ -120,7 +98,7 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     return occInspectedSpaceHeavyList.size();
   }
 
-  class OccInspectedSpaceHolder extends RecyclerView.ViewHolder {
+  static class OccInspectedSpaceHolder extends RecyclerView.ViewHolder {
 
     TextView tvOccInspectedSpaceTypeTitle, tvOccInspectedSpaceLocationDescription, tvOccInspectedSpaceCompleteStatus, tvOccInspectedSpaceIsRequired;
     ConstraintLayout clOccInspectedSpaceItem;
@@ -135,11 +113,14 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     }
   }
 
-  public boolean isFinished() {
-    return isFinished;
+  public void setOccInspectedSpaceHeavyList(List<OccInspectedSpaceHeavy> occInspectedSpaceHeavyList) {
+    this.occInspectedSpaceHeavyList = occInspectedSpaceHeavyList;
   }
 
-  public void setFinished(boolean finished) {
-    isFinished = finished;
+  private String calculateStatus(OccInspectedSpaceHeavy occInspectedSpaceHeavy) {
+    OccInspectedSpaceStatus occInspectedSpaceStatus = OccInspectionSpaceElementRepository.getInstance(fragment.getActivity()).getOccInspectedSpaceStatus(occInspectedSpaceHeavy);
+    int totalInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount() + occInspectedSpaceStatus.getUnFinishInspectedSpaceElementCount();
+    int completedInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount();
+    return String.format("%s / %s", completedInspectedSpaceElement, totalInspectedSpaceElement);
   }
 }
