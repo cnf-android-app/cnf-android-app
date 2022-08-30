@@ -20,10 +20,6 @@ public class CodeSetElementRepository {
     return INSTANCE;
   }
 
-  public List<CodeSetElement> getCodeSetElementListFromSQLite() {
-    return this.codeSetElementDao.selectCodeSetElementList();
-  }
-
   public void insertCodeSetElementList(List<CodeSetElement> codeSetElementList) {
     this.codeSetElementDao.insertCodeSetElementList(codeSetElementList);
   }

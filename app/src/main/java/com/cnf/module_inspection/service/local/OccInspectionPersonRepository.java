@@ -20,10 +20,6 @@ public class OccInspectionPersonRepository {
     return INSTANCE;
   }
 
-  public List<Person> getPersonList() {
-    return this.personDao.selectPersonList();
-  }
-
   public void insertPersonList(List<Person> personList) {
     this.personDao.insertPersonList(personList);
   }

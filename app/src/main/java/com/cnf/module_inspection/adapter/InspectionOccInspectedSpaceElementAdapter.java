@@ -1,24 +1,22 @@
 package com.cnf.module_inspection.adapter;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.cnf.utils.AppConstants.INSPECTION_DATABASE_NAME;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY;
-import static com.cnf.utils.AppConstants.SP_KEY_USER_ID;
-import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
+import static com.cnf.utils.AppConstants.INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_KEY;
+import static com.cnf.utils.AppConstants.INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_STATUS_KEY;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
+import android.os.AsyncTask;
+import android.text.Editable;
+import android.text.TextWatcher;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -30,23 +28,23 @@ import android.widget.Filterable;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.room.Room;
 import com.cnf.R;
 import com.cnf.module_inspection.adapter.InspectionOccInspectedSpaceElementAdapter.InspectionOccInspectedSpaceElementHolder;
-import com.cnf.module_inspection.db.InspectionDatabase;
-import com.cnf.module_inspection.entity.BlobBytes;
-import com.cnf.module_inspection.entity.OccInspectedSpaceElement;
+import com.cnf.module_inspection.async.LoadOccInspectedSpaceElementPhotoTask;
+import com.cnf.module_inspection.async.SaveOccInspectedSpaceElementTask;
+
 import com.cnf.module_inspection.entity.OccInspectedSpaceElementHeavy;
+import com.cnf.module_inspection.entity.OccInspectionStatusEnum;
 import com.cnf.module_inspection.entity.infra.IntensityClass;
 import com.cnf.module_inspection.service.local.OccInspectionSpaceElementRepository;
 
+import com.cnf.module_inspection.service.local.OccInspectionSpaceElementRepository.ElementStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,57 +52,42 @@ import java.util.Locale;
 
 public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adapter<InspectionOccInspectedSpaceElementHolder> implements Filterable {
 
-  private final Handler handler = new Handler();
+  private final Fragment fragment;
 
-  private Activity context;
-  private Fragment fragment;
-  private RecyclerView.RecycledViewPool viewPool;
-  private List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList;
+  private final List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList;
+  private final List<IntensityClass> intensityClassList;
   private List<OccInspectedSpaceElementHeavy> filterOccInspectedSpaceElementHeavyList;
-  private OccInspectionSpaceElementRepository occInspectionSpaceElementRepository;
-  private List<IntensityClass> intensityClassList;
 
-
-  public InspectionOccInspectedSpaceElementAdapter(Activity context, Fragment fragment, List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList,
-      List<IntensityClass> intensityClassList) {
-    this.context = context;
+  public InspectionOccInspectedSpaceElementAdapter(Fragment fragment, List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList, List<IntensityClass> intensityClassList) {
     this.fragment = fragment;
     this.occInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
     this.filterOccInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
     this.intensityClassList = intensityClassList;
-    this.occInspectionSpaceElementRepository = OccInspectionSpaceElementRepository.getInstance(context);
-    this.viewPool = new RecyclerView.RecycledViewPool();
   }
 
+  @NonNull
   @Override
   public InspectionOccInspectedSpaceElementHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new InspectionOccInspectedSpaceElementHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_inspection_inspected_space_element_item, parent, false));
   }
 
+  @Override
+  public void onBindViewHolder(@NonNull InspectionOccInspectedSpaceElementHolder holder, int position) {
+    OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = filterOccInspectedSpaceElementHeavyList.get(position);
+    OccInspectionSpaceElementRepository repository = OccInspectionSpaceElementRepository.getInstance(fragment.getActivity());
 
-  private void buildOccInspectedSpaceElementPhotoDocSectionRV(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    List<BlobBytes> photoBlobBytesList = occInspectedSpaceElementHeavy.getBlobBytesList();
-    LinearLayoutManager layoutManagerPass = new LinearLayoutManager(holder.inspectedSpaceElementPassPhotoRv.getContext(), LinearLayoutManager.VERTICAL, false);
-    LinearLayoutManager layoutManagerViolate = new LinearLayoutManager(holder.inspectedSpaceElementViolatePhotoRv.getContext(), LinearLayoutManager.VERTICAL, false);
-    layoutManagerPass.setInitialPrefetchItemCount(photoBlobBytesList.size());
-    layoutManagerViolate.setInitialPrefetchItemCount(photoBlobBytesList.size());
-    InspectionInspectedSpaceElementPhotoAdapter inspectionInspectedSpaceElementPhotoAdapter = new InspectionInspectedSpaceElementPhotoAdapter(context, photoBlobBytesList);
-
-    holder.inspectedSpaceElementPassPhotoRv.setLayoutManager(layoutManagerPass);
-    holder.inspectedSpaceElementPassPhotoRv.setAdapter(inspectionInspectedSpaceElementPhotoAdapter);
-    holder.inspectedSpaceElementPassPhotoRv.setRecycledViewPool(viewPool);
-
-    holder.inspectedSpaceElementViolatePhotoRv.setLayoutManager(layoutManagerViolate);
-    holder.inspectedSpaceElementViolatePhotoRv.setAdapter(inspectionInspectedSpaceElementPhotoAdapter);
-    holder.inspectedSpaceElementViolatePhotoRv.setRecycledViewPool(viewPool);
-  }
-
-  private void buildOccInspectedSpaceElementMainCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    String sectionNumber = occInspectionSpaceElementRepository.getOrdinanceHeaderSectionNumber(occInspectedSpaceElementHeavy);
-    String sectionTitle = occInspectionSpaceElementRepository.getOrdinanceHeaderSectionTitle(occInspectedSpaceElementHeavy);
-
+    String sectionNumber = repository.getOrdinanceHeaderSectionNumber(occInspectedSpaceElementHeavy);
+    String sectionTitle = repository.getOrdinanceHeaderSectionTitle(occInspectedSpaceElementHeavy);
     holder.inspectedElementSectionNumberTv.setText(sectionNumber);
     holder.inspectedElementSectionTitleTv.setText(sectionTitle);
+
+    buildPhotoDocRecycleView(holder);
+    initPanel(holder, occInspectedSpaceElementHeavy);
+
+    buildNotInspectedExpandableCard(holder, occInspectedSpaceElementHeavy);
+    buildPassExpandablePanel(holder, occInspectedSpaceElementHeavy);
+    buildViolationExpandablePanel(holder, occInspectedSpaceElementHeavy);
+    buildIntensityClass(holder, occInspectedSpaceElementHeavy);
   }
 
   @Override
@@ -113,15 +96,15 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       @Override
       protected FilterResults performFiltering(CharSequence charSequence) {
         String charString = charSequence.toString();
-        if(charString.isEmpty()) {
+        if (charString.isEmpty()) {
           filterOccInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
         } else {
           List<OccInspectedSpaceElementHeavy> filteredList = new ArrayList<>();
           for (int i = 0; i < occInspectedSpaceElementHeavyList.size(); i++) {
             OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavyList.get(i);
-            String sectionNumber = occInspectionSpaceElementRepository.getOrdinanceHeaderSectionNumber(occInspectedSpaceElementHeavy);
-            String sectionTitle = occInspectionSpaceElementRepository.getOrdinanceHeaderSectionTitle(occInspectedSpaceElementHeavy);
-
+            OccInspectionSpaceElementRepository repository = OccInspectionSpaceElementRepository.getInstance(fragment.getActivity());
+            String sectionNumber = repository.getOrdinanceHeaderSectionNumber(occInspectedSpaceElementHeavy);
+            String sectionTitle = repository.getOrdinanceHeaderSectionTitle(occInspectedSpaceElementHeavy);
             if (sectionNumber.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
                 || sectionTitle.toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))) {
               filteredList.add(occInspectedSpaceElementHeavy);
@@ -133,6 +116,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
         filterResults.values = filterOccInspectedSpaceElementHeavyList;
         return filterResults;
       }
+
       @Override
       protected void publishResults(CharSequence constraint, FilterResults results) {
         filterOccInspectedSpaceElementHeavyList = (List<OccInspectedSpaceElementHeavy>) results.values;
@@ -141,371 +125,22 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     };
   }
 
-  class SaveNotInspected implements Runnable {
-
-    private InspectionOccInspectedSpaceElementHolder holder;
-    private OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy;
-
-    public SaveNotInspected(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-      this.holder = holder;
-      this.occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavy;
-    }
-
-    @Override
-    public void run() {
-      OccInspectedSpaceElement occInspectedSpaceElement = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement();
-      SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
-      int userId = sp.getInt(SP_KEY_USER_ID, 0);
-      occInspectedSpaceElementHeavy = occInspectionSpaceElementRepository.configureElementForNotInspected(occInspectedSpaceElementHeavy, userId);
-      occInspectionSpaceElementRepository.configureOccInspectedSpaceElementStatus(occInspectedSpaceElement);
-      occInspectionSpaceElementRepository.updateOccInspectedSpaceElement( occInspectedSpaceElement);
-      handler.post(() -> closeExpandableCard(holder, occInspectedSpaceElementHeavy));
-    }
-  }
-
-  private void closeExpandableCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-
-    occInspectedSpaceElementHeavy.setNotInspectedExpand(false);
-    occInspectedSpaceElementHeavy.setPassExpand(false);
-    occInspectedSpaceElementHeavy.setViolationExpand(false);
-
-    holder.passRl.setVisibility(occInspectedSpaceElementHeavy.isPassExpand() ? View.VISIBLE : View.GONE);
-    holder.violationRl.setVisibility(occInspectedSpaceElementHeavy.isViolationExpand() ? View.VISIBLE : View.GONE);
-    holder.notInspectedRl.setVisibility(occInspectedSpaceElementHeavy.isNotInspectedExpand() ? View.VISIBLE : View.GONE);
-
-    if (occInspectionSpaceElementRepository.isInspectedSpaceElementPass(occInspectedSpaceElementHeavy)) {
-      holder.notInspectedRadioBtn.setChecked(false);
-      holder.passRadioBtn.setChecked(true);
-      holder.violationRadioBtn.setChecked(false);
-    } else if (occInspectionSpaceElementRepository.isInspectedSpaceElementNotInspected(occInspectedSpaceElementHeavy)) {
-      holder.notInspectedRadioBtn.setChecked(true);
-      holder.passRadioBtn.setChecked(false);
-      holder.violationRadioBtn.setChecked(false);
-    } else {
-      holder.notInspectedRadioBtn.setChecked(false);
-      holder.passRadioBtn.setChecked(false);
-      holder.violationRadioBtn.setChecked(true);
-    }
-  }
-
-  private void expandCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy, boolean isNotInspectChecked, boolean isPassChecked,
-      boolean isViolationChecked) {
-
-    occInspectedSpaceElementHeavy.setNotInspectedExpand(isNotInspectChecked);
-    occInspectedSpaceElementHeavy.setPassExpand(isPassChecked);
-    occInspectedSpaceElementHeavy.setViolationExpand(isViolationChecked);
-
-    holder.passRl.setVisibility(occInspectedSpaceElementHeavy.isPassExpand() ? View.VISIBLE : View.GONE);
-    holder.violationRl.setVisibility(occInspectedSpaceElementHeavy.isViolationExpand() ? View.VISIBLE : View.GONE);
-    holder.notInspectedRl.setVisibility(occInspectedSpaceElementHeavy.isNotInspectedExpand() ? View.VISIBLE : View.GONE);
-
-    holder.notInspectedRadioBtn.setChecked(isNotInspectChecked);
-    holder.passRadioBtn.setChecked(isPassChecked);
-    holder.violationRadioBtn.setChecked(isViolationChecked);
-  }
-
-  private void initCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    if (occInspectedSpaceElementHeavy.isPassExpand() || occInspectedSpaceElementHeavy.isViolationExpand()) { // under editing
-      holder.notInspectedRadioBtn.setChecked(false);
-      if (occInspectedSpaceElementHeavy.isPassExpand()) {
-        holder.passRadioBtn.setChecked(true);
-        holder.violationRadioBtn.setChecked(false);
-      } else {
-        holder.passRadioBtn.setChecked(false);
-        holder.violationRadioBtn.setChecked(true);
-      }
-    } else {
-      if (occInspectionSpaceElementRepository.isInspectedSpaceElementPass(occInspectedSpaceElementHeavy)) {
-        holder.passRadioBtn.setChecked(true);
-      } else if (occInspectionSpaceElementRepository.isInspectedSpaceElementNotInspected(occInspectedSpaceElementHeavy)) {
-        holder.notInspectedRadioBtn.setChecked(true);
-      } else {
-        holder.violationRadioBtn.setChecked(true);
-      }
-    }
-    holder.passRl.setVisibility(occInspectedSpaceElementHeavy.isPassExpand() ? View.VISIBLE : View.GONE);
-    holder.violationRl.setVisibility(occInspectedSpaceElementHeavy.isViolationExpand() ? View.VISIBLE : View.GONE);
-    holder.notInspectedRl.setVisibility(occInspectedSpaceElementHeavy.isNotInspectedExpand() ? View.VISIBLE : View.GONE);
-  }
-
-
-  private void buildNotInspectedExpandableCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-
-    holder.notInspectedRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, true, false, false));
-    holder.saveNotInspectedTv.setOnClickListener(v -> {
-
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Save");
-      builder.setMessage("Are you sure you want to save this record?");
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        new Thread(new SaveNotInspected(holder, occInspectedSpaceElementHeavy)).start();
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-
-    holder.exitNotInspectedTv.setOnClickListener(v -> {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Exit");
-      builder.setMessage("Are you sure you want exit editing?");
-
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        closeExpandableCard(holder, occInspectedSpaceElementHeavy);
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-  }
-
-  public class SavePass implements Runnable {
-
-    private InspectionOccInspectedSpaceElementHolder holder;
-    private OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy;
-
-    public SavePass(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-      this.holder = holder;
-      this.occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavy;
-    }
-
-    @Override
-    public void run() {
-      String passFindingStr = holder.findingPassEt.getText().toString();
-      OccInspectedSpaceElement occInspectedSpaceElement = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement();
-      occInspectedSpaceElement.setNotes(passFindingStr);
-      SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
-      int userId = sp.getInt(SP_KEY_USER_ID, 0);
-      occInspectedSpaceElementHeavy = occInspectionSpaceElementRepository.configureElementForCompliance(occInspectedSpaceElementHeavy, userId);
-      occInspectionSpaceElementRepository.configureOccInspectedSpaceElementStatus(occInspectedSpaceElement);
-      occInspectionSpaceElementRepository.updateOccInspectedSpaceElement( occInspectedSpaceElement);
-      handler.post(() -> closeExpandableCard(holder, occInspectedSpaceElementHeavy));
-    }
-  }
-
-  private void buildPassExpandableCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    holder.passRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, false, true, false));
-
-    holder.findingPassEt.setOnFocusChangeListener((v, hasFocus) -> {
-      if (holder.findingPassEt.getText() != null) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setNotes(holder.findingPassEt.getText().toString());
-      }
-    });
-
-    holder.findingPassEt.setOnFocusChangeListener((v, hasFocus) -> {
-      if (!hasFocus) {
-        hideKeyboard(v);
-      }
-    });
-
-    holder.findingPassEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
-
-    holder.takePhotoPassBtn.setOnClickListener(v -> {
-      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
-      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
-      context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
-      fragment.getActivity().startActivityForResult(intent, 1);
-    });
-
-    holder.selectGalleryPassBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
-        Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
-        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
-        fragment.getActivity().startActivityForResult(intent, 3);
-      }
-    });
-
-    holder.savePassTv.setOnClickListener(v -> {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Save");
-      builder.setMessage("Are you sure you want to save this record?");
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        new Thread(new SavePass(holder, occInspectedSpaceElementHeavy)).start();
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-
-    holder.exitPassTv.setOnClickListener(v -> {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Exit");
-      builder.setMessage("Are you sure you want exit editing?");
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        closeExpandableCard(holder, occInspectedSpaceElementHeavy);
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-  }
-
-  class SaveViolation implements Runnable {
-
-    private InspectionOccInspectedSpaceElementHolder holder;
-    private OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy;
-
-    public SaveViolation(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-      this.holder = holder;
-      this.occInspectedSpaceElementHeavy = occInspectedSpaceElementHeavy;
-    }
-
-    @Override
-    public void run() {
-      String findingNotes = holder.findingViolateEt.getText().toString();
-      OccInspectedSpaceElement occInspectedSpaceElement = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement();
-      occInspectedSpaceElement.setNotes(findingNotes);
-      SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
-      int userId = sp.getInt(SP_KEY_USER_ID, 0);
-      occInspectedSpaceElementHeavy = occInspectionSpaceElementRepository.configureElementForInspectionNoCompliance(occInspectedSpaceElementHeavy, userId,
-          occInspectedSpaceElement.isToUseDefaultDescription());
-      occInspectionSpaceElementRepository.configureOccInspectedSpaceElementStatus(occInspectedSpaceElement);
-      occInspectionSpaceElementRepository.updateOccInspectedSpaceElement( occInspectedSpaceElement);
-      handler.post(() -> closeExpandableCard(holder, occInspectedSpaceElementHeavy));
-    }
-  }
-
-  private void buildIntensityClass(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    ArrayAdapter<IntensityClass> intensityClassArrayAdapter = new ArrayAdapter<>(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, intensityClassList);
-    // default
-
-    IntensityClass intensityClass = new IntensityClass();
-    intensityClass.setTitle("Violation Severity");
-    intensityClassList.add(0, intensityClass);
-
-    intensityClassArrayAdapter.setDropDownViewResource(R.layout.drop_down_item);
-
-    holder.severityS.setAdapter(intensityClassArrayAdapter);
-    holder.severityS.setPrompt("Violation Severity");
-    for (int i = 0; i < intensityClassList.size(); i++) {
-      if (intensityClassList.get(i).getClassId() == occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getFailureSeverityIntensityClassId()) {
-        holder.severityS.setSelection(i);
-      }
-    }
-    holder.severityS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setFailureSeverityIntensityClassId(intensityClassList.get(position).getClassId());
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setFailureSeverityIntensityClassId(null);
-      }
-    });
-  }
-
-  private void buildViolationExpandableCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
-    holder.violationRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, false, false, true));
-    holder.findingViolateEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
-    holder.findingViolateEt.setOnFocusChangeListener((v, hasFocus) -> {
-      if (holder.findingViolateEt.getText() != null) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setNotes(holder.findingViolateEt.getText().toString());
-      }
-    });
-    holder.findingViolateEt.setOnFocusChangeListener((v, hasFocus) -> {
-      if (!hasFocus) {
-        hideKeyboard(v);
-      }
-    });
-    holder.defaultViolationDesSw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-      if (isChecked) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setToUseDefaultDescription(true);
-      } else {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setToUseDefaultDescription(false);
-      }
-    });
-
-    holder.includeInCNFSw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-      if (isChecked) {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setMigrateToCECaseOnFail(true);
-      } else {
-        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setMigrateToCECaseOnFail(false);
-      }
-    });
-
-    holder.takePhotoViolateBtn.setOnClickListener(v -> {
-      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
-      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
-      context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
-      fragment.getActivity().startActivityForResult(intent, 1);
-    });
-
-    holder.saveViolationTv.setOnClickListener(v -> {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Save");
-      builder.setMessage("Are you sure you want to save this record?");
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        new Thread(new SaveViolation(holder, occInspectedSpaceElementHeavy)).start();
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-
-    holder.exitViolationTv.setOnClickListener(v -> {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle("Confirm Exit");
-      builder.setMessage("Are you sure you want exit editing?");
-      builder.setPositiveButton("Yes", (dialog, which) -> {
-        closeExpandableCard(holder, occInspectedSpaceElementHeavy);
-      });
-      builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
-    });
-
-    holder.selectGalleryViolateBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
-        Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
-        context.getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
-        fragment.getActivity().startActivityForResult(intent, 3);
-      }
-    });
-  }
-
-
-  @Override
-  public void onBindViewHolder(@NonNull InspectionOccInspectedSpaceElementHolder holder, int position) {
-    OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy = filterOccInspectedSpaceElementHeavyList.get(position);
-
-    buildOccInspectedSpaceElementPhotoDocSectionRV(holder, occInspectedSpaceElementHeavy);
-    buildOccInspectedSpaceElementMainCard(holder, occInspectedSpaceElementHeavy);
-
-    initCard(holder, occInspectedSpaceElementHeavy);
-
-    buildNotInspectedExpandableCard(holder, occInspectedSpaceElementHeavy);
-    buildPassExpandableCard(holder, occInspectedSpaceElementHeavy);
-    buildViolationExpandableCard(holder, occInspectedSpaceElementHeavy);
-    buildIntensityClass(holder, occInspectedSpaceElementHeavy);
-  }
-
   @Override
   public int getItemCount() {
     return filterOccInspectedSpaceElementHeavyList.size();
   }
 
-  class InspectionOccInspectedSpaceElementHolder extends RecyclerView.ViewHolder {
+  static class InspectionOccInspectedSpaceElementHolder extends RecyclerView.ViewHolder {
 
-    RelativeLayout passRl, violationRl, notInspectedRl;
-    RadioButton notInspectedRadioBtn, passRadioBtn, violationRadioBtn;
-    TextView inspectedElementSectionNumberTv, inspectedElementSectionTitleTv;
-    TextView savePassTv, saveViolationTv, saveNotInspectedTv, exitPassTv, exitViolationTv, exitNotInspectedTv;
-    Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn, selectGalleryViolateBtn;
-    RecyclerView inspectedSpaceElementPassPhotoRv, inspectedSpaceElementViolatePhotoRv;
-    EditText findingPassEt, findingViolateEt;
-    Spinner severityS;
-    Switch defaultViolationDesSw, includeInCNFSw;
+    public RelativeLayout passRl, violationRl, notInspectedRl;
+    public RadioButton notInspectedRadioBtn, passRadioBtn, violationRadioBtn;
+    public TextView inspectedElementSectionNumberTv, inspectedElementSectionTitleTv;
+    public TextView savePassTv, saveViolationTv, saveNotInspectedTv, exitPassTv, exitViolationTv, exitNotInspectedTv;
+    public Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn, selectGalleryViolateBtn;
+    public RecyclerView inspectedSpaceElementPassPhotoRv, inspectedSpaceElementViolatePhotoRv;
+    public EditText findingPassEt, findingViolateEt;
+    public Spinner severityS;
+    public SwitchCompat defaultViolationDesSw, includeInCNFSw;
 
     public InspectionOccInspectedSpaceElementHolder(@NonNull View itemView) {
       super(itemView);
@@ -541,12 +176,308 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     }
   }
 
-  public void setOccInspectedSpaceElementHeavyList(List<OccInspectedSpaceElementHeavy> occInspectedSpaceElementHeavyList) {
-    this.occInspectedSpaceElementHeavyList = occInspectedSpaceElementHeavyList;
+  public void setFilterOccInspectedSpaceElementHeavyList(List<OccInspectedSpaceElementHeavy> filterOccInspectedSpaceElementHeavyList) {
+    this.filterOccInspectedSpaceElementHeavyList = filterOccInspectedSpaceElementHeavyList;
   }
 
   public void hideKeyboard(View view) {
-    InputMethodManager inputMethodManager =(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    if (fragment.getActivity() == null) {
+      return;
+    }
+    InputMethodManager inputMethodManager = (InputMethodManager) fragment.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
+
+  private void buildPhotoDocRecycleView(InspectionOccInspectedSpaceElementHolder holder) {
+    RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    LinearLayoutManager layoutManagerPass = new LinearLayoutManager(holder.inspectedSpaceElementPassPhotoRv.getContext(), LinearLayoutManager.VERTICAL, false);
+    LinearLayoutManager layoutManagerViolation = new LinearLayoutManager(holder.inspectedSpaceElementPassPhotoRv.getContext(), LinearLayoutManager.VERTICAL, false);
+    holder.inspectedSpaceElementPassPhotoRv.setLayoutManager(layoutManagerPass);
+    holder.inspectedSpaceElementPassPhotoRv.setRecycledViewPool(viewPool);
+    holder.inspectedSpaceElementViolatePhotoRv.setLayoutManager(layoutManagerViolation);
+    holder.inspectedSpaceElementViolatePhotoRv.setRecycledViewPool(viewPool);
+  }
+
+  private void initPanel(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
+    closeExpandablePanel(holder);
+    if (occInspectedSpaceElementHeavy == null
+        || occInspectedSpaceElementHeavy.getOccInspectedSpaceElement() == null
+        || occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getStatus() == null) {
+      return;
+    }
+    OccInspectionStatusEnum status = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getStatus().getStatusEnum();
+    switch (status) {
+      case NOTINSPECTED:
+        holder.notInspectedRadioBtn.setChecked(true);
+        break;
+      case PASS:
+        holder.passRadioBtn.setChecked(true);
+        break;
+      case VIOLATION:
+        holder.violationRadioBtn.setChecked(true);
+        break;
+    }
+  }
+
+  private void closeExpandablePanel(InspectionOccInspectedSpaceElementHolder holder) {
+    holder.passRl.setVisibility(View.GONE);
+    holder.violationRl.setVisibility(View.GONE);
+    holder.notInspectedRl.setVisibility(View.GONE);
+  }
+
+  private void expandCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy, ElementStatus elementStatus) {
+    int position = holder.getLayoutPosition();
+    if (occInspectedSpaceElementHeavy == null || occInspectedSpaceElementHeavy.getOccInspectedSpaceElement() == null) {
+      return;
+    }
+    String occInspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+    LoadOccInspectedSpaceElementPhotoTask task;
+    switch (elementStatus) {
+      case PASS:
+        holder.passRadioBtn.setChecked(true);
+        holder.passRl.setVisibility(View.VISIBLE);
+        holder.violationRl.setVisibility(View.GONE);
+        holder.notInspectedRl.setVisibility(View.GONE);
+        task = new LoadOccInspectedSpaceElementPhotoTask(
+            position,
+            occInspectedSpaceElementId,
+            ElementStatus.PASS,
+            fragment);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        break;
+      case NOT_INSPECT:
+        holder.notInspectedRadioBtn.setChecked(true);
+        holder.passRl.setVisibility(View.GONE);
+        holder.violationRl.setVisibility(View.GONE);
+        holder.notInspectedRl.setVisibility(View.VISIBLE);
+        break;
+      case VIOLATION:
+        holder.violationRadioBtn.setChecked(true);
+        holder.passRl.setVisibility(View.GONE);
+        holder.violationRl.setVisibility(View.VISIBLE);
+        holder.notInspectedRl.setVisibility(View.GONE);
+        task = new LoadOccInspectedSpaceElementPhotoTask(
+            position,
+            occInspectedSpaceElementId,
+            ElementStatus.VIOLATION,
+            fragment);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        break;
+    }
+  }
+
+  private void buildNotInspectedExpandableCard(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
+    holder.notInspectedRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, ElementStatus.NOT_INSPECT));
+    holder.saveNotInspectedTv.setOnClickListener(v -> new AlertDialog.Builder(fragment.getActivity())
+        .setTitle("Confirm Save")
+        .setMessage("Are you sure you want to save this record?")
+        .setPositiveButton("Yes", (dialog, which) -> {
+          SaveOccInspectedSpaceElementTask task = new SaveOccInspectedSpaceElementTask(ElementStatus.NOT_INSPECT, occInspectedSpaceElementHeavy, fragment);
+          task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        })
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+    holder.exitNotInspectedTv.setOnClickListener(v -> new AlertDialog
+        .Builder(fragment.getActivity())
+        .setTitle("Confirm Exit")
+        .setMessage("Are you sure you want exit editing?")
+        .setPositiveButton("Yes", (dialog, which) -> initPanel(holder, occInspectedSpaceElementHeavy))
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+  }
+
+  private void buildPassExpandablePanel(InspectionOccInspectedSpaceElementHolder holder, @NonNull OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
+    holder.passRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, ElementStatus.PASS));
+    holder.findingPassEt.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setNotes(holder.findingPassEt.getText().toString());
+      }
+    });
+
+    holder.findingPassEt.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
+    });
+
+    holder.findingPassEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement() == null ?
+        "" : occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
+
+    holder.takePhotoPassBtn.setOnClickListener(v -> {
+      if (fragment == null || fragment.getActivity() == null) {
+        return;
+      }
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_KEY, holder.getLayoutPosition());
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_STATUS_KEY, ElementStatus.PASS);
+      fragment.getActivity().startActivityForResult(intent, 1);
+    });
+
+    holder.selectGalleryPassBtn.setOnClickListener(v -> {
+      if (fragment == null || fragment.getActivity() == null) {
+        return;
+      }
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
+      intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_KEY, holder.getLayoutPosition());
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_STATUS_KEY, ElementStatus.PASS);
+      fragment.getActivity().startActivityForResult(intent, 3);
+    });
+
+    holder.savePassTv.setOnClickListener(v -> new AlertDialog.Builder(fragment.getActivity())
+        .setTitle("Confirm Save")
+        .setMessage("Are you sure you want to save this record?")
+        .setPositiveButton("Yes", (dialog, which) -> {
+          SaveOccInspectedSpaceElementTask task = new SaveOccInspectedSpaceElementTask(ElementStatus.PASS, occInspectedSpaceElementHeavy, fragment);
+          task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+          closeExpandablePanel(holder);
+        })
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+
+    holder.exitPassTv.setOnClickListener(v -> new AlertDialog
+        .Builder(fragment.getActivity())
+        .setTitle("Confirm Exit")
+        .setMessage("Are you sure you want exit editing?")
+        .setPositiveButton("Yes", (dialog, which) -> initPanel(holder, occInspectedSpaceElementHeavy))
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+  }
+
+  private void buildIntensityClass(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
+    ArrayAdapter<IntensityClass> intensityClassArrayAdapter = new ArrayAdapter<>(fragment.getActivity(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, intensityClassList);
+    IntensityClass intensityClass = new IntensityClass();
+    intensityClass.setTitle("Violation Severity");
+    intensityClassList.add(0, intensityClass);
+
+    intensityClassArrayAdapter.setDropDownViewResource(R.layout.drop_down_item);
+
+    holder.severityS.setAdapter(intensityClassArrayAdapter);
+    holder.severityS.setPrompt("Violation Severity");
+    for (int i = 0; i < intensityClassList.size(); i++) {
+      if (intensityClassList.get(i).getClassId() == (occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getFailureSeverityIntensityClassId())) {
+        holder.severityS.setSelection(i);
+      }
+    }
+    holder.severityS.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setFailureSeverityIntensityClassId(intensityClassList.get(position).getClassId());
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setFailureSeverityIntensityClassId(null);
+      }
+    });
+  }
+
+  private void buildViolationExpandablePanel(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
+    holder.violationRadioBtn.setOnClickListener(v -> expandCard(holder, occInspectedSpaceElementHeavy, ElementStatus.VIOLATION));
+    holder.findingViolateEt.setText(occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getNotes());
+    holder.findingViolateEt.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        System.out.println(holder.findingViolateEt.getText().toString());
+        occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setNotes(holder.findingViolateEt.getText().toString());
+      }
+    });
+
+    holder.findingViolateEt.setOnFocusChangeListener((v, hasFocus) -> {
+      if (!hasFocus) {
+        hideKeyboard(v);
+      }
+    });
+
+    boolean toUseDefaultDescription = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().isToUseDefaultDescription();
+
+    holder.defaultViolationDesSw.setChecked(toUseDefaultDescription);
+
+    Boolean migrateToCECaseOnFail = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getMigrateToCECaseOnFail();
+    if (migrateToCECaseOnFail == null || migrateToCECaseOnFail == false) {
+      holder.includeInCNFSw.setChecked(false);
+    }else {
+      holder.includeInCNFSw.setChecked(true);
+    }
+
+
+    holder.defaultViolationDesSw.setOnCheckedChangeListener((buttonView, isChecked) -> occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setToUseDefaultDescription(isChecked));
+    holder.includeInCNFSw.setOnCheckedChangeListener((buttonView, isChecked) -> occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setMigrateToCECaseOnFail(isChecked));
+
+    holder.takePhotoViolateBtn.setOnClickListener(v -> {
+      if (fragment.getActivity() == null) {
+        return;
+      }
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_KEY, holder.getLayoutPosition());
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_STATUS_KEY, ElementStatus.VIOLATION);
+      fragment.getActivity().startActivityForResult(intent, 1);
+    });
+
+    holder.selectGalleryViolateBtn.setOnClickListener(v -> {
+      if (fragment.getActivity() == null) {
+        //TODO
+        return;
+      }
+      String inspectedSpaceElementId = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getInspectedSpaceElementId();
+      Intent intent = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
+      intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_ID_KEY, inspectedSpaceElementId);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_PHOTO_NAME_KEY, "IMG_" + LocalDateTime.now() + ".JPEG");
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_KEY, holder.getLayoutPosition());
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_OCC_INSPECTED_SPACE_ELEMENT_POSITION_STATUS_KEY, ElementStatus.VIOLATION);
+      fragment.getActivity().startActivityForResult(intent, 3);
+    });
+
+    holder.saveViolationTv.setOnClickListener(v -> new AlertDialog.Builder(fragment.getActivity())
+        .setTitle("Confirm Save")
+        .setMessage("Are you sure you want to save this record?")
+        .setPositiveButton("Yes", (dialog, which) -> {
+          SaveOccInspectedSpaceElementTask task = new SaveOccInspectedSpaceElementTask(ElementStatus.VIOLATION, occInspectedSpaceElementHeavy, fragment);
+          task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+          closeExpandablePanel(holder);
+        })
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+
+    holder.exitViolationTv.setOnClickListener(v -> new AlertDialog.Builder(fragment.getActivity())
+        .setTitle("Confirm Exit")
+        .setMessage("Are you sure you want exit editing?")
+        .setPositiveButton("Yes", (dialog, which) -> initPanel(holder, occInspectedSpaceElementHeavy))
+        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+        .create()
+        .show());
+  }
+
 }

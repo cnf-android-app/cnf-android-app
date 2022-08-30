@@ -1,65 +1,33 @@
 package com.cnf.module_inspection.fragment;
 
-import static com.cnf.utils.AppConstants.INSPECTION_DATABASE_NAME;
+import static com.cnf.utils.AppConstants.FRAGMENT_INSPECTION_OCC_INSPECTED_SPACE;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.cnf.module_inspection.adapter.InspectionOccChecklistSpaceTypeAdapter;
 import com.cnf.R;
-import com.cnf.module_inspection.db.InspectionDatabase;
-import com.cnf.module_inspection.entity.infra_heavy.OccChecklistSpaceTypeHeavy;
-import com.cnf.module_inspection.service.local.OccInspectionChecklistSpaceTypeRepository;
-import com.cnf.module_inspection.service.local.OccInspectionInfraService;
-
-import java.util.List;
+import com.cnf.module_inspection.async.LoadOccChecklistSpaceTypeTask;
 
 public class InspectionSelectOccChecklistSpaceTypeFragment extends Fragment {
 
-  private final Handler textHandler = new Handler();
-
-  private Button cancelBtn;
-  private Button backBtn;
-  private List<OccChecklistSpaceTypeHeavy> occChecklistSpaceTypeHeavyList;
-  private OccInspectionInfraService occInspectionInfraService;
-  private OccInspectionChecklistSpaceTypeRepository occInspectionChecklistSpaceTypeRepository;
-  private RecyclerView inspection_space_type_list_rv;
-  private InspectionDatabase inspectionDB;
-
-  private Integer checklistId;
-
-  private Toolbar toolbar;
-
-  private Integer inspectionId;
-  private TextView tvNavTitle;
-
-
-  public InspectionSelectOccChecklistSpaceTypeFragment() {
-
-  }
+  private final static String INSPECTION_OCC_CHECKLIST_SPACE_TYPE = "INSPECTED SPACE";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    this.inspectionDB = Room.databaseBuilder(getActivity(), InspectionDatabase.class, INSPECTION_DATABASE_NAME).build();
-    this.occInspectionInfraService = OccInspectionInfraService.getInstance(getActivity());
-    this.occInspectionChecklistSpaceTypeRepository = OccInspectionChecklistSpaceTypeRepository.getInstance(getActivity());
-    this.checklistId = getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY, -1);
   }
 
   @Override
@@ -71,31 +39,26 @@ public class InspectionSelectOccChecklistSpaceTypeFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    this.toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
-    this.tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
-    this.tvNavTitle.setText("SELECT A SPACE");
-    toolbar.setNavigationOnClickListener(v -> {
-      InspectionSelectOccInspectedSpaceFragment inspectionSelectOccInspectedSpaceFragment = new InspectionSelectOccInspectedSpaceFragment();
-      getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccInspectedSpaceFragment).commit();
-    });
-    new Thread(new LoadOccChecklistSpaceTypeHeavy()).start();
-  }
-
-  class LoadOccChecklistSpaceTypeHeavy implements Runnable {
-
-    @Override
-    public void run() {
-      occChecklistSpaceTypeHeavyList = occInspectionChecklistSpaceTypeRepository.getOccChecklistSpaceTypeHeavyListFromSQLite(checklistId);
-      textHandler.post(new Runnable() {
-        @Override
-        public void run() {
-          inspection_space_type_list_rv = getActivity().findViewById(R.id.rv_space_type_list);
-          inspection_space_type_list_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-          InspectionOccChecklistSpaceTypeAdapter inspectionOccChecklistSpaceTypeAdapter = new InspectionOccChecklistSpaceTypeAdapter(InspectionSelectOccChecklistSpaceTypeFragment.this, getActivity(),
-              occChecklistSpaceTypeHeavyList);
-          inspection_space_type_list_rv.setAdapter(inspectionOccChecklistSpaceTypeAdapter);
-        }
-      });
+    if (getActivity() == null) {
+      return;
     }
+
+    int checklistId = getActivity().getIntent().getIntExtra(INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY, -1);
+    Toolbar toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
+    TextView tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
+    RecyclerView rvOccChecklistSpaceType = getActivity().findViewById(R.id.rv_space_type_list);
+
+    tvNavTitle.setText(INSPECTION_OCC_CHECKLIST_SPACE_TYPE);
+    rvOccChecklistSpaceType.setLayoutManager(new LinearLayoutManager(getActivity()));
+    toolbar.setNavigationOnClickListener(v -> {
+      Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_INSPECTION_OCC_INSPECTED_SPACE);
+      if (f == null) {
+        f = new InspectionSelectOccInspectedSpaceFragment();
+      }
+      getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, f, FRAGMENT_INSPECTION_OCC_INSPECTED_SPACE).commit();
+    });
+    LoadOccChecklistSpaceTypeTask task = new LoadOccChecklistSpaceTypeTask(checklistId, InspectionSelectOccChecklistSpaceTypeFragment.this);
+    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
+
 }

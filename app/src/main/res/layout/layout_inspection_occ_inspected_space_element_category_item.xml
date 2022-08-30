@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/rl_inspection_inspected_space_element_category_item"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginVertical="@dimen/outer_margin"
-  android:id="@+id/rl_inspection_inspected_space_element_category_item"
   android:background="@drawable/layout_card">
 
   <LinearLayout
@@ -106,7 +106,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_weight="3"
-      android:padding="10dp"
       android:gravity="center">
 
       <ImageButton
@@ -115,9 +114,9 @@
         android:layout_height="match_parent"
         android:padding="20dp"
         android:adjustViewBounds="true"
-        android:background="?android:selectableItemBackground"
         android:scaleType="fitCenter"
-        android:src="@drawable/arrow_right" />
+        android:background="@null"
+        android:src="@drawable/ic_baseline_chevron_right_24" />
 
     </RelativeLayout>
 
@@ -131,6 +130,7 @@
     android:paddingLeft="20dp"
     android:gravity="center"
     android:paddingVertical="10dp"
+    android:text="Inspected Space Element Category"
     android:textColor="@color/text_dark"
     android:textSize="20dp" />
 

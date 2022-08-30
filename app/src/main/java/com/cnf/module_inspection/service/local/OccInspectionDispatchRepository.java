@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class OccInspectionDispatchRepository {
 
-  public enum Category {FINISHED, UN_FINISH}
+  public enum Category {FINISHED, UN_FINISH, SYNCHRONIZED}
 
   private OccInspectionDispatchDao occInspectionDispatchDao;
   private OccInspectionSpaceRepository occInspectionSpaceRepository;
@@ -30,10 +30,6 @@ public class OccInspectionDispatchRepository {
     return INSTANCE;
   }
 
-  public List<OccInspectionDispatch> getOccInspectionDispatchList() {
-    return this.occInspectionDispatchDao.selectOccInspectionDispatchList();
-  }
-
   public void insertOccInspectionDispatchList(List<OccInspectionDispatch> occInspectionDispatchList) {
     this.occInspectionDispatchDao.insertOccInspectionDispatchList(occInspectionDispatchList);
   }
@@ -46,11 +42,11 @@ public class OccInspectionDispatchRepository {
     this.occInspectionDispatchDao.updateOccInspectionDispatch(occInspectionDispatch);
   }
 
-  public List<OccInspectionDispatchHeavy> getUnSynchronizeInspectionDispatchHeavy(int muniCode) {
+  public List<OccInspectionDispatchHeavy> getUnSynchronizeInspectionDispatchHeavyList(int muniCode) {
     return this.occInspectionDispatchDao.selectUnSynchronizeInspectionDispatchHeavy(muniCode);
   }
 
-  public List<OccInspectionDispatchHeavy> getSynchronizedInspectionDispatchHeavy(int muniCode) {
+  public List<OccInspectionDispatchHeavy> getSynchronizedInspectionDispatchHeavyList(int muniCode) {
     return this.occInspectionDispatchDao.selectSynchronizedInspectionDispatchHeavy(muniCode);
   }
 

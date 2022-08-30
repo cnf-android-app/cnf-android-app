@@ -20,10 +20,6 @@ public class IntensityRepository {
     return INSTANCE;
   }
 
-  public List<IntensityClass> getIntensityClassList(InspectionDatabase inspectionDatabase) {
-    return this.intensityClassDao.selectAllIntensityClassList();
-  }
-
   public void insertIntensityClassList(List<IntensityClass> intensityClassList) {
     this.intensityClassDao.insertIntensityClassList(intensityClassList);
   }

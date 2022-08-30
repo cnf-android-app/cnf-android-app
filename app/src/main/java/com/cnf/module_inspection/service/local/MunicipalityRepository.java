@@ -20,10 +20,6 @@ public class MunicipalityRepository {
     return INSTANCE;
   }
 
-  public List<Municipality> getMunicipalityListFromSQLite() {
-    return this.municipalityDao.selectMunicipalityList();
-  }
-
   public void insertMunicipalityList(List<Municipality> municipalityList) {
     this.municipalityDao.insertMunicipalityList(municipalityList);
   }
@@ -31,6 +27,4 @@ public class MunicipalityRepository {
   public void deleteAllMunicipalityList() {
     this.municipalityDao.deleteAllMunicipalityList();
   }
-
-
 }

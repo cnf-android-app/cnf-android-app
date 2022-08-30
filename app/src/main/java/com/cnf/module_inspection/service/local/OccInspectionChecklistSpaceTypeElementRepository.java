@@ -21,12 +21,8 @@ public class OccInspectionChecklistSpaceTypeElementRepository {
     return INSTANCE;
   }
 
-  public List<OccChecklistSpaceTypeElement> getOccChecklistSpaceTypeElementListFromSQLite() {
-    return this.occChecklistSpaceTypeElementDao.selectAllOccChecklistSpaceTypeElementList();
-  }
-
-  public List<OccChecklistSpaceTypeElementHeavy> getOccChecklistSpaceTypeElementHeavyDetailsList(Integer CSTId) {
-    return this.occChecklistSpaceTypeElementDao.selectAllOccChecklistSpaceTypeElementListDetailsByCSTId(CSTId);
+  public List<OccChecklistSpaceTypeElementHeavy> getOccChecklistSpaceTypeElementHeavyList(Integer checklistSpaceTypeId) {
+    return this.occChecklistSpaceTypeElementDao.selectAllOccChecklistSpaceTypeElementListDetailsByCSTId(checklistSpaceTypeId);
   }
 
   public void insertOccChecklistSpaceTypeElementList(List<OccChecklistSpaceTypeElement> occChecklistSpaceTypeElementList) {

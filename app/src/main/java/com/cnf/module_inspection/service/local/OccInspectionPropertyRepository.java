@@ -9,7 +9,6 @@ import java.util.List;
 public class OccInspectionPropertyRepository {
 
   private PropertyDao propertyDao;
-
   private static final OccInspectionPropertyRepository INSTANCE = new OccInspectionPropertyRepository();
 
   private OccInspectionPropertyRepository() {

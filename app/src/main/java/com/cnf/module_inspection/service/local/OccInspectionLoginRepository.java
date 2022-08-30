@@ -9,7 +9,6 @@ import java.util.List;
 public class OccInspectionLoginRepository {
 
   private LoginDao loginDao;
-
   private static final OccInspectionLoginRepository INSTANCE = new OccInspectionLoginRepository();
 
   private OccInspectionLoginRepository() {

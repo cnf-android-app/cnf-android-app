@@ -291,7 +291,7 @@
         android:spinnerMode="dropdown" />
 
 
-      <Switch
+      <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_default_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -299,7 +299,7 @@
         android:checked="false"
         android:text="Insert Default Violation Description" />
 
-      <Switch
+      <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

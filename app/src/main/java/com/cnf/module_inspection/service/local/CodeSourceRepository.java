@@ -20,10 +20,6 @@ public class CodeSourceRepository {
     return INSTANCE;
   }
 
-  public List<CodeSource> getCodeSourceListFromSQLite() {
-    return this.codeSourceDao.selectAllCodeSourceList();
-  }
-
   public void insertCodeSourceList(List<CodeSource> codeSourceList) {
     this.codeSourceDao.insertCodeSourceList(codeSourceList);
   }

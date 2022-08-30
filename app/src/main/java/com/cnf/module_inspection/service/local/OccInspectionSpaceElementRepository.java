@@ -36,6 +36,7 @@ import java.util.UUID;
 public class OccInspectionSpaceElementRepository {
 
   public enum Category {FINISHED, UN_FINISH}
+  public enum ElementStatus {PASS, VIOLATION, NOT_INSPECT}
 
   private final static String FMT_CH = "ch.";
   private final static String FMT_SPACE = " ";
@@ -49,6 +50,7 @@ public class OccInspectionSpaceElementRepository {
   private OccChecklistSpaceTypeElementDao occChecklistSpaceTypeElementDao;
   private CodeElementGuideDao codeElementGuideDao;
   private IntensityClassDao intensityClassDao;
+  private InspectionDatabase inspectionDatabase;
 
   private static final OccInspectionSpaceElementRepository INSTANCE = new OccInspectionSpaceElementRepository();
 
@@ -56,6 +58,7 @@ public class OccInspectionSpaceElementRepository {
   }
 
   public static OccInspectionSpaceElementRepository getInstance(Context context) {
+    INSTANCE.inspectionDatabase = InspectionDatabase.getInstance(context);
     INSTANCE.occInspectedSpaceElementDao = InspectionDatabase.getInstance(context).getOccInspectedSpaceElementDao();
     INSTANCE.occChecklistSpaceTypeElementDao = InspectionDatabase.getInstance(context).getOccChecklistSpaceTypeElementDao();
     INSTANCE.codeElementGuideDao = InspectionDatabase.getInstance(context).getCodeElementGuideDao();
@@ -82,10 +85,6 @@ public class OccInspectionSpaceElementRepository {
     this.occInspectedSpaceElementDao.updateOccInspectedSpaceElementList(occInspectedSpaceElement);
   }
 
-  public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyListByInspectedSpaceId(String inspectedSpaceId) {
-    return this.occInspectedSpaceElementDao.selectOccInspectedSpaceElementHeavyList(inspectedSpaceId);
-  }
-
   public List<IntensityClass> selectAllIntensityClassListBySchemaLabel(String schemaLabel) {
     if (schemaLabel == null || schemaLabel.length() == 0) {
       return new ArrayList<>();
@@ -93,9 +92,6 @@ public class OccInspectionSpaceElementRepository {
     return this.intensityClassDao.selectAllIntensityClassListBySchemaLabel(schemaLabel);
   }
 
-  public void deleteOccInspectedSpaceElement(OccInspectedSpaceElement occInspectedSpaceElement) {
-    this.occInspectedSpaceElementDao.deleteOccInspectedSpaceElement(occInspectedSpaceElement);
-  }
 
   public OccInspectedSpaceElementHeavy configureElementForNotInspected(OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy, int userId) {
     OccInspectedSpaceElement oise = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement();
@@ -138,7 +134,6 @@ public class OccInspectionSpaceElementRepository {
   }
 
   public List<OccInspectedSpaceElement> createDefaultOccInspectedSpaceElementList(OccInspectedSpace occInspectedSpace) throws InvalidOccInspectedSpaceException {
-
     List<OccInspectedSpaceElement> occInspectedSpaceElementList = new ArrayList<>();
     if (occInspectedSpace == null) {
       throw new InvalidOccInspectedSpaceException("Invalid occInspectedSpace", new NullPointerException());
@@ -372,21 +367,21 @@ public class OccInspectionSpaceElementRepository {
   }
 
   public List<OccInspectedSpaceElementHeavy> getElementListPass(Map<OccInspectionStatusEnum, List<OccInspectedSpaceElementHeavy>> elementStatusMap) {
-    if (elementStatusMap != null) {
+    if (elementStatusMap != null && elementStatusMap.get(OccInspectionStatusEnum.PASS) != null) {
       return elementStatusMap.get(OccInspectionStatusEnum.PASS);
     }
     return new ArrayList<>();
   }
 
   public List<OccInspectedSpaceElementHeavy> getElementListFail(Map<OccInspectionStatusEnum, List<OccInspectedSpaceElementHeavy>> elementStatusMap) {
-    if (elementStatusMap != null) {
+    if (elementStatusMap != null && elementStatusMap.get(OccInspectionStatusEnum.VIOLATION) != null) {
       return elementStatusMap.get(OccInspectionStatusEnum.VIOLATION);
     }
     return new ArrayList<>();
   }
 
   public List<OccInspectedSpaceElementHeavy> getElementListNotIns(Map<OccInspectionStatusEnum, List<OccInspectedSpaceElementHeavy>> elementStatusMap) {
-    if (elementStatusMap != null) {
+    if (elementStatusMap != null && elementStatusMap.get(OccInspectionStatusEnum.NOTINSPECTED) != null ) {
       return elementStatusMap.get(OccInspectionStatusEnum.NOTINSPECTED);
     }
     return new ArrayList<>();

@@ -1,6 +1,9 @@
 package com.cnf.module_inspection.service.local;
 
 import android.content.Context;
+import androidx.room.Transaction;
+import com.cnf.module_inspection.dao.BlobBytesDao;
+import com.cnf.module_inspection.dao.OccInspectedSpaceElementPhotoDocDao;
 import com.cnf.module_inspection.dao.PhotoDocDao;
 import com.cnf.module_inspection.db.InspectionDatabase;
 import com.cnf.module_inspection.entity.BlobBytes;
@@ -10,8 +13,8 @@ import java.util.List;
 public class OccInspectionPhotoRepository {
 
   private PhotoDocDao photoDocDao;
-  private BlobBytesRepository blobBytesRepository;
-  private OccInspectedSpaceElementPhotoDocRepository occInspectedSpaceElementPhotoDocRepository;
+  private BlobBytesDao blobBytesDao;
+  private OccInspectedSpaceElementPhotoDocDao occInspectedSpaceElementPhotoDocDao;
   private static final OccInspectionPhotoRepository INSTANCE = new OccInspectionPhotoRepository();
 
   private OccInspectionPhotoRepository() {
@@ -19,8 +22,8 @@ public class OccInspectionPhotoRepository {
 
   public static OccInspectionPhotoRepository getInstance(Context context) {
     INSTANCE.photoDocDao = InspectionDatabase.getInstance(context).getPhotoDocDao();
-    INSTANCE.blobBytesRepository = BlobBytesRepository.getInstance(context);
-    INSTANCE.occInspectedSpaceElementPhotoDocRepository = OccInspectedSpaceElementPhotoDocRepository.getInstance(context);
+    INSTANCE.blobBytesDao = InspectionDatabase.getInstance(context).getBlobBytesDao();
+    INSTANCE.occInspectedSpaceElementPhotoDocDao = InspectionDatabase.getInstance(context).getOccInspectedSpaceElementPhotoDocDao();
     return INSTANCE;
   }
 
@@ -28,23 +31,16 @@ public class OccInspectionPhotoRepository {
     this.photoDocDao.insertPhotoDoc(photoDocList);
   }
 
+  @Transaction
   public void deleteOccInspectedPhotoBlobByte(BlobBytes blobBytes) {
-    this.blobBytesRepository.deleteBlobByte(blobBytes);
+    this.blobBytesDao.deleteBlobByte(blobBytes);
     PhotoDoc photoDoc = this.photoDocDao.selectOnePhotoDoc(blobBytes.getBytesId());
     this.photoDocDao.deletePhotoDoc(photoDoc);
-    this.occInspectedSpaceElementPhotoDocRepository.deleteOccInspectedSpaceElementPhotoDocList(photoDoc.getPhotoDocId());
+    this.occInspectedSpaceElementPhotoDocDao.deleteOccInspectedSpaceElementPhotoDocList(photoDoc.getPhotoDocId());
   }
 
   public long insertPhotoDoc(PhotoDoc photoDoc) {
     return this.photoDocDao.insertPhotoDoc(photoDoc);
-  }
-
-  public List<PhotoDoc> selectAllPhotoDocList(String occInspectedSpaceTypeElementId) {
-    return this.photoDocDao.selectAllPhotoDocListByOccInspectedSpaceTypeElementId(occInspectedSpaceTypeElementId);
-  }
-
-  public void deletePhotoDoc(PhotoDoc photoDoc) {
-    this.photoDocDao.deletePhotoDoc(photoDoc);
   }
 
 }

@@ -1,10 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:top="-2dp" android:right="-2dp" android:left="-2dp">
-  <shape>
-    <solid android:color="@android:color/transparent" />
-    <stroke
-      android:width="0.5dp"
-      android:color="#1C1C1C" />
-  </shape>
-</item>
+  <item>
+    <shape
+      android:shape="ring"
+      android:innerRadiusRatio="2"
+      android:thickness="-3dp"
+
+      android:useLevel="false">
+      <solid android:color="#E1E1E1" />
+    </shape>
+  </item>
+  <item>
+    <shape
+      android:shape="ring"
+      android:useLevel="true"
+      android:innerRadiusRatio="2"
+      android:thickness="-3dp">
+      <solid android:color="@color/blue_button" />
+      <!--        <gradient-->
+      <!--          android:endColor="@color/bottom_nav_background"-->
+      <!--          android:startColor="@color/blue_button"-->
+      <!--          android:type="sweep" />-->
+    </shape>
+
+  </item>
 </layer-list>

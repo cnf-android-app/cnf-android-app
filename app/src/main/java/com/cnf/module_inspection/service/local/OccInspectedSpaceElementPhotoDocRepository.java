@@ -9,7 +9,6 @@ import java.util.List;
 public class OccInspectedSpaceElementPhotoDocRepository {
 
   private OccInspectedSpaceElementPhotoDocDao occInspectedSpaceElementPhotoDocDao;
-
   private static final OccInspectedSpaceElementPhotoDocRepository INSTANCE = new OccInspectedSpaceElementPhotoDocRepository();
 
   private OccInspectedSpaceElementPhotoDocRepository() {

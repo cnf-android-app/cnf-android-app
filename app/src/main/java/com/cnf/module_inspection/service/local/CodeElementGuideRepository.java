@@ -20,10 +20,6 @@ public class CodeElementGuideRepository {
     return INSTANCE;
   }
 
-  public List<CodeElementGuide> getCodeElementGuideListFromSQLite() {
-    return this.codeElementGuideDao.selectCodeElementGuideList();
-  }
-
   public void insertCodeElementGuideList(List<CodeElementGuide> codeElementGuideList) {
     this.codeElementGuideDao.insertCodeElementGuideList(codeElementGuideList);
   }
@@ -31,5 +27,4 @@ public class CodeElementGuideRepository {
   public void deleteAllCodeElementGuideList() {
     this.codeElementGuideDao.deleteAllCodeElementGuideList();
   }
-
 }

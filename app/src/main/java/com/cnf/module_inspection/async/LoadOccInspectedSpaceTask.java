@@ -2,7 +2,7 @@ package com.cnf.module_inspection.async;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.cnf.R;
 import com.cnf.module_inspection.activity.InspectionContainerActivity;
 import com.cnf.module_inspection.adapter.InspectionOccInspectedSpaceAdapter;
@@ -93,9 +92,15 @@ public class LoadOccInspectedSpaceTask extends AsyncTask<Void, Void, List<OccIns
       return;
     }
     if (occInspectedSpaceHeavyList.isEmpty()) {
-      statusIndicator.setText(String.format("No inspection space for " + category.toString() + "category", inspectionId));
-      statusIndicator.setGravity(View.TEXT_ALIGNMENT_CENTER);
       statusIndicator.setVisibility(View.VISIBLE);
+      switch (category) {
+        case FINISHED:
+          statusIndicator.setText("No inspection spaces is inspected..");
+          break;
+        case UN_FINISH:
+          statusIndicator.setText("All inspection spaces are inspected..");
+          break;
+      }
     } else {
       statusIndicator.setVisibility(View.GONE);
     }

@@ -1,6 +1,10 @@
 package com.cnf.module_inspection.adapter;
 
-import android.content.Context;
+import static com.cnf.utils.AppConstants.FRAGMENT_INSPECTION_OCC_CHECKLIST_SPACE_TYPE_DETAILS;
+import static com.cnf.utils.AppConstants.FRAGMENT_INSPECTION_OCC_LOCATION_DESCRIPTION;
+import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_CHECKLIST_SPACE_TYPE_ID_KEY;
+
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +21,6 @@ import com.cnf.module_inspection.entity.infra.OccChecklistSpaceType;
 import com.cnf.module_inspection.entity.infra.OccSpaceType;
 import com.cnf.module_inspection.entity.infra_heavy.OccChecklistSpaceTypeHeavy;
 import com.cnf.module_inspection.fragment.InspectionSelectOccLocationDescriptionFragment;
-import com.cnf.module_inspection.fragment.InspectionSelectOccChecklistSpaceTypeFragment;
 import com.cnf.module_inspection.fragment.InspectionSpaceTypeDetailsFragment;
 
 import java.util.List;
@@ -25,22 +28,18 @@ import java.util.Locale;
 
 public class InspectionOccChecklistSpaceTypeAdapter extends RecyclerView.Adapter<OccChecklistSpaceTypeHolder> {
 
-  private InspectionSelectOccChecklistSpaceTypeFragment fragment;
-  private Context context;
+  private final Fragment fragment;
   private List<OccChecklistSpaceTypeHeavy> occChecklistSpaceTypeHeavyList;
-  private InspectionSpaceTypeDetailsFragment inspectionSpaceTypeDetailsFragment;
-  private InspectionSelectOccLocationDescriptionFragment inspectionSelectOccLocationDescriptionFragment;
 
-  public InspectionOccChecklistSpaceTypeAdapter(InspectionSelectOccChecklistSpaceTypeFragment fragment, Context context, List<OccChecklistSpaceTypeHeavy> occChecklistSpaceTypeHeavyList) {
+  public InspectionOccChecklistSpaceTypeAdapter(Fragment fragment, List<OccChecklistSpaceTypeHeavy> occChecklistSpaceTypeHeavyList) {
     this.fragment = fragment;
-    this.context = context;
     this.occChecklistSpaceTypeHeavyList = occChecklistSpaceTypeHeavyList;
   }
 
   @NonNull
   @Override
   public OccChecklistSpaceTypeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    return new OccChecklistSpaceTypeHolder(LayoutInflater.from(context).inflate(R.layout.layout_inspection_occ_checklist_space_type_item, parent, false));
+    return new OccChecklistSpaceTypeHolder(LayoutInflater.from(fragment.getActivity()).inflate(R.layout.layout_inspection_occ_checklist_space_type_item, parent, false));
   }
 
   @Override
@@ -54,7 +53,7 @@ public class InspectionOccChecklistSpaceTypeAdapter extends RecyclerView.Adapter
       return;
     }
 
-    String occChecklistSpaceTypeTitle =  occSpaceType.getSpaceTitle().toUpperCase(Locale.ROOT);
+    String occChecklistSpaceTypeTitle = occSpaceType.getSpaceTitle().toUpperCase(Locale.ROOT);
     String occChecklistSpaceTypeDescription = occSpaceType.getDescription().toUpperCase(Locale.ROOT);
     String occChecklistSpaceTypeId = String.valueOf(occChecklistSpaceType.getChecklistSpaceTypeId());
     String occChecklistSpaceTypeChecklistTitle = occCheckList.getTitle();
@@ -67,13 +66,27 @@ public class InspectionOccChecklistSpaceTypeAdapter extends RecyclerView.Adapter
     holder.tvOccChecklistSpaceTypeIsRequired.setText(occChecklistSpaceTypeIsRequired);
 
     holder.btnDetail.setOnClickListener(view -> {
-      inspectionSpaceTypeDetailsFragment = new InspectionSpaceTypeDetailsFragment(occChecklistSpaceType.getChecklistSpaceTypeId());
-      fragment.getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSpaceTypeDetailsFragment).commit();
+      if (fragment.getActivity() == null) {
+        return;
+      }
+      Fragment f = fragment.getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_INSPECTION_OCC_CHECKLIST_SPACE_TYPE_DETAILS);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_INSPECTION_CHECKLIST_SPACE_TYPE_ID_KEY, occChecklistSpaceType.getChecklistSpaceTypeId());
+      if (f == null) {
+        f = new InspectionSpaceTypeDetailsFragment();
+      }
+      fragment.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, f, FRAGMENT_INSPECTION_OCC_CHECKLIST_SPACE_TYPE_DETAILS).commit();
     });
 
     holder.btnSelect.setOnClickListener(view -> {
-      inspectionSelectOccLocationDescriptionFragment = new InspectionSelectOccLocationDescriptionFragment(occChecklistSpaceType.getChecklistSpaceTypeId(), null);
-      fragment.getFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, inspectionSelectOccLocationDescriptionFragment).commit();
+      if (fragment.getActivity() == null) {
+        return;
+      }
+      Fragment f = fragment.getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_INSPECTION_OCC_LOCATION_DESCRIPTION);
+      fragment.getActivity().getIntent().putExtra(INTENT_EXTRA_INSPECTION_CHECKLIST_SPACE_TYPE_ID_KEY, occChecklistSpaceType.getChecklistSpaceTypeId());
+      if (f == null) {
+        f = new InspectionSelectOccLocationDescriptionFragment();
+      }
+      fragment.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_occ_inspection_container, f, FRAGMENT_INSPECTION_OCC_LOCATION_DESCRIPTION).commit();
     });
   }
 
@@ -82,7 +95,7 @@ public class InspectionOccChecklistSpaceTypeAdapter extends RecyclerView.Adapter
     return occChecklistSpaceTypeHeavyList.size();
   }
 
-  class OccChecklistSpaceTypeHolder extends RecyclerView.ViewHolder {
+  static class OccChecklistSpaceTypeHolder extends RecyclerView.ViewHolder {
 
     TextView tvOccChecklistSpaceTypeTitle, tvOccChecklistSpaceTypeId, tvOccChecklistSpaceTypeChecklistTitle, tvOccChecklistSpaceTypeIsRequired, tvOccChecklistSpaceTypeDescription;
     Button btnDetail, btnSelect;
@@ -97,5 +110,9 @@ public class InspectionOccChecklistSpaceTypeAdapter extends RecyclerView.Adapter
       btnDetail = itemView.findViewById(R.id.btn_inspection_occ_checklist_space_type_details);
       btnSelect = itemView.findViewById(R.id.btn_inspection_occ_checklist_space_type_select);
     }
+  }
+
+  public void setOccChecklistSpaceTypeHeavyList(List<OccChecklistSpaceTypeHeavy> occChecklistSpaceTypeHeavyList) {
+    this.occChecklistSpaceTypeHeavyList = occChecklistSpaceTypeHeavyList;
   }
 }

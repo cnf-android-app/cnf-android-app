@@ -1,24 +1,20 @@
 package com.cnf.module_inspection.adapter;
 
-import static android.content.ContentValues.TAG;
-import static com.cnf.utils.AppConstants.INSPECTION_DATABASE_NAME;
+
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_ID_KEY;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
-import static com.cnf.utils.AppConstants.SP_KEY_AUTH_PERIOD_ID;
+
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
-import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
-import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
-
-import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import androidx.fragment.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Handler;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,69 +26,47 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
-import com.cnf.module_auth.activity.HomeActivity;
 import com.cnf.module_inspection.activity.InspectionContainerActivity;
 import com.cnf.R;
 import com.cnf.module_inspection.adapter.InspectionAdapter.InspectionDispatchHolder;
+import com.cnf.module_inspection.async.UploadOccInspectionTask;
 import com.cnf.module_inspection.entity.infra.OccCheckList;
 import com.cnf.module_inspection.entity.infra_heavy.OccInspectionDispatchHeavy;
 import com.cnf.module_inspection.entity.tasks.OccInspection;
 import com.cnf.module_inspection.entity.tasks.OccInspectionDispatch;
 import com.cnf.module_inspection.entity.tasks.Person;
 import com.cnf.module_inspection.entity.tasks.Property;
-import com.cnf.module_inspection.dto.UploadDTO;
-import com.cnf.module_inspection.service.exception.HttpBadRequestException;
-import com.cnf.module_inspection.service.exception.HttpNoFoundException;
-import com.cnf.module_inspection.service.exception.HttpServerErrorException;
-import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
-import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
-import com.cnf.module_inspection.service.local.OccInspectionDispatchRepository;
-import com.cnf.module_inspection.service.remote.OccInspectionApiService;
-import com.cnf.module_inspection.service.local.OccInspectionInfraService;
 
-import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHolder> implements Filterable {
 
-
-
-  private Context context;
-  private boolean isSynchronized;
-  private boolean isFinished;
+  private final Fragment fragment;
   private List<OccInspectionDispatchHeavy> occInspectionDispatchHeavyList;
-
-  private OccInspectionApiService occInspectionApiService;
-  private OccInspectionInfraService occInspectionInfraService;
-  private OccInspectionDispatchRepository occInspectionDispatchRepository;
   private List<OccInspectionDispatchHeavy> filterOccInspectionDispatchHeavyList;
 
-  public InspectionAdapter(Context context, List<OccInspectionDispatchHeavy> occInspectionDispatchHeavyList, boolean isSynchronized) {
-    this.context = context;
-    this.isSynchronized = isSynchronized;
+  public InspectionAdapter(Fragment fragment, List<OccInspectionDispatchHeavy> occInspectionDispatchHeavyList) {
+    this.fragment = fragment;
     this.occInspectionDispatchHeavyList = occInspectionDispatchHeavyList;
-    this.occInspectionApiService = OccInspectionApiService.getInstance();
-    this.occInspectionInfraService = OccInspectionInfraService.getInstance(context);
-    this.occInspectionDispatchRepository = OccInspectionDispatchRepository.getInstance(context);
     this.filterOccInspectionDispatchHeavyList = occInspectionDispatchHeavyList;
-
   }
 
   @NonNull
   @Override
   public InspectionDispatchHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    return new InspectionDispatchHolder(LayoutInflater.from(context).inflate(R.layout.layout_inspection_item, parent, false));
+    return new InspectionDispatchHolder(LayoutInflater.from(fragment.getActivity()).inflate(R.layout.layout_inspection_item, parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull InspectionDispatchHolder holder, int position) {
-    SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
-    Boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
+    if (fragment.getActivity() == null) {
+      return;
+    }
+    SharedPreferences sp = fragment.getActivity().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
     OccInspectionDispatchHeavy occInspectionDispatchHeavy = filterOccInspectionDispatchHeavyList.get(position);
     if (occInspectionDispatchHeavy == null) {
       return;
@@ -120,37 +94,38 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       Uri location = Uri.parse("geo:0,0?q=" + field);
       Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
       try {
-        context.startActivity(mapIntent);
+        fragment.getActivity().startActivity(mapIntent);
       } catch (ActivityNotFoundException e) {
         // Define what your app should do if no activity can handle the intent.
       }
     });
 
     holder.btnInspect.setOnClickListener(view -> {
-      Intent intent = new Intent(context, InspectionContainerActivity.class);
+      Intent intent = new Intent(fragment.getActivity(), InspectionContainerActivity.class);
       intent.putExtra(INTENT_EXTRA_INSPECTION_ID_KEY, occInspection.getInspectionId());
       intent.putExtra(INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY, occCheckList.getCheckListId());
-      context.startActivity(intent);
+      fragment.getActivity().startActivity(intent);
     });
 
     holder.btnUpload.setOnClickListener(v -> {
-      new Thread(new UploadOccInspection(occInspection.getInspectionId(), occInspectionDispatch)).start();
+      UploadOccInspectionTask task = new UploadOccInspectionTask(occInspectionDispatch, fragment);
+      task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     });
 
-    if (isSynchronized) {
-      holder.btnInspect.setVisibility(View.GONE);
-      holder.btnUpload.setVisibility(View.GONE);
-    } else if (!isFinished) {
-      holder.btnInspect.setVisibility(View.VISIBLE);
-      holder.btnUpload.setVisibility(View.GONE);
-    } else {
-      holder.btnInspect.setVisibility(View.VISIBLE);
-      if (isOnline) {
-        holder.btnUpload.setVisibility(View.VISIBLE);
-      } else {
-        holder.btnUpload.setVisibility(View.GONE);
-      }
-    }
+//    if (isSynchronized) {
+//      holder.btnInspect.setVisibility(View.GONE);
+//      holder.btnUpload.setVisibility(View.GONE);
+//    } else if (!isFinished) {
+//      holder.btnInspect.setVisibility(View.VISIBLE);
+//      holder.btnUpload.setVisibility(View.GONE);
+//    } else {
+//      holder.btnInspect.setVisibility(View.VISIBLE);
+//      if (isOnline) {
+//        holder.btnUpload.setVisibility(View.VISIBLE);
+//      } else {
+//        holder.btnUpload.setVisibility(View.GONE);
+//      }
+//    }
   }
 
   @Override
@@ -201,73 +176,12 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     };
   }
 
-  class UploadOccInspection implements Runnable {
-
-    private Integer inspectionId;
-    private OccInspectionDispatch occInspectionDispatch;
-    private  Handler textHandler = new Handler();
-    ProgressDialog progressDialog = new ProgressDialog(context);
-    public UploadOccInspection(Integer inspectionId, OccInspectionDispatch occInspectionDispatch) {
-      this.inspectionId = inspectionId;
-      this.occInspectionDispatch = occInspectionDispatch;
-    }
-
-    @Override
-    public void run() {
-
-      textHandler.post(new Runnable() {
-        @Override
-        public void run() {
-
-          progressDialog.setMessage("Uploading inspection...");
-          progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-          progressDialog.setIndeterminate(true);
-          progressDialog.show();
-        }
-      });
-
-      UploadDTO uploadDTO = occInspectionInfraService.getUploadDTO(inspectionId);
-      Log.i(TAG, uploadDTO.toString());
-      SharedPreferences sp = context.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
-      String loginUserToken = sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
-      String muniCode = String.valueOf(sp.getInt(SP_KEY_MUNICIPALITY_CODE, -1));
-      String authPeriodId = String.valueOf(sp.getInt(SP_KEY_AUTH_PERIOD_ID, -1));
-      try {
-        occInspectionApiService.uploadToServer(uploadDTO, loginUserToken, authPeriodId, muniCode);
-        occInspectionDispatch.setSynchronizationTS(OffsetDateTime.now().toString());
-        occInspectionDispatchRepository.updateOccInspectionDispatch( occInspectionDispatch);
-        context.startActivity(new Intent(context, HomeActivity.class));
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (HttpUnAuthorizedException e) {
-        e.printStackTrace();
-      } catch (HttpBadRequestException e) {
-        e.printStackTrace();
-      } catch (HttpServerErrorException e) {
-        e.printStackTrace();
-      } catch (HttpUnknownErrorException e) {
-        e.printStackTrace();
-      } catch (HttpNoFoundException e) {
-        e.printStackTrace();
-      } finally {
-        textHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            progressDialog.dismiss();
-          }
-        });
-      }
-
-    }
-  }
-
   @Override
   public int getItemCount() {
     return filterOccInspectionDispatchHeavyList.size();
   }
 
-  class InspectionDispatchHolder extends RecyclerView.ViewHolder {
+  static class InspectionDispatchHolder extends RecyclerView.ViewHolder {
 
     TextView tvTitle, tvField, tvInspector, tvChecklist, tvCreatedDate;
     Button btnInspect, btnUpload;
@@ -286,11 +200,8 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
     }
   }
 
-  public boolean isFinished() {
-    return isFinished;
-  }
-
-  public void setFinished(boolean finished) {
-    isFinished = finished;
+  public void setFilterOccInspectionDispatchHeavyList(List<OccInspectionDispatchHeavy> filterOccInspectionDispatchHeavyList) {
+    this.occInspectionDispatchHeavyList = filterOccInspectionDispatchHeavyList;
+    this.filterOccInspectionDispatchHeavyList = filterOccInspectionDispatchHeavyList;
   }
 }

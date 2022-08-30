@@ -1,13 +1,22 @@
 package com.cnf.module_inspection.entity;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import java.util.UUID;
 
-@Entity
+
+@Entity(foreignKeys =
+@ForeignKey(entity = OccInspectedSpace.class,
+    parentColumns = "inspectedspaceid",
+    childColumns = "inspectedspace_inspectedspaceid",
+    onDelete = CASCADE))
 public class OccInspectedSpaceElement {
 
   @PrimaryKey(autoGenerate = false)

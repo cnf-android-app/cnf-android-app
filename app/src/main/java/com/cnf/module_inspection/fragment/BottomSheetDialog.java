@@ -8,7 +8,6 @@ import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

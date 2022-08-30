@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_margin="@dimen/outer_margin"
+  android:gravity="center"
+  tools:context=".module_auth.activity.InitializationActivity">
+
+  <ProgressBar
+    android:id="@+id/initialization_progress_bar_sync"
+    style="?android:attr/progressBarStyleHorizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/initialization_progress_bar_sync_message"
+    android:indeterminate="true" />
+
+  <TextView
+    android:id="@+id/initialization_progress_bar_sync_message"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
-    android:layout_margin="@dimen/outer_margin"
-    tools:context=".module_auth.activity.InitializationActivity">
-
-    <TextView
-        android:id="@+id/initialization_progress_bar_sync_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Synchronizing..."/>
-
-    <ProgressBar
-        android:id="@+id/initialization_progress_bar_sync"
-        android:layout_below="@+id/initialization_progress_bar_sync_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:max="100"
-        android:progress="10"
-        style="?android:attr/progressBarStyleHorizontal"
-        />
+    android:text="Synchronizing..." />
 
 </RelativeLayout>

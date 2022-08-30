@@ -1,78 +1,42 @@
 package com.cnf.module_inspection.fragment;
 
-import static android.content.ContentValues.TAG;
+import static com.cnf.module_inspection.service.local.OccInspectionDispatchRepository.Category.FINISHED;
+import static com.cnf.module_inspection.service.local.OccInspectionDispatchRepository.Category.SYNCHRONIZED;
+import static com.cnf.module_inspection.service.local.OccInspectionDispatchRepository.Category.UN_FINISH;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
-import static com.cnf.utils.AppConstants.SP_KEY_AUTH_PERIOD_ID;
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
-import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
-import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
 
 import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.cnf.module_auth.activity.HomeActivity;
 import com.cnf.R;
 import com.cnf.module_inspection.adapter.InspectionAdapter;
-import com.cnf.module_inspection.entity.infra_heavy.OccInspectionDispatchHeavy;
-import com.cnf.module_inspection.entity.tasks.OccInspectionTasks;
-import com.cnf.module_inspection.service.exception.HttpBadRequestException;
-import com.cnf.module_inspection.service.exception.HttpNoFoundException;
-import com.cnf.module_inspection.service.exception.HttpServerErrorException;
-import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
-import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
-import com.cnf.module_inspection.service.local.OccInspectionDispatchRepository;
-import com.cnf.module_inspection.service.local.OccInspectionTaskRepository;
-import com.cnf.module_inspection.service.remote.OccInspectionApiService;
+import com.cnf.module_inspection.async.FetchOccInspectionDispatchTask;
+import com.cnf.module_inspection.async.LoadOccInspectionDispatchTask;
+import com.cnf.module_inspection.service.local.OccInspectionDispatchRepository.Category;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class InspectionDispatchFragment extends Fragment {
-
-  public enum Category {FINISHED, UN_FINISH, SYNCHRONIZED}
-
-  private OccInspectionApiService occInspectionApiService;
-  private OccInspectionDispatchRepository occInspectionDispatchRepository;
-  private OccInspectionTaskRepository occInspectionTaskRepository;
-
-  private SharedPreferences sp;
-  private Integer muniCode;
-  private Integer authPeriodId;
-  private String loginUserToken;
-  private Boolean isOnline;
-
-  private FloatingActionButton btnFetchDispatch;
-  private RecyclerView rvInspectionList;
-  private AlertDialog.Builder dialog;
-  private RadioGroup radioGroup;
-  private RadioButton rBtnUnFinish;
-  private RadioButton rBtnFinished;
-  private RadioButton rBtnSynchronized;
-  private EditText etSearch;
-  private TextView tvIsCompletedIndicator;
-  private ImageButton imageBtnMore;
-  private ImageButton imageBtnSearch;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -85,235 +49,155 @@ public class InspectionDispatchFragment extends Fragment {
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    this.occInspectionApiService = OccInspectionApiService.getInstance();
-    this.occInspectionDispatchRepository = OccInspectionDispatchRepository.getInstance(view.getContext());
-    this.occInspectionTaskRepository = OccInspectionTaskRepository.getInstance(view.getContext());
+    SharedPreferences sp = view.getContext().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
 
-    this.sp = view.getContext().getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
-    this.muniCode = this.sp.getInt(SP_KEY_MUNICIPALITY_CODE, -1);
-    this.authPeriodId = this.sp.getInt(SP_KEY_AUTH_PERIOD_ID, -1);
-    this.loginUserToken = this.sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
-    this.isOnline = this.sp.getBoolean(SP_KEY_IS_ONLINE, false);
+    FloatingActionButton btnFetchDispatch = view.findViewById(R.id.btn_inspection_fetch_dispatch);
+    RecyclerView rvInspectionList = view.findViewById(R.id.rv_inspection_list);
 
-    this.btnFetchDispatch = view.findViewById(R.id.btn_inspection_fetch_dispatch);
-    this.rvInspectionList = view.findViewById(R.id.rv_inspection_list);
-    this.dialog = new AlertDialog.Builder(view.getContext());
-    this.radioGroup = view.findViewById(R.id.rg_inspection_is_finish_or_not);
-    this.rBtnUnFinish = view.findViewById(R.id.rb_inspection_un_finish);
-    this.rBtnFinished = view.findViewById(R.id.rb_inspection_finished);
-    this.rBtnSynchronized = view.findViewById(R.id.rb_inspection_synchronized);
-    this.etSearch = view.findViewById(R.id.et_inspection_search);
-    this.tvIsCompletedIndicator = view.findViewById(R.id.tv_inspection_is_completed_indicator);
-    this.imageBtnMore = view.findViewById(R.id.imageBtn_occ_inspection_more_icon);
-    this.imageBtnSearch = view.findViewById(R.id.imageBtn_occ_inspection_search_icon);
-    this.rvInspectionList.setLayoutManager(new LinearLayoutManager(getActivity()));
+    RadioGroup radioGroup = view.findViewById(R.id.rg_inspection_is_finish_or_not);
+    RadioButton rBtnUnFinish = view.findViewById(R.id.rb_inspection_un_finish);
+    RadioButton rBtnFinished = view.findViewById(R.id.rb_inspection_finished);
+    RadioButton rBtnSynchronized = view.findViewById(R.id.rb_inspection_synchronized);
+    EditText etSearch = view.findViewById(R.id.et_inspection_search);
+
+    ImageButton imageBtnMore = view.findViewById(R.id.imageBtn_occ_inspection_more_icon);
+    ImageButton imageBtnSearch = view.findViewById(R.id.imageBtn_occ_inspection_search_icon);
+    rvInspectionList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
     if (!isOnline) {
-      this.btnFetchDispatch.setEnabled(false);
+      btnFetchDispatch.setEnabled(false);
     }
 
-    this.imageBtnSearch.setOnClickListener(v -> {
-      if (this.etSearch.getVisibility() == View.VISIBLE) {
-        this.etSearch.setVisibility(View.GONE);
-      } else {
-        this.etSearch.setVisibility(View.VISIBLE);
+    imageBtnSearch.setOnClickListener(v -> {
+      if (etSearch.getVisibility() == View.VISIBLE) {
+        etSearch.setVisibility(View.GONE);
+        return;
       }
+      etSearch.setVisibility(View.VISIBLE);
     });
 
-    this.imageBtnMore.setOnClickListener(v -> {
+    imageBtnMore.setOnClickListener(v -> {
       BottomSheetDialog bottomSheet = new BottomSheetDialog();
       bottomSheet.show(getActivity().getSupportFragmentManager(), "ModalBottomSheet");
     });
 
-    this.etSearch.setOnFocusChangeListener((v, hasFocus) -> {
+    etSearch.setOnFocusChangeListener((v, hasFocus) -> {
       if (hasFocus) {
         return;
       }
       hideKeyboard(v);
     });
 
-    this.btnFetchDispatch.setOnClickListener(v -> {
-      this.dialog.setTitle("Confirm");
-      this.dialog.setMessage("Are you sure to re-load inspection dispatches?");
-      this.dialog.setPositiveButton("Yes", (dialog, which) -> {
-         new FetchOccInspectionDispatch(getContext(), occInspectionApiService, occInspectionTaskRepository, loginUserToken, authPeriodId, muniCode).execute();
-      });
-      this.dialog.setNegativeButton("Dismiss", (dialog, which) -> dialog.dismiss());
-      AlertDialog alertDialog = this.dialog.create();
-      alertDialog.show();
+    etSearch.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+        InspectionAdapter adapter = (InspectionAdapter) rvInspectionList.getAdapter();
+        if (adapter == null) {
+          return;
+        }
+        adapter.getFilter().filter(s.toString());
+        rvInspectionList.setAdapter(adapter);
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+      }
     });
 
-    this.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-      if (checkedId == R.id.rb_inspection_un_finish) {
-        rBtnUnFinish.setTextColor(getActivity().getColor(R.color.on_switch_font));
-        rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-        rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnFinished.setBackground(null);
-        rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnSynchronized.setBackground(null);
-      } else if (checkedId == R.id.rb_inspection_finished) {
-        rBtnFinished.setTextColor(getActivity().getColor(R.color.on_switch_font));
-        rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-        rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnUnFinish.setBackground(null);
-        rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnSynchronized.setBackground(null);
-        tvIsCompletedIndicator.setVisibility(View.GONE);
-      } else if (checkedId == R.id.rb_inspection_synchronized) {
-        rBtnSynchronized.setTextColor(getActivity().getColor(R.color.on_switch_font));
-        rBtnSynchronized.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-        rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnUnFinish.setBackground(null);
-        rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
-        rBtnFinished.setBackground(null);
-        tvIsCompletedIndicator.setVisibility(View.GONE);
+    btnFetchDispatch.setOnClickListener(v -> new AlertDialog
+        .Builder(getActivity())
+        .setTitle("Confirm")
+        .setMessage("Are you sure to re-load inspection dispatches?")
+        .setPositiveButton("Yes", (dialog, which) -> {
+          FetchOccInspectionDispatchTask task = new FetchOccInspectionDispatchTask(InspectionDispatchFragment.this);
+          task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        })
+        .setNegativeButton("Dismiss", (dialog, which) -> {
+        })
+        .create()
+        .show());
+
+    radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+      switch (checkedId) {
+        case R.id.rb_inspection_un_finish:
+          configAfterClickOnUnFinishBtn(rBtnUnFinish, rBtnFinished, rBtnSynchronized);
+          break;
+        case R.id.rb_inspection_finished:
+          configAfterClickOnFinishedBtn(rBtnUnFinish, rBtnFinished, rBtnSynchronized);
+          break;
+        case R.id.rb_inspection_synchronized:
+          configAfterClickOnSynchronizedBtn(rBtnUnFinish, rBtnFinished, rBtnSynchronized);
+          break;
       }
-      loadingInspectionDispatch();
     });
-
-    loadingInspectionDispatch();
-
+    LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(getCategory(radioGroup), InspectionDispatchFragment.this);
+    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
-  private void loadingInspectionDispatch() {
-    new LoadingOccInspectionDispatchRecycleView(occInspectionDispatchRepository, muniCode, getContext(),
-        rBtnFinished.isChecked() ? Category.FINISHED : rBtnUnFinish.isChecked() ? Category.UN_FINISH : Category.SYNCHRONIZED, rvInspectionList, tvIsCompletedIndicator, etSearch).execute();
+  private Category getCategory(RadioGroup radioGroup) {
+    int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+    Category category = UN_FINISH;
+    switch (checkedRadioButtonId) {
+      case R.id.rb_inspection_un_finish:
+        break;
+      case R.id.rb_inspection_finished:
+        category = FINISHED;
+        break;
+      case R.id.rb_inspection_synchronized:
+        category = SYNCHRONIZED;
+        break;
+    }
+    return category;
   }
 
-
-
-  public static class LoadingOccInspectionDispatchRecycleView extends AsyncTask<Void, Void, InspectionAdapter> {
-
-    private OccInspectionDispatchRepository occInspectionDispatchRepository;
-    private RecyclerView recyclerView;
-    private Context context;
-    private Category category;
-    private Integer muniCode;
-    private EditText etSearch;
-    private TextView tvIsCompletedIndicator;
-
-    public LoadingOccInspectionDispatchRecycleView(OccInspectionDispatchRepository occInspectionDispatchRepository, Integer muniCode, Context context,
-        Category category, RecyclerView recyclerView, TextView tvIsCompletedIndicator, EditText etSearch) {
-      this.occInspectionDispatchRepository = occInspectionDispatchRepository;
-      this.muniCode = muniCode;
-      this.context = context;
-      this.category = category;
-      this.recyclerView = recyclerView;
-      this.tvIsCompletedIndicator = tvIsCompletedIndicator;
-      this.etSearch = etSearch;
+  private void configAfterClickOnUnFinishBtn(RadioButton rBtnUnFinish, RadioButton rBtnFinished, RadioButton rBtnSynchronized) {
+    if (getActivity() == null) {
+      return;
     }
-
-    @Override
-    protected InspectionAdapter doInBackground(Void... voids) {
-      InspectionAdapter ret = null;
-
-      List<OccInspectionDispatchHeavy> synchronizedInspectionDispatchHeavyList = this.occInspectionDispatchRepository.getSynchronizedInspectionDispatchHeavy(this.muniCode);
-      List<OccInspectionDispatchHeavy> unSynchronizeInspectionDispatchHeavyList = this.occInspectionDispatchRepository.getUnSynchronizeInspectionDispatchHeavy(this.muniCode);
-      InspectionAdapter synchronizedOccInspectionDispatchAdapter = new InspectionAdapter(this.context, synchronizedInspectionDispatchHeavyList, true);
-
-      Map<OccInspectionDispatchRepository.Category, List<OccInspectionDispatchHeavy>> occInspectionDispatchHeavyListMap = this.occInspectionDispatchRepository.getOccInspectionDispatchHeavyListMap(
-          unSynchronizeInspectionDispatchHeavyList);
-      List<OccInspectionDispatchHeavy> finishedInspectionDispatchHeavyList = occInspectionDispatchHeavyListMap.get(OccInspectionDispatchRepository.Category.FINISHED);
-      List<OccInspectionDispatchHeavy> unFinishInspectionDispatchHeavyList = occInspectionDispatchHeavyListMap.get(OccInspectionDispatchRepository.Category.UN_FINISH);
-
-      InspectionAdapter finishedOccInspectionDispatchAdapter = new InspectionAdapter(context, finishedInspectionDispatchHeavyList, false);
-      InspectionAdapter unFinishOccInspectionDispatchAdapter = new InspectionAdapter(context, unFinishInspectionDispatchHeavyList, false);
-
-      finishedOccInspectionDispatchAdapter.setFinished(true);
-      unFinishOccInspectionDispatchAdapter.setFinished(false);
-
-      switch (category) {
-        case FINISHED:
-          ret = finishedOccInspectionDispatchAdapter;
-          break;
-        case UN_FINISH:
-          ret = unFinishOccInspectionDispatchAdapter;
-          break;
-        case SYNCHRONIZED:
-          ret = synchronizedOccInspectionDispatchAdapter;
-          break;
-      }
-      return ret;
-    }
-
-    @Override
-    protected void onPostExecute(InspectionAdapter inspectionAdapter) {
-      super.onPostExecute(inspectionAdapter);
-
-      if (inspectionAdapter == null) {
-        return;
-      }
-      recyclerView.setAdapter(inspectionAdapter);
-      if (inspectionAdapter.getItemCount() != 0) {
-        tvIsCompletedIndicator.setVisibility(View.GONE);
-      } else {
-        tvIsCompletedIndicator.setVisibility(View.VISIBLE);
-      }
-
-      this.etSearch.addTextChangedListener(new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-          inspectionAdapter.getFilter().filter(s.toString());
-          recyclerView.setAdapter(inspectionAdapter);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-      });
-    }
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.on_switch_font));
+    rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnFinished.setBackground(null);
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnSynchronized.setBackground(null);
+    LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(UN_FINISH, InspectionDispatchFragment.this);
+    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
-  // TODO CASE TO IGNORE VS CASE TO REPLACE
-  public static class FetchOccInspectionDispatch extends AsyncTask<Void, Void, InspectionAdapter> {
-    private Context context;
-    private OccInspectionApiService occInspectionApiService;
-    private OccInspectionTaskRepository occInspectionTaskRepository;
-    private String loginUserToken;
-    private Integer authPeriodId;
-    private Integer muniCode;
-
-    public FetchOccInspectionDispatch(Context context, OccInspectionApiService occInspectionApiService, OccInspectionTaskRepository occInspectionTaskRepository, String loginUserToken,
-        Integer authPeriodId, Integer muniCode) {
-      this.context = context;
-      this.occInspectionApiService = occInspectionApiService;
-      this.occInspectionTaskRepository = occInspectionTaskRepository;
-      this.loginUserToken = loginUserToken;
-      this.authPeriodId = authPeriodId;
-      this.muniCode = muniCode;
+  private void configAfterClickOnFinishedBtn(RadioButton rBtnUnFinish, RadioButton rBtnFinished, RadioButton rBtnSynchronized) {
+    if (getActivity() == null) {
+      return;
     }
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.on_switch_font));
+    rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnUnFinish.setBackground(null);
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnSynchronized.setBackground(null);
+    LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(Category.FINISHED, InspectionDispatchFragment.this);
+    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+  }
 
-    @Override
-    protected InspectionAdapter doInBackground(Void... voids) {
-      OccInspectionTasks occInspectionTasks = null;
-      try {
-        occInspectionTasks = this.occInspectionApiService.getOccInspectionDispatch(loginUserToken, String.valueOf(authPeriodId), String.valueOf(muniCode), null);
-        this.occInspectionTaskRepository.insertOccInspectionTask(occInspectionTasks);
-        context.startActivity(new Intent(context, HomeActivity.class));
-      } catch (HttpBadRequestException
-          | HttpServerErrorException
-          | HttpUnknownErrorException
-          | HttpNoFoundException
-          | HttpUnAuthorizedException
-          | IOException e) {
-        Log.e(TAG, String.format(e.toString()));
-      }
-      return null;
+  private void configAfterClickOnSynchronizedBtn(RadioButton rBtnUnFinish, RadioButton rBtnFinished, RadioButton rBtnSynchronized) {
+    if (getActivity() == null) {
+      return;
     }
-
-    @Override
-    protected void onPostExecute(InspectionAdapter inspectionAdapter) {
-      super.onPostExecute(inspectionAdapter);
-    }
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.on_switch_font));
+    rBtnSynchronized.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnUnFinish.setBackground(null);
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnFinished.setBackground(null);
+    LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(Category.SYNCHRONIZED, InspectionDispatchFragment.this);
+    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
   private void hideKeyboard(View view) {

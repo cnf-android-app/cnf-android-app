@@ -20,10 +20,6 @@ public class OccChecklistRepository {
     return INSTANCE;
   }
 
-  public List<OccCheckList> getOccCheckListList() {
-    return this.occCheckListDao.selectAllOccCheckListList();
-  }
-
   public void insertOccCheckListList(List<OccCheckList> occCheckListList) {
     this.occCheckListDao.insertOccCheckListList(occCheckListList);
   }

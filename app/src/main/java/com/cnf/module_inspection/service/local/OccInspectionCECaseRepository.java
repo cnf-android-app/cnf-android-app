@@ -9,7 +9,6 @@ import java.util.List;
 public class OccInspectionCECaseRepository {
 
   private CECaseDao ceCaseDao;
-
   private static final OccInspectionCECaseRepository INSTANCE = new OccInspectionCECaseRepository();
 
   private OccInspectionCECaseRepository() {

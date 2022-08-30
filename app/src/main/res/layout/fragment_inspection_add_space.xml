@@ -12,8 +12,7 @@
     android:layout_height="40dp"
     android:orientation="horizontal"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    >
+    app:layout_constraintTop_toTopOf="parent">
 
     <RadioButton
       android:id="@+id/rb_inspected_space_un_finish"
@@ -22,8 +21,7 @@
       android:layout_weight="1"
       android:button="@null"
       android:gravity="center"
-      android:text="IN PROGRESS"
-      />
+      android:text="IN PROGRESS" />
 
     <RadioButton
       android:id="@+id/rb_inspected_space_finished"
@@ -32,18 +30,29 @@
       android:layout_weight="1"
       android:button="@null"
       android:gravity="center"
-      android:text="DONE"
-      />
+      android:text="DONE" />
   </RadioGroup>
+
+  <TextView
+    android:id="@+id/tv_inspection_space_is_completed_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="30dp"
+    android:text="All inspected spaces for Inspection ID: %s have been completed"
+    android:textAlignment="center"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_occ_inspected_space"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/outer_margin"
+    android:paddingBottom="60dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/rg_inspected_space_is_finish_or_not" />
-
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/btn_add_space"
@@ -56,18 +65,5 @@
     android:textColor="@color/white"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
-
-  <TextView
-    android:id="@+id/tv_inspection_space_is_completed_indicator"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    android:padding="30dp"
-    android:textAlignment="center"
-    android:text="All inspected spaces for Inspection ID: %s have been completed"
-   />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

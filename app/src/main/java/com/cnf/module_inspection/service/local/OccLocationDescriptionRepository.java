@@ -23,13 +23,4 @@ public class OccLocationDescriptionRepository {
   public List<OccLocationDescription> getOccLocationDescriptionListFromSQLite() {
     return this.occChecklistSpaceTypeElementDao.selectAllOccLocationDescriptionList();
   }
-
-  public void insertOccLocationDescriptionList(List<OccLocationDescription> occLocationDescriptionList) {
-    this.occChecklistSpaceTypeElementDao.insertOccLocationDescriptionList(occLocationDescriptionList);
-  }
-
-  public void deleteAllOccLocationDescriptionList() {
-    this.occChecklistSpaceTypeElementDao.deleteAllOccLocationDescriptionList();
-  }
-
 }

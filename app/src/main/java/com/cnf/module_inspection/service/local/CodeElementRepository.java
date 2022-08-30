@@ -20,15 +20,9 @@ public class CodeElementRepository {
     return INSTANCE;
   }
 
-  public List<CodeElement> getCodeElementListFromSQLite() {
-    return this.codeElementDao.selectCodeElementList();
-  }
-
   public void insertCodeElementList(List<CodeElement> codeElementList) {
-
     this.codeElementDao.insertCodeElementList(codeElementList);
   }
-
 
   public void deleteAllCodeElementList() {
     this.codeElementDao.deleteAllCodeElementList();

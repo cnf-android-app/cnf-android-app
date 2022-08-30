@@ -84,4 +84,26 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/muni_login_toolbar" />
 
+  <LinearLayout
+    android:id="@+id/ll_municipality_init_progress_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent01"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:visibility="gone">
+
+    <ProgressBar
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:layout_marginRight="15dp"/>
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Please Wait..."/>
+
+
+  </LinearLayout>
+
 </RelativeLayout>

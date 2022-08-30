@@ -3,21 +3,8 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:padding="@dimen/outer_margin"
-  android:background="@drawable/layout_bg_blue"
   android:gravity="center_horizontal"
   android:orientation="vertical">
-
-  <Button
-    android:id="@+id/btn_logout"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:text="Logout"/>
-
-  <Button
-    android:id="@+id/btn_change_session"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:text="Change Session"/>
 
   <LinearLayout
     android:layout_margin="5dp"
@@ -40,10 +27,16 @@
 
   </LinearLayout>
 
-  <View
+  <Button
+    android:id="@+id/btn_change_session"
     android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/borders" />
+    android:layout_height="40dp"
+    android:text="Change Session" />
 
+  <Button
+    android:id="@+id/btn_logout"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:text="Logout" />
 
 </LinearLayout>
