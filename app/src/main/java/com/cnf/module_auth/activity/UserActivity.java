@@ -23,22 +23,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class UserActivity extends AppCompatActivity {
 
-  private EditText loginUsernameEt;
-  private EditText loginPasswordEt;
-  private Button loginBtn;
-
-
-  private String username;
-  private String password;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_user);
-
-    this.loginUsernameEt = findViewById(R.id.et_username);
-    this.loginPasswordEt = findViewById(R.id.et_password);
-    this.loginBtn = findViewById(R.id.btn_login);
 
   }
 
@@ -54,9 +42,13 @@ public class UserActivity extends AppCompatActivity {
       task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    EditText loginUsernameEt = findViewById(R.id.et_username);
+    EditText loginPasswordEt = findViewById(R.id.et_password);
+    Button loginBtn = findViewById(R.id.btn_login);
+
     loginBtn.setOnClickListener(view -> {
-      username = loginUsernameEt.getText().toString().trim();
-      password = loginPasswordEt.getText().toString().trim();
+      String username = loginUsernameEt.getText().toString().trim();
+      String password = loginPasswordEt.getText().toString().trim();
       if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
         Snackbar.make(view, TOAST_INVALID_USERNAME_OR_PASSWORD_MSG, Snackbar.LENGTH_LONG).show();
         return;
@@ -77,7 +69,6 @@ public class UserActivity extends AppCompatActivity {
       }
     });
   }
-
 
   public void hideKeyboard(View view) {
     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

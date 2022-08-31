@@ -1,15 +1,11 @@
 package com.cnf.module_inspection.service.remote;
 
-import static android.content.ContentValues.TAG;
-
 import static com.cnf.utils.RequestConstants.AUTH_PERIOD_PATH;
 import static com.cnf.utils.RequestConstants.OCC_INSPECTION_DISPATCH_ALL_ADDRESS;
 import static com.cnf.utils.RequestConstants.OCC_INSPECTION_DISPATCH_SYNCHRONIZED_ADDRESS;
 import static com.cnf.utils.RequestConstants.OCC_INSPECTION_DISPATCH_UN_SYNCHRONIZE_ADDRESS;
 import static com.cnf.utils.RequestConstants.OCC_INSPECTION_INFRA_ADDRESS;
 import static com.cnf.utils.RequestConstants.OCC_INSPECTION_UPLOAD;
-
-import android.util.Log;
 
 import com.cnf.module_inspection.entity.infra.LoginMuniAuthPeriod;
 import com.cnf.module_inspection.entity.infra.OccInspectionInfra;
@@ -20,9 +16,9 @@ import com.cnf.module_inspection.service.exception.HttpNoFoundException;
 import com.cnf.module_inspection.service.exception.HttpServerErrorException;
 import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
 import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
-import com.cnf.module_inspection.service.exception.OccInspectionInfraEmptyException;
 import com.cnf.utils.RequestUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -47,36 +43,27 @@ public class OccInspectionApiService {
   }
 
   public OccInspectionInfra getOccInspectionInfra(String loginToken)
-      throws OccInspectionInfraEmptyException, HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException {
+      throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException, JsonSyntaxException {
     String body = RequestUtils.sendGetRequest(loginToken, OCC_INSPECTION_INFRA_ADDRESS, null);
-    if (body == null || body.isEmpty()) {
-      Log.d(TAG, String.format("Server OccInspectionInfra: %s", "EMPTY"));
-      throw new OccInspectionInfraEmptyException("OccInspectionInfraEmptyException Error");
-    }
     OccInspectionInfra occInspectionInfra = new Gson().fromJson(body, OccInspectionInfra.class);
-    Log.d(TAG, String.format("Server OccInspectionInfra: %s", occInspectionInfra));
     return occInspectionInfra;
   }
 
   public OccInspectionTasks getOccInspectionDispatch(String loginToken, String authPeriodId, String municipalityCode, Boolean isSynchronized)
-      throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException {
+      throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException, JsonSyntaxException {
     HashMap<String, String> paramsMap = new HashMap<>();
     paramsMap.put(MUNICIPALITY_CODE, municipalityCode);
     paramsMap.put(AUTH_PERIOD_ID, authPeriodId);
-    String body;
+    String url;
     if (isSynchronized == null) {
-      body = RequestUtils.sendGetRequest(loginToken, OCC_INSPECTION_DISPATCH_ALL_ADDRESS, paramsMap);
+      url = OCC_INSPECTION_DISPATCH_ALL_ADDRESS;
     } else if (isSynchronized) {
-      body = RequestUtils.sendGetRequest(loginToken, OCC_INSPECTION_DISPATCH_SYNCHRONIZED_ADDRESS, paramsMap);
+      url = OCC_INSPECTION_DISPATCH_SYNCHRONIZED_ADDRESS;
     } else {
-      body = RequestUtils.sendGetRequest(loginToken, OCC_INSPECTION_DISPATCH_UN_SYNCHRONIZE_ADDRESS, paramsMap);
+      url = OCC_INSPECTION_DISPATCH_UN_SYNCHRONIZE_ADDRESS;
     }
-    if (body == null || body.isEmpty()) {
-      Log.d(TAG, String.format("Server Inspection Dispatch: %s", "EMPTY"));
-      return new OccInspectionTasks();
-    }
+    String body = RequestUtils.sendGetRequest(loginToken, url, paramsMap);
     OccInspectionTasks occInspectionTasks = new Gson().fromJson(body, OccInspectionTasks.class);
-    Log.d(TAG, String.format("Server Inspection Tasks: %s", occInspectionTasks));
     return occInspectionTasks;
   }
 
@@ -84,16 +71,13 @@ public class OccInspectionApiService {
       throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException {
     String body = RequestUtils.sendPostRequest(userLoginToken, null, AUTH_PERIOD_PATH, null);
     if (body == null || body.isEmpty()) {
-      Log.d(TAG, String.format("Server LoginMuniAuthPeriod List: %s", "EMPTY"));
       return new ArrayList<>();
     }
-    List<LoginMuniAuthPeriod> loginMuniAuthPeriodList = new Gson().fromJson(body, new TypeToken<ArrayList<LoginMuniAuthPeriod>>() {
+    return new Gson().fromJson(body, new TypeToken<ArrayList<LoginMuniAuthPeriod>>() {
     }.getType());
-    Log.d(TAG, String.format("Server LoginMuniAuthPeriod List: %s", loginMuniAuthPeriodList));
-    return loginMuniAuthPeriodList;
   }
 
-  public void uploadToServer(UploadDTO uploadDTO, String userLoginToken,String authPeriodId, String municipalityCode)
+  public void uploadToServer(UploadDTO uploadDTO, String userLoginToken, String authPeriodId, String municipalityCode)
       throws IOException, HttpUnAuthorizedException, HttpBadRequestException, HttpServerErrorException, HttpUnknownErrorException, HttpNoFoundException {
     String requestBody = new Gson().toJson(uploadDTO);
     HashMap<String, String> paramsMap = new HashMap<>();

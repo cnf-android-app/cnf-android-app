@@ -10,12 +10,12 @@ import androidx.room.PrimaryKey;
 
 import java.util.UUID;
 
-//@Entity(foreignKeys =
-//@ForeignKey(entity = BlobBytes.class,
-//    parentColumns = "bytesid",
-//    childColumns = "blobtype_typeid",
-//    onDelete = CASCADE))
-@Entity
+@Entity(foreignKeys =
+@ForeignKey(entity = BlobBytes.class,
+    parentColumns = "bytesid",
+    childColumns = "blobbytes_bytesid",
+    onDelete = CASCADE))
+//@Entity
 public class PhotoDoc {
 
   @PrimaryKey(autoGenerate = false)

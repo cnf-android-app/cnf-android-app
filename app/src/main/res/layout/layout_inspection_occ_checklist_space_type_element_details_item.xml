@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginVertical="@dimen/inner_margin_vertical"
+  android:layout_marginVertical="@dimen/inner_margin"
   android:background="@drawable/layout_card"
   android:orientation="vertical">
 
@@ -10,8 +10,8 @@
     android:id="@+id/ly_inspection_occ_checklist_space_type_element_row_0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:layout_marginHorizontal="@dimen/inner_margin"
+    android:layout_marginVertical="@dimen/inner_margin">
 
     <TextView
       android:id="@+id/tv_inspection_space_type_details_element_id_title"
@@ -39,8 +39,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_0"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:layout_marginHorizontal="@dimen/inner_margin"
+    android:layout_marginVertical="@dimen/inner_margin">
 
     <TextView
       android:id="@+id/tv_inspection_space_type_details_element_Ordinance_num_title"
@@ -65,8 +65,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_1"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:layout_marginHorizontal="@dimen/inner_margin"
+    android:layout_marginVertical="@dimen/inner_margin">
 
     <TextView
       android:id="@+id/tv_inspection_space_type_details_element_Ordinance_title_title"
@@ -90,8 +90,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_2"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:layout_marginHorizontal="@dimen/inner_margin"
+    android:layout_marginVertical="@dimen/inner_margin">
 
     <TextView
       android:id="@+id/tv_inspection_space_type_details_element_Ordinance_text_title"
@@ -115,8 +115,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_element_row_3"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:layout_marginHorizontal="@dimen/inner_margin"
+    android:layout_marginVertical="@dimen/inner_margin">
 
     <TextView
       android:id="@+id/tv_inspection_space_type_details_element_Ordinance_text_value"

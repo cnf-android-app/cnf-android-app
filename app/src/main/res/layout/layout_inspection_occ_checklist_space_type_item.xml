@@ -2,17 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginVertical="@dimen/outer_margin"
+  android:layout_marginVertical="@dimen/inner_margin"
   android:background="@drawable/layout_card"
+  android:paddingHorizontal="@dimen/outer_padding"
   android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/ly_inspection_occ_checklist_space_type_row_0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="15dp"
-    android:layout_marginVertical="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/inner_padding">
 
     <TextView
       android:id="@+id/tv_inspection_occ_checklist_space_type_title"
@@ -28,7 +28,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="Here is the description of checklist space type"
-      android:textColor="@color/text_dark" />
+      android:textColor="@color/text_dark"
+      android:textSize="@dimen/card_content_size" />
+
   </LinearLayout>
 
   <LinearLayout
@@ -36,8 +38,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/ly_inspection_occ_checklist_space_type_row_0"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:paddingVertical="@dimen/inner_padding"
     android:weightSum="6">
 
     <TextView
@@ -46,14 +47,17 @@
       android:layout_height="wrap_content"
       android:layout_weight="3"
       android:text="Checklist Space Id"
-      android:textColor="@color/text" />
+      android:textColor="@color/text_dark"
+      android:textSize="@dimen/card_content_size"/>
 
     <TextView
       android:id="@+id/tv_inspection_occ_checklist_space_type_id_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="3"
-      android:textColor="@color/text" />
+      android:textColor="@color/text"
+      android:textSize="@dimen/card_content_size"/>
+
   </LinearLayout>
 
 
@@ -62,8 +66,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_row_2"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:paddingVertical="@dimen/inner_padding"
     android:weightSum="6">
 
     <TextView
@@ -72,14 +75,16 @@
       android:layout_height="wrap_content"
       android:layout_weight="3"
       android:text="Checklist"
-      android:textColor="@color/text" />
+      android:textColor="@color/text_dark"
+      android:textSize="@dimen/card_content_size"/>
 
     <TextView
       android:id="@+id/tv_inspection_occ_checklist_space_type_checklist_title_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="3"
-      android:textColor="@color/text" />
+      android:textColor="@color/text"
+      android:textSize="@dimen/card_content_size"/>
 
   </LinearLayout>
 
@@ -88,8 +93,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_row_1"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:paddingVertical="@dimen/inner_padding"
     android:weightSum="6">
 
     <TextView
@@ -98,14 +102,16 @@
       android:layout_height="wrap_content"
       android:layout_weight="3"
       android:text="Required:"
-      android:textColor="@color/text" />
+      android:textColor="@color/text_dark"
+      android:textSize="@dimen/card_content_size" />
 
     <TextView
       android:id="@+id/tv_inspection_occ_checklist_space_type_required_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="3"
-      android:textColor="@color/text" />
+      android:textColor="@color/text"
+      android:textSize="@dimen/card_content_size"/>
 
   </LinearLayout>
 
@@ -113,8 +119,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ly_inspection_occ_checklist_space_type_row_3"
-    android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-    android:layout_marginVertical="@dimen/inner_margin_vertical">
+    android:paddingVertical="@dimen/inner_padding">
 
     <Button
       android:id="@+id/btn_inspection_occ_checklist_space_type_details"

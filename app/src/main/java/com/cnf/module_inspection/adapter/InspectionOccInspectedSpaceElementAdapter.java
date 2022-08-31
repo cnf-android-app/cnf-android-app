@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.content.Context;
@@ -136,11 +138,12 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
     public RadioButton notInspectedRadioBtn, passRadioBtn, violationRadioBtn;
     public TextView inspectedElementSectionNumberTv, inspectedElementSectionTitleTv;
     public TextView savePassTv, saveViolationTv, saveNotInspectedTv, exitPassTv, exitViolationTv, exitNotInspectedTv;
+    public TextView tvDefaultViolationDesLink;
     public Button takePhotoPassBtn, takePhotoViolateBtn, selectGalleryPassBtn, selectGalleryViolateBtn;
     public RecyclerView inspectedSpaceElementPassPhotoRv, inspectedSpaceElementViolatePhotoRv;
     public EditText findingPassEt, findingViolateEt;
     public Spinner severityS;
-    public SwitchCompat defaultViolationDesSw, includeInCNFSw;
+    public CheckBox includeInCNFSw;
 
     public InspectionOccInspectedSpaceElementHolder(@NonNull View itemView) {
       super(itemView);
@@ -169,8 +172,8 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       saveViolationTv = itemView.findViewById(R.id.tv_inspection_occ_inspected_space_element_item_violation_save);
       exitViolationTv = itemView.findViewById(R.id.tv_inspection_occ_inspected_space_element_item_violation_exit);
       findingViolateEt = itemView.findViewById(R.id.et_inspection_occ_inspected_space_element_item_violation_finding);
-      severityS = itemView.findViewById(R.id.et_inspection_occ_inspected_space_element_item_violation_spinner);
-      defaultViolationDesSw = itemView.findViewById(R.id.sw_inspection_occ_inspected_space_element_item_violation_default_description);
+      severityS = itemView.findViewById(R.id.sp_inspection_occ_inspected_space_element_item_violation_spinner);
+      tvDefaultViolationDesLink = itemView.findViewById(R.id.sw_inspection_occ_inspected_space_element_item_violation_default_description);
       includeInCNFSw = itemView.findViewById(R.id.sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case);
       selectGalleryViolateBtn = itemView.findViewById(R.id.btn_inspection_occ_inspected_space_element_item_violation_select_from_gallery);
     }
@@ -365,14 +368,15 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
 
   private void buildIntensityClass(InspectionOccInspectedSpaceElementHolder holder, OccInspectedSpaceElementHeavy occInspectedSpaceElementHeavy) {
     ArrayAdapter<IntensityClass> intensityClassArrayAdapter = new ArrayAdapter<>(fragment.getActivity(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, intensityClassList);
-    IntensityClass intensityClass = new IntensityClass();
-    intensityClass.setTitle("Violation Severity");
-    intensityClassList.add(0, intensityClass);
+    //IntensityClass intensityClass = new IntensityClass();
+    //intensityClass.setTitle("Violation Severity");
+   // intensityClassList.add(0, intensityClass);
 
     intensityClassArrayAdapter.setDropDownViewResource(R.layout.drop_down_item);
 
     holder.severityS.setAdapter(intensityClassArrayAdapter);
     holder.severityS.setPrompt("Violation Severity");
+    holder.severityS.setSelection(0);
     for (int i = 0; i < intensityClassList.size(); i++) {
       if (intensityClassList.get(i).getClassId() == (occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getFailureSeverityIntensityClassId())) {
         holder.severityS.setSelection(i);
@@ -418,7 +422,7 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
 
     boolean toUseDefaultDescription = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().isToUseDefaultDescription();
 
-    holder.defaultViolationDesSw.setChecked(toUseDefaultDescription);
+    //holder.tvDefaultViolationDesLink.setChecked(toUseDefaultDescription);
 
     Boolean migrateToCECaseOnFail = occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().getMigrateToCECaseOnFail();
     if (migrateToCECaseOnFail == null || migrateToCECaseOnFail == false) {
@@ -427,8 +431,13 @@ public class InspectionOccInspectedSpaceElementAdapter extends RecyclerView.Adap
       holder.includeInCNFSw.setChecked(true);
     }
 
+    holder.tvDefaultViolationDesLink.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        //todo load default description
+      }
+    });
 
-    holder.defaultViolationDesSw.setOnCheckedChangeListener((buttonView, isChecked) -> occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setToUseDefaultDescription(isChecked));
     holder.includeInCNFSw.setOnCheckedChangeListener((buttonView, isChecked) -> occInspectedSpaceElementHeavy.getOccInspectedSpaceElement().setMigrateToCECaseOnFail(isChecked));
 
     holder.takePhotoViolateBtn.setOnClickListener(v -> {

@@ -1,10 +1,13 @@
 package com.cnf.module_auth.async;
 
 import static android.content.ContentValues.TAG;
-import static com.cnf.utils.AppConstants.ERROR_INFRASTRUCTURE_INITIALIZATION_MSG;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_CLIENT_MSG;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_LOGIN_AUTHORIZATION_MSG;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_SERVER_MSG;
+import static com.cnf.utils.AppConstants.TOAST_UNKNOWN_MSG;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cnf.R;
 import com.cnf.module_auth.activity.MainActivity;
 import com.cnf.module_auth.activity.MuniActivity;
-import com.cnf.module_auth.activity.UserActivity;
 import com.cnf.module_auth.adapter.MunicipalityLoginAdapter;
 import com.cnf.module_auth.service.OccLoginMuniAuthPeriodService;
 import com.cnf.module_auth.service.OccMunicipalitySessionInitializationService;
@@ -35,6 +37,7 @@ import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
 import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
 import com.cnf.module_inspection.service.remote.OccInspectionApiService;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,7 +46,6 @@ import java.util.List;
 public class InitializeOccMunicipalitySessionTask extends AsyncTask<Void, Void, List<LoginMuniAuthPeriodHeavy>> {
 
   private final WeakReference<MuniActivity> activityWeakReference;
-
 
   public InitializeOccMunicipalitySessionTask(@NonNull Activity activity) {
     this.activityWeakReference = new WeakReference<>((MuniActivity) activity);
@@ -54,7 +56,7 @@ public class InitializeOccMunicipalitySessionTask extends AsyncTask<Void, Void, 
     super.onPreExecute();
     MuniActivity activity = activityWeakReference.get();
     if (activity == null) {
-      //TODO
+      Log.e(TAG, "MuniActivity null");
       return;
     }
     LinearLayout loginProgress = activity.findViewById(R.id.ll_municipality_init_progress_container);
@@ -63,46 +65,59 @@ public class InitializeOccMunicipalitySessionTask extends AsyncTask<Void, Void, 
 
   @Override
   protected List<LoginMuniAuthPeriodHeavy> doInBackground(Void... voids) {
-    List<LoginMuniAuthPeriodHeavy> list = new ArrayList<>();
+    List<LoginMuniAuthPeriodHeavy> list;
     MuniActivity activity = activityWeakReference.get();
     if (activity == null) {
-      //TODO
-      return list;
+      Log.e(TAG, "MuniActivity null");
+      return null;
     }
     SharedPreferences sp = activity.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
     String userLoginToken = sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
     boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
 
     OccInspectionApiService occInspectionApiService = OccInspectionApiService.getInstance();
-
     List<LoginMuniAuthPeriod> loginMuniAuthPeriodList;
     List<OccInspectionTasks> occInspectionTasksList = new ArrayList<>();
 
     if (isOnline) {
       try {
         loginMuniAuthPeriodList = occInspectionApiService.getLoginMuniAuthPeriodList(userLoginToken);
-      } catch (HttpBadRequestException | HttpServerErrorException | HttpUnknownErrorException | HttpNoFoundException | HttpUnAuthorizedException | IOException e) {
-        Log.e(TAG, e.toString());
-        Snackbar.make(activity.getWindow().getDecorView(), ERROR_INFRASTRUCTURE_INITIALIZATION_MSG, Snackbar.LENGTH_LONG).show();
-        return list;
-      }
-      if (loginMuniAuthPeriodList == null) {
-        return list;
-      }
-      try {
         for (LoginMuniAuthPeriod loginMuniAuthPeriod : loginMuniAuthPeriodList) {
           OccInspectionTasks occInspectionTasks = occInspectionApiService.getOccInspectionDispatch(
               userLoginToken,
               String.valueOf(loginMuniAuthPeriod.getMuniAuthPeriodId()),
-              String.valueOf(loginMuniAuthPeriod.getMuniCode()), null);
+              String.valueOf(loginMuniAuthPeriod.getMuniCode()),
+              null);
           occInspectionTasksList.add(occInspectionTasks);
         }
-      } catch (HttpBadRequestException | HttpServerErrorException | HttpUnknownErrorException | HttpNoFoundException | HttpUnAuthorizedException | IOException e) {
+      } catch (HttpNoFoundException | HttpBadRequestException | IOException e) {
         Log.e(TAG, e.toString());
-        Snackbar.make(activity.getWindow().getDecorView(), ERROR_INFRASTRUCTURE_INITIALIZATION_MSG, Snackbar.LENGTH_LONG).show();
-        return list;
+        Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_CLIENT_MSG, Snackbar.LENGTH_LONG).show();
+        return null;
+      } catch (HttpServerErrorException e) {
+        Log.e(TAG, e.toString());
+        Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_SERVER_MSG, Snackbar.LENGTH_LONG).show();
+        return null;
+      } catch (HttpUnknownErrorException e) {
+        Log.e(TAG, e.toString());
+        Snackbar.make(activity.getWindow().getDecorView(), TOAST_UNKNOWN_MSG, Snackbar.LENGTH_LONG).show();
+        return null;
+      } catch (HttpUnAuthorizedException e) {
+        Log.i(TAG, e.toString());
+        Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_LOGIN_AUTHORIZATION_MSG, Snackbar.LENGTH_LONG).show();
+        return null;
+      } catch (JsonSyntaxException e) {
+        Log.e(TAG, e.toString());
+        Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_SERVER_MSG, Snackbar.LENGTH_LONG).show();
+        return null;
       }
-      OccMunicipalitySessionInitializationService.getInstance(activity).initializeMunicipalitySession(loginMuniAuthPeriodList, occInspectionTasksList);
+
+      try {
+        OccMunicipalitySessionInitializationService.getInstance(activity).initializeMunicipalitySession(loginMuniAuthPeriodList, occInspectionTasksList);
+      } catch (Exception e) {
+        Log.e(TAG, e.toString());
+        return null;
+      }
     }
     list = OccLoginMuniAuthPeriodService.getInstance(activity).getLoginMuniAuthPeriodHeavyList();
     return list;
@@ -125,19 +140,18 @@ public class InitializeOccMunicipalitySessionTask extends AsyncTask<Void, Void, 
       new AlertDialog
           .Builder(activity)
           .setTitle("Alert")
-          .setMessage("Server issue! Back to Login Page")
+          .setMessage("Try to login again, or contact CODENFORCE!")
           .setPositiveButton("Yes", (dialog, which) -> {
             Intent intent = new Intent(activity, MainActivity.class);
             activity.startActivity(intent);
           })
           .create()
           .show();
+      return;
     }
-
     RecyclerView loginMunicipalityListRv = activity.findViewById(R.id.rv_muniList);
     loginMunicipalityListRv.setLayoutManager(new LinearLayoutManager(activity));
     MunicipalityLoginAdapter adapter = new MunicipalityLoginAdapter(activity, list);
     loginMunicipalityListRv.setAdapter(adapter);
-
   }
 }

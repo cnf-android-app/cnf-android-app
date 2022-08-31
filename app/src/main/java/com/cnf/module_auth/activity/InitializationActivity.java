@@ -18,28 +18,24 @@ import com.cnf.module_auth.async.InitializeOccInspectionSystemTask;
 
 public class InitializationActivity extends AppCompatActivity {
 
-  private Boolean isInitialized;
-  private Boolean isOnline;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_initialization);
-    SharedPreferences sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
-    this.isInitialized = sp.getBoolean(SP_KEY_IS_INITIALIZED, false);
-    this.isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-
-    if (this.isInitialized) {
+    SharedPreferences sp = getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, Context.MODE_PRIVATE);
+    boolean isInitialized = sp.getBoolean(SP_KEY_IS_INITIALIZED, false);
+    boolean isOnline = sp.getBoolean(SP_KEY_IS_ONLINE, false);
+    if (isInitialized) {
       Intent intent = new Intent(InitializationActivity.this, MuniActivity.class);
       startActivity(intent);
+      return;
     }
-
-    if (!this.isOnline) {
+    if (!isOnline) {
       new AlertDialog
           .Builder(this)
           .setTitle("Alert")
@@ -48,7 +44,6 @@ public class InitializationActivity extends AppCompatActivity {
           .create()
           .show();
     }
-
     InitializeOccInspectionSystemTask task = new InitializeOccInspectionSystemTask(InitializationActivity.this);
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }

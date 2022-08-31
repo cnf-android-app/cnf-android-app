@@ -9,15 +9,15 @@
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
-    android:background="@drawable/layout_card">
+    android:layout_marginVertical="@dimen/inner_margin"
+    android:background="@drawable/layout_card"
+    android:paddingHorizontal="@dimen/outer_padding">
 
     <LinearLayout
       android:id="@+id/ly_inspection_inspectionId"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginHorizontal="15dp"
-      android:layout_marginVertical="5dp">
+      android:paddingVertical="@dimen/inner_padding">
 
       <TextView
         android:id="@+id/tv_inspection_inspectionId"
@@ -30,14 +30,12 @@
         android:textColor="@color/text_dark"
         android:textSize="@dimen/card_title_size" />
 
-
       <ImageView
         android:id="@+id/iv_inspection_direction"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:src="@drawable/ic_baseline_directions_24" />
-
 
     </LinearLayout>
 
@@ -46,8 +44,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/ly_inspection_inspectionId"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:layout_marginVertical="@dimen/inner_margin_vertical"
+      android:paddingVertical="@dimen/inner_padding"
       android:weightSum="6">
 
       <TextView
@@ -56,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:text="@string/text_address"
-        android:textColor="@color/text" />
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/tv_inspection_address_value"
@@ -72,8 +70,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/ly_inspection_address"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:layout_marginVertical="@dimen/inner_margin_vertical"
+      android:paddingVertical="@dimen/inner_padding"
       android:weightSum="6">
 
       <TextView
@@ -82,7 +79,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:text="@string/text_inspector"
-        android:textColor="@color/text" />
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/tv_inspection_inspector_value"
@@ -98,8 +96,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/ly_inspection_inspector"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:layout_marginVertical="@dimen/inner_margin_vertical"
+      android:paddingVertical="@dimen/inner_padding"
       android:weightSum="6">
 
       <TextView
@@ -108,7 +105,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:text="@string/text_checklist"
-        android:textColor="@color/text" />
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/tv_inspection_checklist_value"
@@ -124,8 +122,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/ly_inspection_checklist"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:layout_marginVertical="@dimen/inner_margin_vertical"
+      android:paddingVertical="@dimen/inner_padding"
       android:weightSum="6">
 
       <TextView
@@ -134,7 +131,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:text="@string/text_created_date"
-        android:textColor="@color/text" />
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/tv_inspection_created_date_value"
@@ -149,9 +147,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/ly_inspection_created"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:layout_marginVertical="@dimen/inner_margin_vertical"
-      android:gravity="right">
+      android:gravity="right"
+      android:paddingVertical="@dimen/inner_padding">
 
       <Button
         android:id="@+id/btn_inspection_upload"
@@ -172,6 +169,8 @@
         android:textColor="@color/white_font" />
 
     </LinearLayout>
+
   </RelativeLayout>
+
 </RelativeLayout>
 

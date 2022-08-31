@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,7 +81,7 @@ public class InspectionInspectedSpaceElementPhotoAdapter extends RecyclerView.Ad
 
     TextView photoNameTv;
     ImageView photoIv;
-    Button deleteBtn;
+    ImageButton deleteBtn;
 
     public OccInspectedSpaceElementPhotoDocHolder(@NonNull View itemView) {
       super(itemView);

@@ -18,7 +18,6 @@ import java.io.IOException;
 
 public class UserLoginApiService {
 
-
   private static UserLoginApiService INSTANCE = null;
 
   private UserLoginApiService() {
@@ -31,33 +30,19 @@ public class UserLoginApiService {
     return INSTANCE;
   }
 
-  public String userLogin(String username, String password) throws
-      IOException,
-      HttpUnAuthorizedException,
-      HttpNoneResponseForLoginUserTokenException, HttpBadRequestException, HttpServerErrorException, HttpUnknownErrorException, HttpNoFoundException {
-
+  public String userLogin(String username, String password)
+      throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException {
     UserLoginDTO userLoginDTO = new UserLoginDTO(username, password);
     String requestBody = new Gson().toJson(userLoginDTO);
     String response = RequestUtils.sendPostRequest(null, requestBody, USER_LOGIN_PATH, null);
-    if (response == null) {
-      throw new HttpNoneResponseForLoginUserTokenException("Http: none response for login user token exception");
-    }
     TokenDTO tokenDTO = new Gson().fromJson(response, TokenDTO.class);
     return tokenDTO.getToken();
   }
 
-  // TODO write a method to check if current user muni token is valid or not
-  public boolean isLoginUserTokenValid(String loginUserToken) {
-    String requestBody = null;
-    try {
-      requestBody = RequestUtils.sendPostRequest(loginUserToken, null, IS_VALID_USER_TOKEN_PATH, null);
-      Integer userId = Integer.valueOf(requestBody);
-      if (userId != -1) {
-        return true;
-      }
-    } catch (IOException | HttpUnAuthorizedException | HttpBadRequestException | HttpServerErrorException | HttpUnknownErrorException | HttpNoFoundException | NumberFormatException e) {
-      e.printStackTrace();
-    }
-    return false;
+  public boolean isLoginUserTokenValid(String loginUserToken)
+      throws HttpNoFoundException, HttpBadRequestException, IOException, HttpServerErrorException, HttpUnknownErrorException, HttpUnAuthorizedException {
+    String requestBody = RequestUtils.sendPostRequest(loginUserToken, null, IS_VALID_USER_TOKEN_PATH, null);
+    int userId = Integer.parseInt(requestBody);
+    return userId != -1;
   }
 }

@@ -19,20 +19,16 @@ import com.cnf.module_auth.activity.InitializationActivity;
 import com.cnf.module_auth.activity.MainActivity;
 import com.cnf.module_auth.activity.MuniActivity;
 import com.cnf.module_auth.service.OccInspectionSystemInitializationService;
-import com.cnf.module_inspection.entity.infra.LoginMuniAuthPeriod;
 import com.cnf.module_inspection.entity.infra.OccInspectionInfra;
-import com.cnf.module_inspection.entity.tasks.OccInspectionTasks;
 import com.cnf.module_inspection.service.exception.HttpBadRequestException;
 import com.cnf.module_inspection.service.exception.HttpNoFoundException;
 import com.cnf.module_inspection.service.exception.HttpServerErrorException;
 import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
 import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
-import com.cnf.module_inspection.service.exception.OccInspectionInfraEmptyException;
 import com.cnf.module_inspection.service.remote.OccInspectionApiService;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InitializeOccInspectionSystemTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -47,7 +43,7 @@ public class InitializeOccInspectionSystemTask extends AsyncTask<Void, Void, Boo
     super.onPreExecute();
     InitializationActivity activity = activityWeakReference.get();
     if (activity == null) {
-      //TODO
+      Log.e(TAG, "InitializationActivity null");
       return;
     }
     TextView progressBarTv = activity.findViewById(R.id.initialization_progress_bar_sync_message);
@@ -58,55 +54,34 @@ public class InitializeOccInspectionSystemTask extends AsyncTask<Void, Void, Boo
   protected Boolean doInBackground(Void... voids) {
     InitializationActivity activity = activityWeakReference.get();
     if (activity == null) {
-      //TODO
+      Log.e(TAG, "InitializationActivity null");
       return false;
     }
     SharedPreferences sp = activity.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE);
     String userLoginToken = sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
     if (userLoginToken == null) {
-      //TODO
       return false;
     }
-    OccInspectionInfra occInspectionInfra;
-    List<LoginMuniAuthPeriod> loginMuniAuthPeriodList;
-    List<OccInspectionTasks> occInspectionTasksList = new ArrayList<>();
-    OccInspectionApiService occInspectionApiService = OccInspectionApiService.getInstance();
 
+    OccInspectionInfra occInspectionInfra;
+    OccInspectionApiService occInspectionApiService = OccInspectionApiService.getInstance();
     OccInspectionSystemInitializationService occInspectionSystemInitializationService = OccInspectionSystemInitializationService.getInstance(activity);
+
     try {
       occInspectionInfra = occInspectionApiService.getOccInspectionInfra(userLoginToken);
-      loginMuniAuthPeriodList = occInspectionApiService.getLoginMuniAuthPeriodList(userLoginToken);
-      if (loginMuniAuthPeriodList == null || loginMuniAuthPeriodList.isEmpty()) {
-        //TODO
+      if (occInspectionInfra == null) {
         return false;
       }
-      for (LoginMuniAuthPeriod loginMuniAuthPeriod : loginMuniAuthPeriodList) {
-        OccInspectionTasks occInspectionTasks = occInspectionApiService.getOccInspectionDispatch(
-            userLoginToken,
-            String.valueOf(loginMuniAuthPeriod.getMuniAuthPeriodId()),
-            String.valueOf(loginMuniAuthPeriod.getMuniCode()), null);
-        occInspectionTasksList.add(occInspectionTasks);
-      }
-
-    } catch (OccInspectionInfraEmptyException
-        | HttpNoFoundException
-        | HttpBadRequestException
-        | IOException
-        | HttpServerErrorException
-        | HttpUnknownErrorException
-        | HttpUnAuthorizedException e) {
-      //TODO
-      e.printStackTrace();
+    } catch (HttpNoFoundException | HttpBadRequestException | IOException | HttpServerErrorException | HttpUnknownErrorException | HttpUnAuthorizedException | JsonSyntaxException e) {
+      Log.e(TAG, e.toString());
       return false;
     }
-
     try {
-      occInspectionSystemInitializationService.initializeSystem(occInspectionInfra, loginMuniAuthPeriodList, occInspectionTasksList);
+      occInspectionSystemInitializationService.initializeSystem(occInspectionInfra);
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.e(TAG, e.toString());
       return false;
     }
-
     return true;
   }
 
@@ -115,7 +90,7 @@ public class InitializeOccInspectionSystemTask extends AsyncTask<Void, Void, Boo
     super.onPostExecute(isSuccess);
     InitializationActivity activity = activityWeakReference.get();
     if (activity == null) {
-      Log.e(TAG, "WeakReference<InspectionContainerActivity> null");
+      Log.e(TAG, "InitializationActivity null");
       return;
     }
     SharedPreferences.Editor editor = activity.getSharedPreferences(SHARE_PREFERENCE_USER_OCC_SESSION, MODE_PRIVATE).edit();
@@ -139,7 +114,7 @@ public class InitializeOccInspectionSystemTask extends AsyncTask<Void, Void, Boo
       new AlertDialog
           .Builder(activity)
           .setTitle("Initialization Failed!")
-          .setMessage("Back to Login!")
+          .setMessage("Try to login again, or contact CODENFORCE!")
           .setPositiveButton("Yes", (dialog, which) -> {
             Intent intent = new Intent(activity, MainActivity.class);
             activity.startActivity(intent);

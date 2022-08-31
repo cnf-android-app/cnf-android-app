@@ -5,6 +5,10 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_AUTH_PERIOD_ID;
 import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_CLIENT_MSG;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_LOGIN_AUTHORIZATION_MSG;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_SERVER_MSG;
+import static com.cnf.utils.AppConstants.TOAST_UNKNOWN_MSG;
 
 import androidx.fragment.app.Fragment;
 import android.content.Context;
@@ -22,6 +26,8 @@ import com.cnf.module_inspection.service.exception.HttpServerErrorException;
 import com.cnf.module_inspection.service.exception.HttpUnAuthorizedException;
 import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
 import com.cnf.module_inspection.service.remote.OccInspectionApiService;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
@@ -53,15 +59,28 @@ public class FetchOccInspectionDispatchTask extends AsyncTask<Void, Void, OccIns
 
     try {
       occInspectionTasks = occInspectionApiService.getOccInspectionDispatch(loginUserToken, String.valueOf(authPeriodId), String.valueOf(muniCode), null);
-    } catch (HttpBadRequestException
-        | HttpServerErrorException
-        | HttpUnknownErrorException
-        | HttpNoFoundException
-        | HttpUnAuthorizedException
-        | IOException e) {
+      return occInspectionTasks;
+    } catch (HttpNoFoundException | HttpBadRequestException | IOException e) {
       Log.e(TAG, e.toString());
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_CLIENT_MSG, Snackbar.LENGTH_LONG).show();
+      return null;
+    } catch (HttpServerErrorException e) {
+      Log.e(TAG, e.toString());
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_SERVER_MSG, Snackbar.LENGTH_LONG).show();
+      return null;
+    } catch (HttpUnknownErrorException e) {
+      Log.e(TAG, e.toString());
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_UNKNOWN_MSG, Snackbar.LENGTH_LONG).show();
+      return null;
+    } catch (HttpUnAuthorizedException e) {
+      Log.i(TAG, e.toString());
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_LOGIN_AUTHORIZATION_MSG, Snackbar.LENGTH_LONG).show();
+      return null;
+    } catch (JsonSyntaxException e) {
+      Log.i(TAG, e.toString());
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_SERVER_MSG, Snackbar.LENGTH_LONG).show();
+      return null;
     }
-    return occInspectionTasks;
   }
 
   @Override

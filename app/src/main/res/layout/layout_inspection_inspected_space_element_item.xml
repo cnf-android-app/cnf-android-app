@@ -2,21 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical"
+  android:paddingBottom="80dp"
   android:clickable="true"
-  android:focusableInTouchMode="true" >
+  android:focusableInTouchMode="true"
+  android:orientation="vertical">
 
   <RelativeLayout
     android:id="@+id/rl_inspection_occ_inspected_space_element_item_not_expand"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:layout_marginVertical="@dimen/inner_margin"
     android:background="@drawable/layout_card">
 
     <RelativeLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal">
+      android:layout_marginHorizontal="@dimen/inner_margin">
 
       <RadioGroup
         android:layout_width="match_parent"
@@ -29,27 +30,30 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="center"
           android:onClick="onRadioButtonClicked"
-          android:text="Not Inspected" />
+          android:text="Not Inspected"
+          android:textSize="@dimen/card_content_size"
+          android:textColor="@color/text_dark"/>
 
         <RadioButton
           android:id="@+id/rBtn_inspection_occ_inspected_space_element_item_pass"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="center"
           android:onClick="onRadioButtonClicked"
-          android:text="Pass" />
+          android:text="Pass"
+          android:textSize="@dimen/card_content_size"
+          android:textColor="@color/text_dark"/>
 
         <RadioButton
           android:id="@+id/rBtn_inspection_occ_inspected_space_element_item_violation"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="center"
           android:onClick="onRadioButtonClicked"
-          android:text="Violation" />
+          android:text="Violation"
+          android:textSize="@dimen/card_content_size"
+          android:textColor="@color/text_dark"/>
 
       </RadioGroup>
 
@@ -58,16 +62,17 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_section_number"
-        android:layout_marginVertical="@dimen/inner_margin_vertical"
+        android:layout_marginVertical="@dimen/inner_margin"
         android:text="Section Title"
-        android:textColor="@color/text_dark" />
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_content_size" />
 
       <TextView
         android:id="@+id/tv_inspection_occ_inspected_space_element_item_section_number"
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/inner_margin_vertical"
+        android:layout_marginVertical="@dimen/inner_margin"
         android:text="Section Number"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/card_title_size" />
@@ -79,38 +84,47 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/rl_inspection_occ_inspected_space_element_item_not_expand"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:layout_marginVertical="@dimen/inner_margin"
     android:background="@drawable/layout_bg_blue">
 
-    <LinearLayout
-      android:id="@+id/ll_inspection_occ_inspected_space_element_item_not_inspected_edit"
+    <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="50dp"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal"
-      android:gravity="center"
-      android:orientation="horizontal">
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/inner_margin">
 
-      <TextView
-        android:id="@+id/tv_inspection_occ_inspected_space_element_item_not_inspected_exit"
-        android:textStyle="bold"
+      <LinearLayout
+        android:id="@+id/ll_inspection_occ_inspected_space_element_item_not_inspected_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="EXIT"
-        android:textColor="@color/text_dark"
-        android:textSize="18dp" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/inner_padding">
 
-      <TextView
-        android:id="@+id/tv_inspection_occ_inspected_space_element_item_not_inspected_save"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="SAVE"
-        android:textAlignment="textEnd"
-        android:textColor="@color/text_dark"
-        android:textSize="18dp" />
-    </LinearLayout>
+        <TextView
+          android:id="@+id/tv_inspection_occ_inspected_space_element_item_not_inspected_exit"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Exit"
+          android:textAlignment="textStart"
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_title_size" />
+
+        <TextView
+          android:id="@+id/tv_inspection_occ_inspected_space_element_item_not_inspected_save"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Save"
+          android:textAlignment="textEnd"
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_title_size" />
+
+      </LinearLayout>
+
+    </RelativeLayout>
 
   </RelativeLayout>
 
@@ -119,33 +133,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/rl_inspection_occ_inspected_space_element_item_not_expand"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
-    android:background="@drawable/layout_bg_blue">
+    android:layout_marginVertical="@dimen/inner_margin"
+    android:background="@drawable/layout_bg_blue"
+    android:visibility="gone">
 
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal">
+      android:layout_marginHorizontal="@dimen/inner_margin">
 
       <EditText
         android:id="@+id/et_inspection_occ_inspected_space_element_item_pass_finding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/edit_text_height"
         android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_pass_finding_title"
-        android:hint="type..." />
+        android:padding="@dimen/inner_padding"
+        android:background="@drawable/border"
+        android:fadeScrollbars="true"
+        android:gravity="top"
+        android:inputType="text|textMultiLine"
+        android:text="Typing your finding.."
+        android:textSize="@dimen/card_content_size" />
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rv_inspection_occ_inspected_space_element_item_pass_photo">
-
+        android:layout_below="@+id/rv_inspection_occ_inspected_space_element_item_pass_photo"
+        android:paddingVertical="@dimen/inner_padding">
 
         <Button
           android:id="@+id/btn_inspection_occ_inspected_space_element_item_pass_take_photo"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="@dimen/btn_bottom_height"
           android:layout_weight="1"
-          android:layout_below="@+id/rv_inspection_occ_inspected_space_element_item_pass_photo"
           android:backgroundTint="@color/normal_button"
           android:text="@string/capture_photo"
           android:textColor="@color/white_font" />
@@ -153,19 +173,21 @@
         <Button
           android:id="@+id/btn_inspection_occ_inspected_space_element_item_pass_select_from_gallery"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="@dimen/btn_bottom_height"
           android:layout_weight="1"
           android:backgroundTint="@color/normal_button"
           android:text="Select Gallery"
           android:textColor="@color/white_font" />
+
       </LinearLayout>
 
       <LinearLayout
         android:id="@+id/ll_inspection_occ_inspected_space_element_item_pass_edit"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/inner_padding">
 
         <TextView
           android:id="@+id/tv_inspection_occ_inspected_space_element_item_pass_exit"
@@ -173,9 +195,10 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="EXIT"
+          android:text="Exit"
+          android:textAlignment="textStart"
           android:textColor="@color/text_dark"
-          android:textSize="18dp" />
+          android:textSize="@dimen/card_title_size" />
 
         <TextView
           android:id="@+id/tv_inspection_occ_inspected_space_element_item_pass_save"
@@ -183,25 +206,43 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="SAVE"
+          android:text="Save"
           android:textAlignment="textEnd"
           android:textColor="@color/text_dark"
-          android:textSize="18dp" />
+          android:textSize="@dimen/card_title_size" />
+
       </LinearLayout>
 
       <TextView
         android:id="@+id/tv_inspection_occ_inspected_space_element_item_pass_finding_title"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_inspection_occ_inspected_space_element_item_pass_edit"
-        android:text="Findings"
-        android:textSize="18dp"></TextView>
+        android:paddingVertical="@dimen/inner_padding"
+        android:text="Findings: "
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_content_size" />
+
+      <TextView
+        android:id="@+id/tv_inspection_occ_inspected_space_element_item_pass_photo_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_inspection_occ_inspected_space_element_item_pass_finding"
+        android:paddingVertical="@dimen/inner_padding"
+        android:text="Violation Photos:"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_content_size" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_inspection_occ_inspected_space_element_item_pass_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_inspection_occ_inspected_space_element_item_pass_finding" />
+        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_pass_photo_title"
+        android:background="@drawable/underline"
+        android:minHeight="15dp"
+        android:paddingVertical="@dimen/inner_padding" />
 
     </RelativeLayout>
 
@@ -212,51 +253,60 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/rl_inspection_occ_inspected_space_element_item_pass_expand"
-    android:layout_marginVertical="@dimen/inner_margin_vertical"
+    android:layout_marginVertical="@dimen/inner_margin"
     android:background="@drawable/layout_bg_blue">
 
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginHorizontal="@dimen/inner_margin_horizontal">
+      android:layout_marginHorizontal="@dimen/inner_margin">
 
       <EditText
         android:id="@+id/et_inspection_occ_inspected_space_element_item_violation_finding"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_violation_finding_title"
-        android:hint="type..." />
-
+        android:layout_height="@dimen/edit_text_height"
+        android:layout_below="@+id/ll_inspection_occ_inspected_space_element_item_violation_finding_container"
+        android:padding="@dimen/inner_padding"
+        android:background="@drawable/border"
+        android:fadeScrollbars="true"
+        android:gravity="top"
+        android:inputType="text|textMultiLine"
+        android:text="Typing your finding.."
+        android:textSize="@dimen/card_content_size" />
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rv_inspection_occ_inspected_space_element_item_violation_photo">
+        android:layout_below="@+id/rv_inspection_occ_inspected_space_element_item_violation_photo"
+        android:paddingVertical="@dimen/inner_padding">
+
         <Button
           android:id="@+id/btn_inspection_occ_inspected_space_element_item_violation_take_photo"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-
+          android:layout_height="@dimen/btn_bottom_height"
           android:layout_weight="1"
           android:backgroundTint="@color/normal_button"
           android:text="@string/capture_photo"
           android:textColor="@color/white_font" />
+
         <Button
           android:id="@+id/btn_inspection_occ_inspected_space_element_item_violation_select_from_gallery"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="@dimen/btn_bottom_height"
           android:layout_weight="1"
           android:backgroundTint="@color/normal_button"
           android:text="Select Gallery"
           android:textColor="@color/white_font" />
+
       </LinearLayout>
 
       <LinearLayout
         android:id="@+id/ll_inspection_occ_inspected_space_element_item_violation_edit"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/inner_padding">
 
         <TextView
           android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_exit"
@@ -264,9 +314,10 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="EXIT"
+          android:text="Exit"
+          android:textAlignment="textStart"
           android:textColor="@color/text_dark"
-          android:textSize="18dp" />
+          android:textSize="@dimen/card_title_size" />
 
         <TextView
           android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_save"
@@ -274,71 +325,116 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="SAVE"
+          android:text="Save"
           android:textAlignment="textEnd"
           android:textColor="@color/text_dark"
-          android:textSize="18dp" />
+          android:textSize="@dimen/card_title_size" />
+
       </LinearLayout>
 
-      <Spinner
-        android:id="@+id/et_inspection_occ_inspected_space_element_item_violation_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_violation_severity_title"
-        android:background="@drawable/layout_card"
-        android:dropDownWidth="match_parent"
-        android:popupBackground="@drawable/layout_card"
-        android:spinnerMode="dropdown" />
-
-
-      <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_default_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_inspection_occ_inspected_space_element_item_violation_finding"
-        android:checked="false"
-        android:text="Insert Default Violation Description" />
-
-      <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sw_inspection_occ_inspected_space_element_item_violation_default_description"
-        android:checked="false"
-        android:text="Include In Code Enforcement Case" />
-
-      <TextView
-        android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_severity_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case"
-        android:paddingVertical="@dimen/inner_margin_vertical"
-        android:text="Severity"
-        android:textSize="18dp" />
-
-      <TextView
-        android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_finding_title"
+      <LinearLayout
+        android:id="@+id/ll_inspection_occ_inspected_space_element_item_violation_finding_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_inspection_occ_inspected_space_element_item_violation_edit"
-        android:paddingVertical="@dimen/inner_margin_vertical"
-        android:text="Findings"
-        android:textSize="18dp" />
+        android:layout_marginVertical="@dimen/inner_margin"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_finding_title"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Findings: "
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size" />
+
+        <TextView
+          android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_default_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/underline"
+          android:gravity="end"
+          android:text="Use default violation description"
+          android:textColor="@color/text" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ll_inspection_occ_inspected_space_element_item_violation_include_cnf_case_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/inner_padding"
+        android:layout_below="@+id/et_inspection_occ_inspected_space_element_item_violation_finding"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_include_cnf_case_title"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:gravity="center_vertical"
+          android:text="Include in code enforcement case:"
+          android:textColor="@color/text" />
+
+        <CheckBox
+          android:id="@+id/sw_inspection_occ_inspected_space_element_item_violation_include_cnf_case"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="end"
+          android:textColor="@color/text" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ll_inspection_occ_inspected_space_element_item_violation_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/inner_margin"
+        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_violation_severity_title">
+
+        <Spinner
+          android:id="@+id/sp_inspection_occ_inspected_space_element_item_violation_spinner"
+          android:layout_width="match_parent"
+          android:layout_height="25dp"
+          android:paddingBottom="@dimen/inner_padding"
+          android:background="@drawable/layout_card_blue"
+          android:dropDownWidth="match_parent"
+          android:popupTheme="@drawable/layout_card"
+          android:spinnerMode="dialog" />
+      </LinearLayout>
+
+      <TextView
+        android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_severity_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_inspection_occ_inspected_space_element_item_violation_include_cnf_case_container"
+        android:paddingVertical="@dimen/inner_padding"
+        android:text="Violation Severity: "
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_content_size" />
 
       <TextView
         android:id="@+id/tv_inspection_occ_inspected_space_element_item_violation_photo_title"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_inspection_occ_inspected_space_element_item_violation_spinner"
-        android:paddingVertical="@dimen/inner_margin_vertical"
-        android:text="Photo(s)"
-        android:textSize="18dp" />
+        android:layout_below="@+id/ll_inspection_occ_inspected_space_element_item_violation_spinner"
+        android:paddingVertical="@dimen/inner_padding"
+        android:text="Violation Photos:"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_content_size" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_inspection_occ_inspected_space_element_item_violation_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_violation_photo_title" />
+        android:layout_below="@+id/tv_inspection_occ_inspected_space_element_item_violation_photo_title"
+        android:background="@drawable/underline"
+        android:minHeight="15dp"
+        android:paddingVertical="@dimen/inner_padding" />
     </RelativeLayout>
 
   </RelativeLayout>

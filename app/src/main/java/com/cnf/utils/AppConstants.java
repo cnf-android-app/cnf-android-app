@@ -9,6 +9,11 @@ public class AppConstants {
     public static final String SP_KEY_USER_LOGIN_TOKEN = "SP_KEY_USER_LOGIN_TOKEN";
     public static final String SP_KEY_IS_INITIALIZED = "SP_KEY_IS_INITIALIZED";
 
+    public static final String TOAST_INVALID_USERNAME_OR_PASSWORD_MSG = "Invalid Username or Password!";
+    public static final String TOAST_INVALID_LOGIN_AUTHORIZATION_MSG = "Invalid Login Authorization!";
+    public static final String TOAST_INVALID_CLIENT_MSG = "Mobile App Error Issue!";
+    public static final String TOAST_INVALID_SERVER_MSG = "Server Error Issue!";
+    public static final String TOAST_UNKNOWN_MSG = "UnKnown Issue!";
 
 
 
@@ -24,9 +29,8 @@ public class AppConstants {
     public static final String SP_KEY_MUNICIPALITY_CODE = "SP_KEY_MUNICIPALITY_CODE";
     public static final String SP_KEY_AUTH_PERIOD_ID = "SP_KEY_AUTH_PERIOD_ID";
 
-    public static final String TOAST_INVALID_USERNAME_OR_PASSWORD_MSG = "Invalid Username or Password!";
+
     public static final String TOAST_NETWORK_CONNECTION_ERROR_MSG = "Network Connection Error!";
-    public static final String TOAST_INVALID_LOGIN_AUTHORIZATION_MSG = "Invalid Login Authorization!";
     public static final String TOAST_UNKNOWN_NONE_RESPONSE_MSG = "Unknown None Response!";
     public static final String TOAST_LOCAL_DATABASE_ERROR = "Local Database Error!";
 
