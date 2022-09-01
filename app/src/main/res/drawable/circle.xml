@@ -5,23 +5,23 @@
       android:shape="ring"
       android:innerRadiusRatio="2"
       android:thickness="-3dp"
-
       android:useLevel="false">
       <solid android:color="#E1E1E1" />
     </shape>
   </item>
   <item>
-    <shape
-      android:shape="ring"
-      android:useLevel="true"
-      android:innerRadiusRatio="2"
-      android:thickness="-3dp">
-      <solid android:color="@color/blue_button" />
-      <!--        <gradient-->
-      <!--          android:endColor="@color/bottom_nav_background"-->
-      <!--          android:startColor="@color/blue_button"-->
-      <!--          android:type="sweep" />-->
-    </shape>
-
+    <rotate
+      android:fromDegrees="270"
+      android:pivotX="50%"
+      android:pivotY="50%"
+      android:toDegrees="270">
+      <shape
+        android:shape="ring"
+        android:useLevel="true"
+        android:innerRadiusRatio="2"
+        android:thickness="-3dp">
+        <solid android:color="@color/primary" />
+      </shape>
+    </rotate>
   </item>
 </layer-list>

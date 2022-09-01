@@ -3,6 +3,7 @@ package com.cnf.module_inspection.adapter;
 import static com.cnf.utils.AppConstants.FRAGMENT_INSPECTION_OCC_INSPECTED_SPACE_CATEGORY;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTED_SPACE_ID_NAME;
 
+import android.widget.ProgressBar;
 import androidx.fragment.app.Fragment;
 import android.os.AsyncTask;
 import android.view.Gravity;
@@ -93,8 +94,9 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     holder.tvOccInspectedSpaceTypeTitle.setText(inspectedSpaceTypeTile);
     holder.tvOccInspectedSpaceLocationDescription.setText(inspectedLocationDescription);
     holder.tvOccInspectedSpaceIsRequired.setText(requiredStatus);
-
-    holder.clOccInspectedSpaceItem.setOnClickListener(view -> {
+    holder.progressBar.setMax(100);
+    holder.progressBar.setProgress(calculateStatusPercentage(occInspectedSpaceHeavy));
+    holder.editBtn.setOnClickListener(view -> {
       if (fragment.getActivity() == null) {
         return;
       }
@@ -151,6 +153,7 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     TextView tvOccInspectedSpaceTypeTitle, tvOccInspectedSpaceLocationDescription, tvOccInspectedSpaceCompleteStatus, tvOccInspectedSpaceIsRequired;
     ImageButton editBtn, deleteBtn;
     LinearLayout clOccInspectedSpaceItem;
+    ProgressBar progressBar;
 
     public OccInspectedSpaceHolder(@NonNull View itemView) {
       super(itemView);
@@ -159,8 +162,9 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
       tvOccInspectedSpaceCompleteStatus = itemView.findViewById(R.id.tv_occ_inspected_space_item_status);
       tvOccInspectedSpaceIsRequired = itemView.findViewById(R.id.tv_occ_inspected_space_item_is_required);
       deleteBtn = itemView.findViewById(R.id.imageBtn_occ_inspected_space_item_more_button);
-      //editBtn = itemView.findViewById(R.id.imageBtn_occ_inspected_space_item_edit_button);
-      clOccInspectedSpaceItem = itemView.findViewById(R.id.cl_occ_inspected_space_item);
+      editBtn = itemView.findViewById(R.id.imageBtn_occ_inspected_space_item_edit_button);
+      progressBar = itemView.findViewById(R.id.pb_occ_inspection_space_item_progress_bar);
+      //clOccInspectedSpaceItem = itemView.findViewById(R.id.cl_occ_inspected_space_item);
     }
   }
 
@@ -177,5 +181,13 @@ public class InspectionOccInspectedSpaceAdapter extends RecyclerView.Adapter<Occ
     int totalInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount() + occInspectedSpaceStatus.getUnFinishInspectedSpaceElementCount();
     int completedInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount();
     return String.format("%s / %s", completedInspectedSpaceElement, totalInspectedSpaceElement);
+  }
+
+  private int calculateStatusPercentage(OccInspectedSpaceHeavy occInspectedSpaceHeavy) {
+    OccInspectedSpaceStatus occInspectedSpaceStatus = OccInspectionSpaceElementRepository.getInstance(fragment.getActivity()).getOccInspectedSpaceStatus(occInspectedSpaceHeavy);
+    int totalInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount() + occInspectedSpaceStatus.getUnFinishInspectedSpaceElementCount();
+    int completedInspectedSpaceElement = occInspectedSpaceStatus.getFinishedInspectedSpaceElementCount();
+    if (totalInspectedSpaceElement == 0) return 100;
+    return (int)(completedInspectedSpaceElement * 100 / totalInspectedSpaceElement);
   }
 }

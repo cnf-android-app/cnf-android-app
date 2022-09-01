@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import android.text.TextWatcher;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,10 +69,18 @@ public class InspectionDispatchFragment extends Fragment {
 
     ImageButton imageBtnMore = view.findViewById(R.id.imageBtn_occ_inspection_more_icon);
     ImageButton imageBtnSearch = view.findViewById(R.id.imageBtn_occ_inspection_search_icon);
+    ImageView isOnlineIcon = view.findViewById(R.id.image_occ_inspection_online_icon);
     rvInspectionList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
     if (!isOnline) {
+      isOnlineIcon.setImageResource(R.drawable.ic_baseline_wifi_off_24);
+      btnFetchDispatch.setImageResource(R.drawable.ic_baseline_cloud_off_30);
       btnFetchDispatch.setEnabled(false);
+    } else {
+      isOnlineIcon.setImageResource(R.drawable.ic_baseline_wifi_24);
+      btnFetchDispatch.setImageResource(R.drawable.icon_cloud_download);
+      btnFetchDispatch.setEnabled(true);
     }
 
     imageBtnSearch.setOnClickListener(v -> {
@@ -162,11 +173,11 @@ public class InspectionDispatchFragment extends Fragment {
     if (getActivity() == null) {
       return;
     }
-    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.on_switch_font));
-    rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.on_switch_font_v0));
+    rBtnUnFinish.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background_v0));
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnFinished.setBackground(null);
-    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnSynchronized.setBackground(null);
     LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(UN_FINISH, InspectionDispatchFragment.this);
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -176,11 +187,11 @@ public class InspectionDispatchFragment extends Fragment {
     if (getActivity() == null) {
       return;
     }
-    rBtnFinished.setTextColor(getActivity().getColor(R.color.on_switch_font));
-    rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.on_switch_font_v0));
+    rBtnFinished.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background_v0));
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnUnFinish.setBackground(null);
-    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnSynchronized.setBackground(null);
     LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(Category.FINISHED, InspectionDispatchFragment.this);
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -190,11 +201,11 @@ public class InspectionDispatchFragment extends Fragment {
     if (getActivity() == null) {
       return;
     }
-    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.on_switch_font));
-    rBtnSynchronized.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background));
-    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnSynchronized.setTextColor(getActivity().getColor(R.color.on_switch_font_v0));
+    rBtnSynchronized.setBackground(getActivity().getDrawable(R.drawable.toggle_widget_background_v0));
+    rBtnUnFinish.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnUnFinish.setBackground(null);
-    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font));
+    rBtnFinished.setTextColor(getActivity().getColor(R.color.off_switch_font_v0));
     rBtnFinished.setBackground(null);
     LoadOccInspectionDispatchTask task = new LoadOccInspectionDispatchTask(Category.SYNCHRONIZED, InspectionDispatchFragment.this);
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

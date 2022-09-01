@@ -4,6 +4,7 @@ import android.content.Context;
 import com.cnf.module_inspection.dao.BlobBytesDao;
 import com.cnf.module_inspection.db.InspectionDatabase;
 import com.cnf.module_inspection.entity.BlobBytes;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlobBytesRepository {
@@ -33,7 +34,14 @@ public class BlobBytesRepository {
   }
 
   public List<BlobBytes> getInspectedPhotoBlobBytesList(String inspectedSpaceElementId) {
-    return this.blobBytesDao.selectBlobByteListByInspectedElementId(inspectedSpaceElementId);
+    List<BlobBytes> blobBytes = null;
+    try {
+      blobBytes = this.blobBytesDao.selectBlobByteListByInspectedElementId(inspectedSpaceElementId);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
+    System.out.println(blobBytes);
+    return blobBytes;
   }
 
   public BlobBytes getBlobByte(String byteId) {

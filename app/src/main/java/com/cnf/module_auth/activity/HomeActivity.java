@@ -70,59 +70,59 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     createNotificationChannel();
     notificationManagerCompat = NotificationManagerCompat.from(this);
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    database.getReference(FIREBASE_NOTIFICATION_REF_KEY).child(String.valueOf(userId)).addChildEventListener(
-        new ChildEventListener() {
-          @Override
-          public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-            GenericTypeIndicator<InspectionDispatchNotification> genericTypeIndicator = new GenericTypeIndicator<InspectionDispatchNotification>() {
-            };
-            InspectionDispatchNotification inspectionDispatchNotification = dataSnapshot.getValue(genericTypeIndicator);
-            if (inspectionDispatchNotification == null || inspectionDispatchNotification.getNotified()) {
-              return;
-            }
-            String key = dataSnapshot.getKey();
-            if (key != null) {
-              database.getReference(FIREBASE_NOTIFICATION_REF_KEY).child(String.valueOf(userId)).child(key).setValue(null);
-            }
-            new Thread(() -> {
-              inspectionDispatchNotification.setArchived(false);
-              occInspectionDispatchNotificationRepository.insertOccInspectionDispatchNotification(inspectionDispatchNotification);
-              InspectionNotificationFragment notificationFragment = (InspectionNotificationFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_NOTIFICATION);
-              if (notificationFragment != null) {
-                new InspectionNotificationFragment.UpdateInspectionDispatchNotification
-                    .Builder()
-                    .recyclerView(notificationFragment.getRvOccInspectionNotification())
-                    .operation(InspectionDispatchNotificationOperation.OUTER_INSERT)
-                    .category(notificationFragment.getCategory())
-                    .inspectionDispatchNotification(inspectionDispatchNotification)
-                    .inspectionDispatchNotificationRepository(occInspectionDispatchNotificationRepository)
-                    .build()
-                    .execute();
-              }
-            }).start();
-            sendOnChannel(inspectionDispatchNotification);
-          }
-
-          @Override
-          public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-          }
-
-          @Override
-          public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-          }
-
-          @Override
-          public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-          }
-
-          @Override
-          public void onCancelled(@NonNull DatabaseError databaseError) {
-            Toast.makeText(getApplicationContext()
-                , "DBError: " + databaseError, Toast.LENGTH_SHORT).show();
-          }
-        }
-    );
+//    FirebaseDatabase database = FirebaseDatabase.getInstance();
+//    database.getReference(FIREBASE_NOTIFICATION_REF_KEY).child(String.valueOf(userId)).addChildEventListener(
+//        new ChildEventListener() {
+//          @Override
+//          public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+//            GenericTypeIndicator<InspectionDispatchNotification> genericTypeIndicator = new GenericTypeIndicator<InspectionDispatchNotification>() {
+//            };
+//            InspectionDispatchNotification inspectionDispatchNotification = dataSnapshot.getValue(genericTypeIndicator);
+//            if (inspectionDispatchNotification == null || inspectionDispatchNotification.getNotified()) {
+//              return;
+//            }
+//            String key = dataSnapshot.getKey();
+//            if (key != null) {
+//              database.getReference(FIREBASE_NOTIFICATION_REF_KEY).child(String.valueOf(userId)).child(key).setValue(null);
+//            }
+//            new Thread(() -> {
+//              inspectionDispatchNotification.setArchived(false);
+//              occInspectionDispatchNotificationRepository.insertOccInspectionDispatchNotification(inspectionDispatchNotification);
+//              InspectionNotificationFragment notificationFragment = (InspectionNotificationFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_NOTIFICATION);
+//              if (notificationFragment != null) {
+//                new InspectionNotificationFragment.UpdateInspectionDispatchNotification
+//                    .Builder()
+//                    .recyclerView(notificationFragment.getRvOccInspectionNotification())
+//                    .operation(InspectionDispatchNotificationOperation.OUTER_INSERT)
+//                    .category(notificationFragment.getCategory())
+//                    .inspectionDispatchNotification(inspectionDispatchNotification)
+//                    .inspectionDispatchNotificationRepository(occInspectionDispatchNotificationRepository)
+//                    .build()
+//                    .execute();
+//              }
+//            }).start();
+//            sendOnChannel(inspectionDispatchNotification);
+//          }
+//
+//          @Override
+//          public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+//          }
+//
+//          @Override
+//          public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//          }
+//
+//          @Override
+//          public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//          }
+//
+//          @Override
+//          public void onCancelled(@NonNull DatabaseError databaseError) {
+//            Toast.makeText(getApplicationContext()
+//                , "DBError: " + databaseError, Toast.LENGTH_SHORT).show();
+//          }
+//        }
+//    );
   }
 
   @Override

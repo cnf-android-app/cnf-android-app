@@ -49,8 +49,8 @@
     android:id="@+id/rv_occ_inspected_space"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/outer_margin"
-    android:paddingBottom="60dp"
+    android:paddingBottom="50dp"
+    android:scrollbars="vertical"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/rg_inspected_space_is_finish_or_not" />
 
@@ -59,7 +59,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="30dp"
-    android:backgroundTint="@color/blue_button"
+    android:backgroundTint="@color/primary"
     android:src="@drawable/icon_plus"
     android:text="Add Space"
     android:textColor="@color/white"

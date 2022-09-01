@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.cnf.module_auth.activity.HomeActivity;
+import com.cnf.module_auth.activity.MuniActivity;
 import com.cnf.module_inspection.activity.InspectionContainerActivity;
 import com.cnf.module_inspection.entity.tasks.OccInspectionTasks;
 import com.cnf.module_inspection.service.exception.HttpBadRequestException;
@@ -95,7 +96,7 @@ public class FetchOccInspectionDispatchTask extends AsyncTask<Void, Void, OccIns
     if (fragment == null) {
       return;
     }
-    activity.startActivity(new Intent(activity, HomeActivity.class));
+    activity.startActivity(new Intent(activity, MuniActivity.class));
   }
 }
 

@@ -71,7 +71,7 @@ public class OccInspectionSpaceElementRepository {
   }
 
   public List<OccInspectedSpaceElementHeavy> getOccInspectedSpaceElementHeavyListByInspectedSpaceId(Integer inspectedSpaceElementGuideId, String inspectedSpaceId) {
-    if (inspectedSpaceElementGuideId == null) {
+    if (inspectedSpaceElementGuideId == null || inspectedSpaceElementGuideId == -1) {
       return this.occInspectedSpaceElementDao.selectAllUnCategoryOccInspectedSpaceElementHeavyList(inspectedSpaceId);
     }
     return this.occInspectedSpaceElementDao.selectOccInspectedSpaceElementHeavyList(inspectedSpaceElementGuideId, inspectedSpaceId);
@@ -313,7 +313,7 @@ public class OccInspectionSpaceElementRepository {
       CodeElement codeElement = occInspectedSpaceElementHeavy.getCodeElement();
       Integer guideEntryId = null;
       CodeElementGuide codeElementGuide = null;
-      if (codeElement == null || (guideEntryId = codeElement.getGuideEntryId()) == null || (codeElementGuide = codeElementGuideMap.get(guideEntryId)) == null) {
+      if ((guideEntryId = codeElement.getGuideEntryId()) == null || (codeElementGuide = codeElementGuideMap.get(guideEntryId)) == null) {
         List<OccInspectedSpaceElementHeavy> list = map.get(unknownCodeElementGuide);
         if (list == null) {
           list = new ArrayList<>();

@@ -1,6 +1,5 @@
 package com.cnf.module_inspection.adapter;
 
-
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_CHECKLIST_ID_KEY;
 import static com.cnf.utils.AppConstants.INTENT_EXTRA_INSPECTION_ID_KEY;
 import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
@@ -8,6 +7,7 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_IS_ONLINE;
 
 import android.os.AsyncTask;
+import android.widget.RadioGroup;
 import androidx.fragment.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -112,20 +112,29 @@ public class InspectionAdapter extends RecyclerView.Adapter<InspectionDispatchHo
       task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     });
 
-//    if (isSynchronized) {
-//      holder.btnInspect.setVisibility(View.GONE);
-//      holder.btnUpload.setVisibility(View.GONE);
-//    } else if (!isFinished) {
-//      holder.btnInspect.setVisibility(View.VISIBLE);
-//      holder.btnUpload.setVisibility(View.GONE);
-//    } else {
-//      holder.btnInspect.setVisibility(View.VISIBLE);
-//      if (isOnline) {
-//        holder.btnUpload.setVisibility(View.VISIBLE);
-//      } else {
-//        holder.btnUpload.setVisibility(View.GONE);
-//      }
-//    }
+    if (fragment.getActivity() != null) {
+      RadioGroup radioGroup  = fragment.getActivity().findViewById(R.id.rg_inspection_is_finish_or_not);
+      int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+      switch (checkedRadioButtonId) {
+        case R.id.rb_inspection_un_finish:
+          holder.btnInspect.setVisibility(View.VISIBLE);
+          holder.btnUpload.setVisibility(View.GONE);
+          break;
+        case R.id.rb_inspection_finished:
+          holder.btnInspect.setVisibility(View.VISIBLE);
+          if (isOnline) {
+            holder.btnUpload.setVisibility(View.VISIBLE);
+          } else {
+            holder.btnUpload.setVisibility(View.GONE);
+          }
+          break;
+        case R.id.rb_inspection_synchronized:
+          holder.btnInspect.setVisibility(View.GONE);
+          holder.btnUpload.setVisibility(View.GONE);
+          break;
+      }
+      return;
+    }
   }
 
   @Override

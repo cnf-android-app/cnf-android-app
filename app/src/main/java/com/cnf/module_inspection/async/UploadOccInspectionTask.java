@@ -6,6 +6,8 @@ import static com.cnf.utils.AppConstants.SHARE_PREFERENCE_USER_OCC_SESSION;
 import static com.cnf.utils.AppConstants.SP_KEY_AUTH_PERIOD_ID;
 import static com.cnf.utils.AppConstants.SP_KEY_MUNICIPALITY_CODE;
 import static com.cnf.utils.AppConstants.SP_KEY_USER_LOGIN_TOKEN;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_CLIENT_MSG;
+import static com.cnf.utils.AppConstants.TOAST_INVALID_LOGIN_AUTHORIZATION_MSG;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import com.cnf.module_inspection.service.exception.HttpUnknownErrorException;
 import com.cnf.module_inspection.service.local.OccInspectionDispatchRepository;
 import com.cnf.module_inspection.service.local.OccInspectionInfraService;
 import com.cnf.module_inspection.service.remote.OccInspectionApiService;
+import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.time.OffsetDateTime;
@@ -34,7 +37,6 @@ public class UploadOccInspectionTask extends AsyncTask<Void, Void, Void> {
   private final WeakReference<Fragment> fragmentWeakReference;
   private final WeakReference<HomeActivity> activityWeakReference;
   private final OccInspectionDispatch occInspectionDispatch;
-
 
   public UploadOccInspectionTask(OccInspectionDispatch occInspectionDispatch, @NonNull Fragment fragment) {
     this.fragmentWeakReference = new WeakReference<>(fragment);
@@ -57,8 +59,10 @@ public class UploadOccInspectionTask extends AsyncTask<Void, Void, Void> {
     int authPeriodId = sp.getInt(SP_KEY_AUTH_PERIOD_ID, -1);
     String loginUserToken = sp.getString(SP_KEY_USER_LOGIN_TOKEN, null);
 
-    int inspectionId = activity.getIntent().getIntExtra(INTENT_EXTRA_INSPECTION_ID_KEY, -1);
-    if (inspectionId == -1) {
+    Integer inspectionId = occInspectionDispatch.getInspectionId();
+    if (inspectionId == null) {
+      Log.e(TAG, "inspectionId null");
+      Snackbar.make(activity.getWindow().getDecorView(), TOAST_INVALID_CLIENT_MSG, Snackbar.LENGTH_LONG).show();
       return null;
     }
     UploadDTO uploadDTO = occInspectionInfraService.getUploadDTO(inspectionId);

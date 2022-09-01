@@ -6,15 +6,11 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 
     <color name="transparent">#00FFFFFF</color>
     <color name="transparent01">#BFFFFFFF</color>
 
-
     <color name="light_blue">#F1FBFF</color>
-
-
 
     <color name="brand_navigation">#00B4ED</color>
     <color name="brand_navigation_0">#DEE461</color>
@@ -30,18 +26,24 @@
 
     <color name="background">#EBEBF5</color>
     <color name="cardboard">#FFFFFF</color>
-    <color name="normal_button">#6C6D70</color>
-    <color name="yellow_button">#E0CC39</color>
-    <color name="blue_button">#00B4ED</color>
-    <color name="on_switch_font">#00B4ED</color>
-    <color name="off_switch_font">#6C6D70</color>
-    <color name="white_font">#FFFFFF</color>
-    <color name="bottom_nav_background"></color>
 
+    <color name="normal_button">@color/grey_04</color>
+    <color name="white_font">@color/white</color>
 
+    <color name="off_switch_font_v0">@color/secondary</color>
+    <color name="on_switch_font_v0">@color/white</color>
+
+    <color name="off_switch_font">@color/grey_04</color>
+    <color name="on_switch_font">@color/secondary</color>
+
+    <color name="primary">#42A5F5</color>
+    <color name="secondary">#2196F3</color>
+    <color name="white">#FFFFFF</color>
     <color name="grey">#F0F0F0</color>
-    <color name="grey_light">#F5F5F5</color>
-    <color name="grey_dark">#AFAFAF</color>
-
+    <color name="grey_01">#EBEBEB</color>
+    <color name="grey_02">#E6E6E6</color>
+    <color name="grey_03">#AAAAAA</color>
+    <color name="grey_04">#8C8C8C</color>
+    <color name="grey_05">#323232</color>
 
 </resources>

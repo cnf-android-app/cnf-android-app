@@ -24,6 +24,7 @@ public interface OccInspectionDispatchDao {
   @Query("DELETE FROM OccInspectionDispatch")
   void deleteAllOccInspectionDispatchList();
 
+  //TODO HOW TO GET MUNICODE
   @Query("SELECT * FROM occinspectiondispatch "
       + "INNER JOIN occinspection o ON occinspectiondispatch.inspection_inspectionid = o.inspectionid "
       + "INNER JOIN cecase c ON o.cecase_caseid=c.caseid "

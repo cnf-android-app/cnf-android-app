@@ -59,18 +59,23 @@ public class DeleteOccInspectedSpaceElementPhotoDocTask extends AsyncTask<Void, 
       Log.e(TAG, "statusIndicator || rvOccInspectedSpace null");
       return;
     }
-    InspectionInspectedSpaceElementPhotoAdapter adapter;
+
     if (rv0 != null) {
-      adapter = (InspectionInspectedSpaceElementPhotoAdapter) rv0.getAdapter();
-    } else {
-      adapter = (InspectionInspectedSpaceElementPhotoAdapter) rv1.getAdapter();
+      InspectionInspectedSpaceElementPhotoAdapter adapter0 = (InspectionInspectedSpaceElementPhotoAdapter) rv0.getAdapter();
+      if (adapter0 == null) {
+        return;
+      }
+      adapter0.getBlobBytesList().remove(blobBytes);
+      adapter0.notifyDataSetChanged();
     }
 
-    if (adapter == null) {
-      Log.e(TAG, "InspectionOccInspectedSpaceAdapter null");
-      return;
+    if (rv1 != null) {
+      InspectionInspectedSpaceElementPhotoAdapter adapter1 = (InspectionInspectedSpaceElementPhotoAdapter) rv1.getAdapter();
+      if (adapter1 == null) {
+        return;
+      }
+      adapter1.getBlobBytesList().remove(blobBytes);
+      adapter1.notifyDataSetChanged();
     }
-    adapter.getBlobBytesList().remove(blobBytes);
-    adapter.notifyDataSetChanged();
   }
 }

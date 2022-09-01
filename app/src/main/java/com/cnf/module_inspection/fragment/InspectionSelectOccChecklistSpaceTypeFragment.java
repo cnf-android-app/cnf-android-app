@@ -47,7 +47,6 @@ public class InspectionSelectOccChecklistSpaceTypeFragment extends Fragment {
     Toolbar toolbar = getActivity().findViewById(R.id.tb_occ_inspection_container_nav);
     TextView tvNavTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_title);
     RecyclerView rvOccChecklistSpaceType = getActivity().findViewById(R.id.rv_space_type_list);
-
     tvNavTitle.setText(INSPECTION_OCC_CHECKLIST_SPACE_TYPE);
     rvOccChecklistSpaceType.setLayoutManager(new LinearLayoutManager(getActivity()));
     toolbar.setNavigationOnClickListener(v -> {

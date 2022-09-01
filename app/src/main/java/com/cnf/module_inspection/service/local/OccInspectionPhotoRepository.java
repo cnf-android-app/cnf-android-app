@@ -30,13 +30,13 @@ public class OccInspectionPhotoRepository {
   public void insertPhotoDocList(List<PhotoDoc> photoDocList) {
     this.photoDocDao.insertPhotoDoc(photoDocList);
   }
-
-  @Transaction
+  
   public void deleteOccInspectedPhotoBlobByte(BlobBytes blobBytes) {
+//    String bytesId = blobBytes.getBytesId();
     this.blobBytesDao.deleteBlobByte(blobBytes);
-    PhotoDoc photoDoc = this.photoDocDao.selectOnePhotoDoc(blobBytes.getBytesId());
-    this.photoDocDao.deletePhotoDoc(photoDoc);
-    this.occInspectedSpaceElementPhotoDocDao.deleteOccInspectedSpaceElementPhotoDocList(photoDoc.getPhotoDocId());
+//    PhotoDoc photoDoc = this.photoDocDao.selectOnePhotoDoc(blobBytes.getBytesId());
+//    this.occInspectedSpaceElementPhotoDocDao.deleteOccInspectedSpaceElementPhotoDocList(photoDoc.getPhotoDocId());
+//    this.photoDocDao.deletePhotoDoc(photoDoc);
   }
 
   public long insertPhotoDoc(PhotoDoc photoDoc) {

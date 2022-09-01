@@ -84,5 +84,6 @@ public class OccInspectionApiService {
     paramsMap.put(MUNICIPALITY_CODE, municipalityCode);
     paramsMap.put(AUTH_PERIOD_ID, authPeriodId);
     String response = RequestUtils.sendPostRequest(userLoginToken, requestBody, OCC_INSPECTION_UPLOAD, paramsMap);
+    System.out.println(response);
   }
 }

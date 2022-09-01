@@ -37,22 +37,22 @@
 
     <Button
       android:id="@+id/btn_online"
-      style="?android:attr/buttonBarButtonStyle"
       android:layout_width="match_parent"
       android:layout_height="@dimen/btn_bottom_height"
       android:layout_weight="1"
       android:layout_margin="@dimen/inner_margin"
-      android:background="@drawable/layout_card"
+      android:textColor="@color/secondary"
+      android:background="@color/white"
       android:text="@string/btn_online" />
 
     <Button
       android:id="@+id/btn_offline"
-      style="?android:attr/buttonBarButtonStyle"
       android:layout_width="match_parent"
       android:layout_height="@dimen/btn_bottom_height"
       android:layout_weight="1"
       android:layout_margin="@dimen/inner_margin"
-      android:background="@drawable/layout_card"
+      android:textColor="@color/secondary"
+      android:background="@color/white"
       android:text="@string/btn_offline" />
   </LinearLayout>
 

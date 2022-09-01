@@ -57,6 +57,9 @@ public class InspectionSelectOccInspectedSpaceFragment extends Fragment {
     RecyclerView rvOccInspectedSpace = getActivity().findViewById(R.id.rv_occ_inspected_space);
     FloatingActionButton btnAddSpace = getActivity().findViewById(R.id.btn_add_space);
 
+    TextView tvNavSubTitle = getActivity().findViewById(R.id.tv_occ_inspection_container_nav_sub_title);
+    tvNavSubTitle.setText(String.format("Inspection ID: %s", inspectionId));
+
     rvOccInspectedSpace.setLayoutManager(new LinearLayoutManager(getActivity()));
     tvNavTitle.setText(INSPECTION_SPACE_TITLE);
     toolbar.setNavigationOnClickListener(v -> {

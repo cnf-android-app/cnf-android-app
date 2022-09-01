@@ -3,20 +3,33 @@
   android:id="@+id/rl_inspection_inspected_space_element_category_item"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginVertical="@dimen/outer_margin"
-  android:background="@drawable/layout_card">
+  android:layout_marginVertical="@dimen/inner_padding"
+  >
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/tv_inspection_inspected_space_element_category_item_title"
     android:orientation="horizontal">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="1"
+      android:paddingVertical="@dimen/outer_padding"
+      android:paddingHorizontal="@dimen/outer_padding"
+      android:background="@drawable/layout_card"
       android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tv_inspection_inspected_space_element_category_item_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/outer_padding"
+        android:text="UnCategory"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_title_size" />
 
       <LinearLayout
         android:id="@+id/ly_inspection_inspected_space_element_category_item_violation"
@@ -24,24 +37,25 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_below="@+id/tv_inspection_inspected_space_element_category_item_title"
-        android:orientation="horizontal"
-        android:paddingVertical="5dp">
+        android:orientation="horizontal">
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_violation_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:paddingLeft="20dp"
           android:text="Violation:"
-          android:textColor="@color/text" />
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size"/>
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_violation_value"
           android:textStyle="bold"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="2"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
           android:textColor="@color/text" />
 
       </LinearLayout>
@@ -51,24 +65,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_violation"
-        android:paddingVertical="5dp">
+        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_violation">
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_pass_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:paddingLeft="20dp"
           android:text="Pass:"
-          android:textColor="@color/text" />
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size"/>
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_pass_value"
           android:textStyle="bold"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="2"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
           android:textColor="@color/text" />
 
       </LinearLayout>
@@ -78,24 +93,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_pass"
-        android:paddingVertical="5dp">
+        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_pass">
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_not_inspected_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:paddingLeft="20dp"
           android:text="Not Inspected:"
-          android:textColor="@color/text" />
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size" />
 
         <TextView
           android:id="@+id/tv_inspection_inspected_space_element_category_item_not_inspected_value"
           android:textStyle="bold"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="2"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
           android:textColor="@color/text" />
 
       </LinearLayout>
@@ -105,34 +121,22 @@
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_weight="3"
+      android:layout_weight="5"
+      android:layout_marginStart="5dp"
       android:gravity="center">
 
       <ImageButton
         android:id="@+id/btn_inspection_inspected_space_element_category_item_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:background="@null"
-        android:src="@drawable/ic_baseline_chevron_right_24" />
+        android:background="@drawable/layout_card"
+        android:src="@drawable/ic_baseline_arrow_forward_24" />
 
     </RelativeLayout>
 
   </LinearLayout>
 
-  <TextView
-    android:id="@+id/tv_inspection_inspected_space_element_category_item_title"
-    android:textStyle="bold"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="20dp"
-    android:gravity="center"
-    android:paddingVertical="10dp"
-    android:text="Inspected Space Element Category"
-    android:textColor="@color/text_dark"
-    android:textSize="20dp" />
+
 
 </RelativeLayout>
 

@@ -71,7 +71,7 @@
     android:id="@+id/ll_hidden"
     android:layout_width="100sp"
     android:layout_height="match_parent"
-    android:background="@color/blue_button"
+    android:background="@color/primary"
     android:gravity="center">
 
     <TextView

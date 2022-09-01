@@ -25,6 +25,8 @@ public class BlobBytes {
   @ColumnInfo(name = "filename")
   private String fileName;
 
+  private String mobilePath;
+
   public BlobBytes(String bytesId, String createdTS, String blob, Integer uploadedByUserId, String fileName) {
     this.bytesId = bytesId;
     this.createdTS = createdTS;
@@ -71,6 +73,14 @@ public class BlobBytes {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public String getMobilePath() {
+    return mobilePath;
+  }
+
+  public void setMobilePath(String mobilePath) {
+    this.mobilePath = mobilePath;
   }
 
   @Override
