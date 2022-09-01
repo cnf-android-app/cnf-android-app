@@ -82,30 +82,30 @@ public class InspectionContainerActivity extends AppCompatActivity {
         return;
       }
       Bitmap imageBitmap = (Bitmap) extras.get("data");
-      ContentResolver resolver = getContentResolver();
-      ContentValues contentValues = new ContentValues();
-      contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "hello");
-      contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
-      contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/" + "hello");
-      Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-      OutputStream fos = null;
-      try {
-        fos = resolver.openOutputStream(imageUri);
-        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } finally {
-        try {
-          fos.flush();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        try {
-          fos.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
+//      ContentResolver resolver = getContentResolver();
+//      ContentValues contentValues = new ContentValues();
+//      contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "hello");
+//      contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+//      contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/" + "hello");
+//      Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+//      OutputStream fos = null;
+//      try {
+//        fos = resolver.openOutputStream(imageUri);
+//        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//      } catch (FileNotFoundException e) {
+//        e.printStackTrace();
+//      } finally {
+//        try {
+//          fos.flush();
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//        try {
+//          fos.close();
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//      }
 
 
 
