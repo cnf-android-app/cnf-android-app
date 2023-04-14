@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/rl_inspection_inspected_space_element_category_item"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginVertical="@dimen/inner_padding"
+  >
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingVertical="@dimen/outer_padding"
+      android:paddingHorizontal="@dimen/outer_padding"
+      android:background="@drawable/layout_card"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tv_inspection_inspected_space_element_category_item_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/outer_padding"
+        android:text="UnCategory"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_title_size" />
+
+      <LinearLayout
+        android:id="@+id/ly_inspection_inspected_space_element_category_item_violation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_below="@+id/tv_inspection_inspected_space_element_category_item_title"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_violation_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Violation:"
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size"/>
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_violation_value"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
+          android:textColor="@color/text" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ly_inspection_inspected_space_element_category_item_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_violation">
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_pass_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Pass:"
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size"/>
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_pass_value"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
+          android:textColor="@color/text" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ly_inspection_inspected_space_element_category_item_not_inspected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_below="@+id/ly_inspection_inspected_space_element_category_item_pass">
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_not_inspected_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="Not Inspected:"
+          android:textColor="@color/text_dark"
+          android:textSize="@dimen/card_content_size" />
+
+        <TextView
+          android:id="@+id/tv_inspection_inspected_space_element_category_item_not_inspected_value"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_weight="4"
+          android:text="1"
+          android:textColor="@color/text" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="5"
+      android:layout_marginStart="5dp"
+      android:gravity="center">
+
+      <ImageButton
+        android:id="@+id/btn_inspection_inspected_space_element_category_item_edit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/layout_card"
+        android:src="@drawable/ic_baseline_arrow_forward_24" />
+
+    </RelativeLayout>
+
+  </LinearLayout>
+
+
+
+</RelativeLayout>
+

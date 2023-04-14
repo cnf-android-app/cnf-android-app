@@ -1,0 +1,53 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <!-- Base application theme. -->
+  <style name="Theme.CodeNforceMobileAndroid" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Primary brand color. -->
+    <item name="colorPrimary">@color/grey_04</item>
+    <item name="colorPrimaryVariant">@color/grey_04</item>
+    <item name="colorOnPrimary">@color/white</item>
+    <item name="buttonTint">@color/grey_05</item>
+    <!-- Secondary brand color. -->
+    <item name="colorSecondary">@color/shade</item>
+    <item name="colorSecondaryVariant">#4FC3F7</item>
+    <item name="colorOnSecondary">@color/grey_04</item>
+    <!-- Status bar color. -->
+    <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+    <!-- Customize your theme here. -->
+  </style>
+
+  <style name="Button.Regular" parent="ThemeOverlay.AppCompat">
+    <item name="colorAccent">#CECECE</item>
+  </style>
+
+  <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Light">
+    <item name="android:colorBackground">@color/borders</item>
+    <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item> <!--新增一个item，用于控制menu-->
+  </style>
+
+  <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+    <item name="overlapAnchor">false</item>  <!--把该属性改为false即可使menu位置位于toolbar之下-->
+  </style>
+
+<!--  <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
+<!--    &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--    <item name="colorPrimary">@color/text</item>-->
+<!--    <item name="colorPrimaryDark">@color/text_dark</item>-->
+<!--    <item name="colorAccent">@color/white</item>-->
+<!--  </style>-->
+
+  <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+  </style>
+
+  <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+    <item name="android:background">@color/transparent</item>
+  </style>
+
+  <style name="CircularDeterminateProgressBar">
+    <item name="android:indeterminateOnly">false</item>
+    <item name="android:progressDrawable">@drawable/circle</item>
+  </style>
+
+
+</resources>

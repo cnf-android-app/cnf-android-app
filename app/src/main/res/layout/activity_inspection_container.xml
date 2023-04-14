@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".module_inspection.activity.InspectionContainerActivity">
+
+  <FrameLayout
+    android:id="@+id/fl_occ_inspection_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/v_occ_inspection_container_nav_border" />
+
+  <View
+    android:id="@+id/v_occ_inspection_container_nav_border"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_below="@+id/tb_occ_inspection_container_nav"
+    android:background="@color/borders" />
+
+  <androidx.appcompat.widget.Toolbar
+    android:id="@+id/tb_occ_inspection_container_nav"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    app:navigationIcon="@drawable/ic_baseline_arrow_back_24">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tv_occ_inspection_container_nav_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Inspection"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/nav_title_size" />
+
+      <TextView
+        android:id="@+id/tv_occ_inspection_container_nav_sub_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Inspection ID: 100"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/nav_sub_title_size" />
+
+    </LinearLayout>
+
+  </androidx.appcompat.widget.Toolbar>
+
+
+</RelativeLayout>

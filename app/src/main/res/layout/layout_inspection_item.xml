@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clickable="true"
+  android:focusableInTouchMode="true"
+  android:orientation="vertical">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/inner_margin"
+    android:background="@drawable/layout_card"
+    android:paddingHorizontal="@dimen/outer_padding">
+
+    <LinearLayout
+      android:id="@+id/ly_inspection_inspectionId"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingVertical="@dimen/inner_padding">
+
+      <TextView
+        android:id="@+id/tv_inspection_inspectionId"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="inspection Id"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/card_title_size" />
+
+      <ImageView
+        android:id="@+id/iv_inspection_direction"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/ic_baseline_directions_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/ly_inspection_address"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/ly_inspection_inspectionId"
+      android:paddingVertical="@dimen/inner_padding"
+      android:weightSum="6">
+
+      <TextView
+        android:id="@+id/tv_inspection_address_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="@string/text_address"
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/tv_inspection_address_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/ly_inspection_inspector"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/ly_inspection_address"
+      android:paddingVertical="@dimen/inner_padding"
+      android:weightSum="6">
+
+      <TextView
+        android:id="@+id/tv_inspection_inspector_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="@string/text_inspector"
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/tv_inspection_inspector_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/ly_inspection_checklist"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/ly_inspection_inspector"
+      android:paddingVertical="@dimen/inner_padding"
+      android:weightSum="6">
+
+      <TextView
+        android:id="@+id/tv_inspection_checklist_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="@string/text_checklist"
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/tv_inspection_checklist_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/ly_inspection_created"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/ly_inspection_checklist"
+      android:paddingVertical="@dimen/inner_padding"
+      android:weightSum="6">
+
+      <TextView
+        android:id="@+id/tv_inspection_created_date_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="@string/text_created_date"
+        android:textSize="@dimen/card_content_size"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/tv_inspection_created_date_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/ly_inspection_created"
+      android:gravity="right"
+      android:paddingVertical="@dimen/inner_padding">
+
+      <Button
+        android:id="@+id/btn_inspection_upload"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_button_height"
+        android:layout_weight="1"
+        android:backgroundTint="@color/normal_button"
+        android:text="@string/button_text_upload"
+        android:textColor="@color/white_font" />
+
+      <Button
+        android:id="@+id/btn_inspection_edit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_button_height"
+        android:layout_weight="1"
+        android:backgroundTint="@color/normal_button"
+        android:text="@string/button_text_inspect"
+        android:textColor="@color/white_font" />
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+</RelativeLayout>
+

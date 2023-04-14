@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="20dp"
+  android:background="@color/black"
+  tools:context=".module_auth.activity.MainActivity">
+
+  <ImageView
+    android:id="@+id/iv_main_logo"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:layout_marginHorizontal="15dp"
+    android:contentDescription="@string/logo_of_codenforce"
+    android:scaleX="0.9"
+    android:scaleY="0.9"
+    android:src="@drawable/logo_main" />
+
+  <ImageView
+    android:id="@+id/iv_main_logo_font"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_below="@id/iv_main_logo"
+    android:layout_marginHorizontal="15dp"
+    android:contentDescription="@string/logo_of_codenforce"
+    android:scaleX="0.9"
+    android:scaleY="0.9"
+    android:src="@drawable/logo_main_font" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/outer_margin"
+    android:layout_below="@+id/iv_main_logo_font"
+    android:gravity="center">
+
+    <Button
+      android:id="@+id/btn_online"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/btn_bottom_height"
+      android:layout_weight="1"
+      android:layout_margin="@dimen/inner_margin"
+      android:textColor="@color/secondary"
+      android:background="@color/white"
+      android:text="@string/btn_online" />
+
+    <Button
+      android:id="@+id/btn_offline"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/btn_bottom_height"
+      android:layout_weight="1"
+      android:layout_margin="@dimen/inner_margin"
+      android:textColor="@color/secondary"
+      android:background="@color/white"
+      android:text="@string/btn_offline" />
+  </LinearLayout>
+
+</RelativeLayout>
